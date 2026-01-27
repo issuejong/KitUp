@@ -60,10 +60,14 @@ sudo service postgresql start
 #### 4-2. 데이터베이스 생성
 
 ```bash
-# PostgreSQL 접속
-psql -U isujong
+# PostgreSQL 접속 (자신의 PostgreSQL 사용자명으로)
+# macOS 사용자 예시:
+psql -U $(whoami)
 
-# 데이터베이스 생성
+# Windows 사용자 예시:
+psql -U postgres
+
+# 데이터베이스 생성 (모두 동일)
 CREATE DATABASE startlinedev;
 
 # 확인
@@ -73,7 +77,10 @@ CREATE DATABASE startlinedev;
 \q
 ```
 
-**⚠️ 주의: 팀원들이 동일한 DB 이름과 사용자명(`isujong`)을 사용해야 합니다.**
+**⚠️ 중요: 각 팀원이 자신의 PostgreSQL 사용자명을 사용해야 합니다.**
+- macOS: 기본값은 설치된 맥 사용자명 (예: `isujong`, `john` 등)
+- Windows: 기본값은 `postgres` (설치 중 설정한 비밀번호 필요)
+- Linux: 기본값은 `postgres`
 
 ### 5️⃣ 환경변수 설정
 
@@ -82,16 +89,24 @@ CREATE DATABASE startlinedev;
 cp .env.example .env
 ```
 
-`.env` 파일 수정:
+`.env` 파일 수정 (각 팀원이 자신의 정보로 수정):
 ```env
+# 각자 자신의 PostgreSQL 사용자명 입력
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=startlinedev
-DB_USER=isujong
-DB_PASSWORD=
+DB_NAME=startlinedev          # 모두 동일
+DB_USER=your_postgres_user    # 자신의 PostgreSQL 사용자명으로 변경
+DB_PASSWORD=your_password     # 자신의 PostgreSQL 비밀번호
 DB_HOST=localhost
 DB_PORT=5432
+
+SECRET_KEY=your-secret-key-here
 DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
 ```
+
+**예시:**
+- macOS 사용자 (isujong): `DB_USER=isujong`
+- Windows 사용자: `DB_USER=postgres`
 
 ### 6️⃣ 마이그레이션 및 초기 데이터
 
@@ -116,7 +131,8 @@ python manage.py runserver
 ---
 
 ## 🗄️ 데이터베이스 확인
-
+# 자신의 PostgreSQL 사용자명으로 접속
+psql -d startlinedev -U your_postgres_user
 ### Django Admin (추천)
 ```
 http://localhost:8000/admin
@@ -247,7 +263,3 @@ python manage.py migrate
 - PostgreSQL 버전: `psql --version`
 - 전체 에러 메시지
 - 수행한 명령어
-
----
-
-**행운을 빕니다! 🚀**
