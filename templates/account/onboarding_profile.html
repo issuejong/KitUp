@@ -1,0 +1,17 @@
+<h1>프로필 설정</h1>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div>
+    {{ form.nickname.errors }}
+    {{ form.nickname.label_tag }} {{ form.nickname }}
+  </div>
+
+  <div>
+    {{ form.profile_image.errors }}
+    {{ form.profile_image.label_tag }} {{ form.profile_image }}
+  </div>
+
+  <button type="submit">저장</button>
+</form>

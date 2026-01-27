@@ -9,14 +9,16 @@ urlpatterns = [
     
     path("", initial_view.as_view(), name="initial"),
     path("admin/", admin.site.urls),
+    
     #   allauth (로그인/소셜로그인)
     path("accounts/", include("allauth.urls")),
     #   allauth 쪽으로 리다이렉트
     path("login/", RedirectView.as_view(url="/accounts/login/")),
     path("logout/", RedirectView.as_view(url="/accounts/logout/")),
     path("signup/", RedirectView.as_view(url="/accounts/signup/")),
-    # template views: HTML로 보여줄 주소들
     
+    # template views: HTML로 보여줄 주소들
+    path("", include("accounts.urls")),
 
     # API views: Swagger로 테스트할 주소들
     path("api/", include("config.api_urls")),
