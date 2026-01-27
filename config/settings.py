@@ -39,11 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     
     # Local apps
-    "accounts.apps.AccountsConfig",
-    "learning.apps.LearningConfig",
-    "reflections.apps.ReflectionsConfig",
-    "roadmaps.apps.RoadsConfig",
-    "teams.apps.TeamsConfig",
+    "accounts",
+    "learning",
+    "reflections",
+    "roadmaps",
+    "teams",
 ]
 
 MIDDLEWARE = [
