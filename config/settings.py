@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     
     "allauth.account.middleware.AccountMiddleware",
+    "accounts.middleware.RequireProfileMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -85,6 +86,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 # AllAuth settings 
 SITE_ID = 1
 AUTH_USER_MODEL = "accounts.User"
+# allauth 기본 로그인 방식 설정
+ACCOUNT_LOGIN_METHODS = {"username"}
+ACCOUNT_SIGNUP_FIELDS = [
+    "username*",
+    "password1*",
+    "password2*",
+]
+
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/"          # 로그인 성공 후
+LOGOUT_REDIRECT_URL = "/"         # 로그아웃 후
+
+ACCOUNT_SIGNUP_REDIRECT_URL = "/" # 회원가입 완료 후(가능한 버전에서 동작)
+SOCIALACCOUNT_LOGIN_ON_GET = True
+ACCOUNT_LOGOUT_ON_GET = True
 
 
 # Database
