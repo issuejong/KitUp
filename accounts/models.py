@@ -19,7 +19,8 @@ class User(AbstractUser):
         help_text="서비스 내 표시 닉네임 (프로필 설정 시 입력)",
     )
 
-    profile_image = models.TextField(
+    profile_image = models.ImageField(
+        upload_to="profiles/",
         null=True,
         blank=True,
         help_text="프로필 이미지 URL 또는 media 경로",
