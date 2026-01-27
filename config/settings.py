@@ -43,10 +43,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
-    # Module apps
+    # Third-party apps
+    "rest_framework",
+    "drf_spectacular",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    
     # Local apps
     "accounts",
     "learning",
@@ -169,3 +172,24 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Django REST Framework 설정
+# https://www.django-rest-framework.org/
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
+
+# drf-spectacular 설정 (Swagger/OpenAPI)
+SPECTACULAR_SETTINGS = {
+    "TITLE": "StartLine Dev API",
+    "DESCRIPTION": "StartLine Dev 프로젝트 API 문서",
+    "VERSION": "1.0.0",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+    "SERVERS": [
+        {"url": "http://localhost:8000", "description": "Development"},
+    ],
+}

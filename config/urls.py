@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
 from .views import initial_view
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
     
@@ -26,6 +27,11 @@ urlpatterns = [
 
     # API views: Swagger로 테스트할 주소들
     path("api/", include("config.api_urls")),
+    
+    # Swagger & API Schema
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 ]
 
 if settings.DEBUG:
