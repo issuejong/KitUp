@@ -18,7 +18,11 @@ urlpatterns = [
     path("signup/", RedirectView.as_view(url="/accounts/signup/")),
     
     # template views: HTML로 보여줄 주소들
-    path("", include("accounts.urls")),
+    path("users/", include("accounts.urls")),
+    path("learnings/", include("learning.urls")),
+    path("roadmaps/", include("roadmaps.urls")),
+    path("reflections/", include("reflections.urls")),
+    path("teams/", include("teams.urls")),
 
     # API views: Swagger로 테스트할 주소들
     path("api/", include("config.api_urls")),
