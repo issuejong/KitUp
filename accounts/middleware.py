@@ -6,6 +6,7 @@ EXEMPT_PREFIXES = (
     "/onboarding/profile/",
     "/static/",
     "/media/",
+    "/api/",  # Swagger 및 API 테스트용
 )
 
 class RequireProfileMiddleware:
