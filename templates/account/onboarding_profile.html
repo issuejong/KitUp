@@ -1,4 +1,4 @@
-<h1>프로필 설정</h1>
+<h1>{% if user.nickname %}프로필 수정{% else %}프로필 설정{% endif %}</h1>
 
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
@@ -13,5 +13,7 @@
     {{ form.profile_image.label_tag }} {{ form.profile_image }}
   </div>
 
-  <button type="submit">저장</button>
+  <button type="submit">=
+    {% if user.nickname %}수정{% else %}저장{% endif %}
+  </button>
 </form>
