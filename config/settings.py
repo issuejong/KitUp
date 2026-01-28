@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.kakao",
+    "allauth.socialaccount.providers.naver",
+    "allauth.socialaccount.providers.github",
     
     # Local apps
     "apps.accounts.apps.AccountsConfig",
@@ -109,6 +113,52 @@ LOGOUT_REDIRECT_URL = "/"         # 로그아웃 후
 ACCOUNT_SIGNUP_REDIRECT_URL = "/" # 회원가입 완료 후(가능한 버전에서 동작)
 SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APPS": [
+            {
+                "client_id": GOOGLE_CLIENT_ID,
+                "secret": GOOGLE_CLIENT_SECRET,
+                "key": "",
+            }
+        ],
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "OAUTH_PKCE_ENABLED": True,
+    },
+    "kakao": {
+        "APPS": [
+            {
+                "client_id": os.getenv("KAKAO_CLIENT_ID"),
+                "secret": os.getenv("KAKAO_CLIENT_SECRET"),
+                "key": "",
+            }
+        ]
+    },
+    "naver": {
+        "APPS": [
+            {
+                "client_id": os.getenv("NAVER_CLIENT_ID"),
+                "secret": os.getenv("NAVER_CLIENT_SECRET"),
+                "key": "",
+            }
+        ],
+    },
+    "github": {
+        "APPS": [
+            {
+                "client_id": os.getenv("GITHUB_CLIENT_ID"),
+                "secret": os.getenv("GITHUB_CLIENT_SECRET"),
+                "key": "",
+            }
+        ],
+        "SCOPE": ["user:email"],  # 이메일 가져오려면 이거 필수급
+    },
+}
 
 
 # Database
