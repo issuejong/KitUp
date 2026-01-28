@@ -1,9 +1,9 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path("", include("accounts.api_urls")),
-    path("", include("learning.api_urls")),
-    path("", include("roadmaps.api_urls")),
-    path("", include("reflections.api_urls")),
-    path("", include("teams.api_urls")),
+    path("", include("apps.accounts.api_urls")),
+    path("", include("apps.learning.api_urls")),
+    path("", include("apps.roadmaps.api_urls")),
+    path("", include("apps.reflections.api_urls")),
+    path("", include("apps.teams.api_urls")),
 ]
