@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.kakao",
+    "allauth.socialaccount.providers.naver",
     "allauth.socialaccount.providers.github",
     
     # Local apps
@@ -137,6 +138,15 @@ SOCIALACCOUNT_PROVIDERS = {
                 "key": "",
             }
         ]
+    },
+    "naver": {
+        "APPS": [
+            {
+                "client_id": os.getenv("NAVER_CLIENT_ID"),
+                "secret": os.getenv("NAVER_CLIENT_SECRET"),
+                "key": "",
+            }
+        ],
     },
     "github": {
         "APPS": [
