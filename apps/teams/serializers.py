@@ -27,7 +27,7 @@ class TeamSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at']
 
-    def get_member_count(self, obj):
+    def get_member_count(self, obj) -> int:
         return obj.members.count()
 
 
