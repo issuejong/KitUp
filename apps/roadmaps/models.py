@@ -1,15 +1,10 @@
 from django.conf import settings
 from django.db import models
 
+from apps.accounts.models import Track
+
 
 class Roadmap(models.Model):
-    class Track(models.TextChoices):
-        WEB_FRONT = "WEB_FRONT", "WEB_FRONT"
-        WEB_BACK = "WEB_BACK", "WEB_BACK"
-        APP_FRONT = "APP_FRONT", "APP_FRONT"
-        APP_BACK = "APP_BACK", "APP_BACK"
-        GAME = "GAME", "GAME"
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="roadmaps")
     track = models.CharField(max_length=20, choices=Track.choices)
 
