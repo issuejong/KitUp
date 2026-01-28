@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.kakao",
+    "allauth.socialaccount.providers.github",
     
     # Local apps
     "apps.accounts.apps.AccountsConfig",
@@ -136,7 +137,17 @@ SOCIALACCOUNT_PROVIDERS = {
                 "key": "",
             }
         ]
-    }
+    },
+    "github": {
+        "APPS": [
+            {
+                "client_id": os.getenv("GITHUB_CLIENT_ID"),
+                "secret": os.getenv("GITHUB_CLIENT_SECRET"),
+                "key": "",
+            }
+        ],
+        "SCOPE": ["user:email"],  # 이메일 가져오려면 이거 필수급
+    },
 }
 
 
