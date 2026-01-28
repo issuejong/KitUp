@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 
-class LearningConfig(AppConfig):
+class ReflectionsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "learning"
+    name = "apps.reflections"
+    label = "reflections"

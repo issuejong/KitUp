@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 EXEMPT_PREFIXES = (
     "/admin/",
     "/accounts/",
+    "/logout/",
     "/users/onboarding/",
     "/static/",
     "/media/",

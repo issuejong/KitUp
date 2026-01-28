@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 
 
-class RoadmapsConfig(AppConfig):
+class LearningConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "roadmaps"
+    name = "apps.learning"
+    label = "learning"
