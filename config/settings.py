@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.kakao",
     
     # Local apps
     "apps.accounts.apps.AccountsConfig",
@@ -126,6 +127,15 @@ SOCIALACCOUNT_PROVIDERS = {
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
         "OAUTH_PKCE_ENABLED": True,
+    },
+    "kakao": {
+        "APPS": [
+            {
+                "client_id": os.getenv("KAKAO_CLIENT_ID"),
+                "secret": os.getenv("KAKAO_CLIENT_SECRET"),
+                "key": "",
+            }
+        ]
     }
 }
 
