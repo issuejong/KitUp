@@ -51,11 +51,11 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     
     # Local apps
-    "accounts",
-    "learning",
-    "reflections",
-    "roadmaps",
-    "teams",
+    "apps.accounts.apps.AccountsConfig",
+    "apps.learning.apps.LearningConfig",
+    "apps.reflections.apps.ReflectionsConfig",
+    "apps.roadmaps.apps.RoadmapsConfig",
+    "apps.teams.apps.TeamsConfig",
 ]
 
 MIDDLEWARE = [
@@ -66,7 +66,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     
     "allauth.account.middleware.AccountMiddleware",
-    "accounts.middleware.RequireProfileMiddleware",
+    "apps.accounts.middleware.RequireProfileMiddleware",
 
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",

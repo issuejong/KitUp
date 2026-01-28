@@ -3,4 +3,5 @@ from django.apps import AppConfig
 
 class ReflectionsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "reflections"
+    name = "apps.reflections"
+    label = "reflections"
