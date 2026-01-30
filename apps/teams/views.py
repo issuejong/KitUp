@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -18,7 +17,7 @@ from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSeriali
 )
 class TeamViewSet(viewsets.ModelViewSet):
     """팀 CRUD API"""
-    queryset = Team.objects.all().prefetch_related('members')
+    queryset = Team.objects.all().prefetch_related('members__user', 'members__role')
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -36,17 +35,5 @@ class TeamViewSet(viewsets.ModelViewSet):
 )
 class TeamMemberViewSet(viewsets.ModelViewSet):
     """팀 멤버 CRUD API"""
-    queryset = TeamMember.objects.all().select_related('team', 'user')
+    queryset = TeamMember.objects.all().select_related('team', 'user', 'role')
     serializer_class = TeamMemberSerializer
-
-    @extend_schema(summary="리더로 승급", tags=["Team Members"])
-    @action(detail=True, methods=['post'])
-    def promote_to_leader(self, request, pk=None):
-        """멤버를 리더로 승급"""
-        member = self.get_object()
-        member.role = TeamMember.Role.LEADER
-        member.save()
-        return Response(TeamMemberSerializer(member).data)
-
-
-# Create your views here.
