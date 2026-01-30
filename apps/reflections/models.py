@@ -2,38 +2,45 @@ from django.conf import settings
 from django.db import models
 
 
-class Reflection(models.Model):
-    class Track(models.TextChoices):
-        WEB_FRONT = "WEB_FRONT", "WEB_FRONT"
-        WEB_BACK = "WEB_BACK", "WEB_BACK"
-        APP_FRONT = "APP_FRONT", "APP_FRONT"
-        APP_BACK = "APP_BACK", "APP_BACK"
-        GAME = "GAME", "GAME"
+class Retrospective(models.Model):
+    """
+    회고
+    - 프로젝트별 개인 회고 작성
+    - 마크다운 형식
+    """
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reflections")
-
-    # nullable 허용(아이템과 느슨 연결)
-    roadmap_item = models.ForeignKey(
-        "roadmaps.RoadmapItem",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="reflections",
+    project = models.ForeignKey(
+        "projects.Project",
+        on_delete=models.CASCADE,
+        related_name="retrospectives",
     )
 
-    track = models.CharField(max_length=20, choices=Track.choices)
-    content = models.TextField()
-    starred = models.BooleanField(default=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="retrospectives",
+    )
+
+    title = models.CharField(
+        max_length=120,
+        null=True,
+        blank=True,
+        help_text="회고 제목",
+    )
+
+    content_md = models.TextField(
+        help_text="회고 내용 (마크다운)",
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        db_table = "retrospectives"
         indexes = [
-            models.Index(fields=["user", "created_at"]),
-            models.Index(fields=["user", "starred"]),
-            models.Index(fields=["track", "created_at"]),
+            models.Index(fields=["project", "user"]),
+            models.Index(fields=["created_at"]),
         ]
 
     def __str__(self) -> str:
-        return f"Reflection({self.user_id}, {self.track})"
+        return f"{self.user} - {self.project}: {self.title or '회고'}"
