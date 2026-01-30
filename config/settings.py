@@ -56,10 +56,10 @@ INSTALLED_APPS = [
     
     # Local apps
     "apps.accounts.apps.AccountsConfig",
-    "apps.learning.apps.LearningConfig",
-    "apps.reflections.apps.ReflectionsConfig",
-    "apps.roadmaps.apps.RoadmapsConfig",
+    "apps.projects.apps.ProjectsConfig",
     "apps.teams.apps.TeamsConfig",
+    "apps.guides.apps.GuidesConfig",
+    "apps.reflections.apps.ReflectionsConfig",
 ]
 
 MIDDLEWARE = [

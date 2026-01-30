@@ -20,10 +20,10 @@ urlpatterns = [
     
     # template views: HTML로 보여줄 주소들
     path("users/", include("apps.accounts.urls")),
-    path("learnings/", include("apps.learning.urls")),
-    path("roadmaps/", include("apps.roadmaps.urls")),
-    path("reflections/", include("apps.reflections.urls")),
+    path("projects/", include("apps.projects.urls")),
     path("teams/", include("apps.teams.urls")),
+    path("guides/", include("apps.guides.urls")),
+    path("reflections/", include("apps.reflections.urls")),
 
     # API views: Swagger로 테스트할 주소들
     path("api/", include("config.api_urls")),
