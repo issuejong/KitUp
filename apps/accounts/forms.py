@@ -5,7 +5,7 @@ from .models import User
 class OnboardingForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["nickname", "profile_image_url", "bio"]
+        fields = ["nickname", "profile_image", "bio"]
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 3}),
         }
@@ -22,7 +22,7 @@ class OnboardingForm(forms.ModelForm):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["nickname", "profile_image_url", "bio"]
+        fields = ["nickname", "profile_image", "bio"]
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 3}),
         }

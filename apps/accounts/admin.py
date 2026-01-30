@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
     inlines = [UserRoleLevelInline]
     
     fieldsets = BaseUserAdmin.fieldsets + (
-        ("프로필 정보", {"fields": ("nickname", "profile_image_url", "bio")}),
+        ("프로필 정보", {"fields": ("nickname", "profile_image", "bio")}),
     )
 
 

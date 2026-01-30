@@ -12,6 +12,7 @@ def onboarding_profile(request):
     if request.method == "POST":
         form = OnboardingForm(
             request.POST,
+            request.FILES,
             instance=request.user,
         )
         if form.is_valid():
@@ -43,6 +44,7 @@ def profile_update(request):
     if request.method == "POST":
         form = ProfileUpdateForm(
             request.POST,
+            request.FILES,
             instance=request.user,
         )
         if form.is_valid():

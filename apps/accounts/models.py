@@ -18,10 +18,11 @@ class User(AbstractUser):
         help_text="서비스 내 표시 닉네임",
     )
 
-    profile_image_url = models.TextField(
+    profile_image = models.ImageField(
+        upload_to="profiles/",
         null=True,
         blank=True,
-        help_text="프로필 이미지 URL",
+        help_text="프로필 이미지",
     )
 
     bio = models.TextField(
