@@ -1,3 +1,6 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -5,6 +8,36 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 
 from .models import Team, TeamMember
 from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSerializer
+
+
+# ================================
+# Template Views (HTML 렌더링)
+# ================================
+
+@login_required
+def team_apply(request):
+    """팀 매칭 신청 페이지"""
+    # TODO: 팀 매칭 신청 로직 구현
+    return render(request, "teams/team_apply.html")
+
+
+@login_required
+def passion_test(request):
+    """열정 테스트 페이지"""
+    # TODO: 열정 테스트 로직 구현
+    return render(request, "teams/passion_test.html")
+
+
+@login_required
+def team_status(request):
+    """팀 매칭 결과/대기 페이지"""
+    # TODO: 팀 매칭 상태 로직 구현
+    return render(request, "teams/team.html")
+
+
+# ================================
+# API Views (DRF ViewSets)
+# ================================
 
 
 @extend_schema_view(

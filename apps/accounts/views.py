@@ -7,6 +7,40 @@ from .forms import OnboardingForm, ProfileUpdateForm
 
 
 @login_required
+def level_test(request):
+    """레벨 진단 테스트"""
+    # TODO: 레벨 테스트 로직 구현
+    return render(request, "accounts/level_test.html")
+
+
+@login_required
+def test_result(request):
+    """레벨 테스트 결과"""
+    # TODO: 테스트 결과 로직 구현
+    return render(request, "accounts/test_result.html")
+
+
+@login_required
+def profile_edit(request):
+    """프로필 수정"""
+    if request.method == "POST":
+        form = ProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=request.user,
+        )
+        if form.is_valid():
+            form.save()
+            messages.success(request, "프로필이 수정되었습니다.")
+            return redirect("accounts:mypage")
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+
+    context = {"form": form}
+    return render(request, "accounts/profile_edit.html", context)
+
+
+@login_required
 def onboarding_profile(request):
     """온보딩: 최초 프로필 설정"""
     if request.method == "POST":
@@ -36,26 +70,6 @@ def mypage(request):
         "role_levels": role_levels,
     }
     return render(request, "account/mypage.html", context)
-
-
-@login_required
-def profile_update(request):
-    """프로필 수정"""
-    if request.method == "POST":
-        form = ProfileUpdateForm(
-            request.POST,
-            request.FILES,
-            instance=request.user,
-        )
-        if form.is_valid():
-            form.save()
-            messages.success(request, "프로필이 수정되었습니다.")
-            return redirect("accounts:mypage")
-    else:
-        form = ProfileUpdateForm(instance=request.user)
-
-    context = {"form": form}
-    return render(request, "account/profile_update.html", context)
 
 
 @login_required
