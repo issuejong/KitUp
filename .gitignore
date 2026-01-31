@@ -37,7 +37,7 @@ pip-wheel-metadata/
 ############################
 # Docker
 ############################
-docker-compose.override.yml
+#docker-compose.override.yml
 *.tar
 *.log
 
@@ -81,3 +81,6 @@ htmlcov/
 # 기타
 ############################
 .cache/
+
+*.pem
+kitup-key.pem
