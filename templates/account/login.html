@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}KITUP - 로그인{% endblock %}
+
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-box">
+        <!-- 로고 -->
+        <div class="logo">
+            <h3>KITUP</h3>
+        </div>
+
+        <!-- 로그인 제목 -->
+        <h1 class="login-title">로그인</h1>
+
+        <!-- 로그인 폼 -->
+        <form class="login-form" method="post" action="/accounts/login/">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="아이디" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="비밀번호" required>
+            </div>
+
+            <button type="submit" class="login-button">로그인</button>
+        </form>
+
+        <!-- 링크 -->
+        <div class="links">
+            <a href="/accounts/signup/" class="link">회원가입</a>
+            <a href="/accounts/password/reset/" class="link">비밀번호 찾기</a>
+        </div>
+
+        <!-- 소셜 로그인 -->
+        <div class="social-login">
+            <a href="#" class="social-icon">
+                <img src="{% static 'images/kakao-icon.png' %}" alt="Kakao">
+            </a>
+            <a href="#" class="social-icon">
+                <img src="{% static 'images/naver-icon.jpeg' %}" alt="Naver">
+            </a>
+            <a href="#" class="social-icon">
+                <img src="{% static 'images/google-icon.png' %}" alt="Google">
+            </a>
+            <a href="#" class="social-icon">
+                <img src="{% static 'images/github-icon.png' %}" alt="GitHub">
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

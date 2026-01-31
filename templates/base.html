@@ -15,7 +15,7 @@
         </a>
         <div class="header_menu">
             {% if user.is_authenticated %}
-                <a href="{% url 'game:create_game' %}"><p>팀매칭</p></a>
+                <a href="{% url 'teams:apply/team_apply' %}"><p>팀매칭</p></a>
                 <a href="{% url 'game:ranking' %}"><p>내 프로젝트</p></a>
                 <a href="{% url 'game:ranking' %}"><p>프로젝트 기록</p></a>
                 <a href="{% url 'game:ranking' %}"><p>마이페이지</p></a>
