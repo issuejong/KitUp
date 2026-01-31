@@ -95,13 +95,30 @@ def onboarding_profile(request):
 
 @login_required
 def mypage(request):
-    """마이페이지"""
+    """
+    마이페이지 조회 뷰
+
+    - 로그인한 사용자의 정보, 역할 레벨, 팀 프로젝트 참여 내역 등을 조회
+    - 'account/mypage.html' 템플릿을 렌더링
+    - 프로젝트 내역은 team_members -> team -> project 경로로 조회한다.
+    """
+
     user = request.user
+
+    # 역할별 스킬 레벨 (user_role_levels + roles)
     role_levels = user.role_levels.select_related("role").all()
-    
+
+    # 팀 프로젝트 참여 내역 (team_members + role + team + project)
+    memberships = (
+        user.team_members
+            .select_related("team__project", "role")
+            .order_by("-joined_at")
+    )
+
     context = {
-        "user": user,
+        "user_obj": user,
         "role_levels": role_levels,
+        "memberships": memberships,
     }
     return render(request, "account/mypage.html", context)
 
