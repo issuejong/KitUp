@@ -42,9 +42,16 @@ def check_email(request):
 
 @login_required
 def level_test(request):
-    """레벨 진단 테스트"""
-    # TODO: 레벨 테스트 로직 구현
-    return render(request, "accounts/level_test.html")
+    """
+    레벨 진단 테스트 페이지 렌더링
+    
+    - 특정 역할(role_code)에 대한 테스트를 진행
+    - role_code는 GET 파라미터로 전달받음 -> 프론트에서 설정 필요
+    - 'accounts/level_test.html' 템플릿을 렌더링
+    """
+    role_code = request.GET.get("role")
+    context = {"role_code": role_code}
+    return render(request, "accounts/level_test.html", context)
 
 
 @login_required
