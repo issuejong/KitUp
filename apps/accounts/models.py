@@ -31,8 +31,17 @@ class User(AbstractUser):
         help_text="자기소개",
     )
 
+    team_ban_count = models.PositiveSmallIntegerField(
+        default=0,
+        help_text="남은 팀플 참여 금지 횟수",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def is_banned(self) -> bool:
+        """팀플 참여 금지 상태 여부"""
+        return self.team_ban_count > 0
 
     def is_profile_completed(self) -> bool:
         """프로필 설정 완료 여부"""
@@ -136,3 +145,82 @@ class UserRoleLevel(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user}:{self.role.code}=Lv.{self.level}"
+
+
+class Report(models.Model):
+    """
+    사용자 신고
+    - 팀원을 신고하면 사유를 작성
+    - 운영자가 승인 시 피신고자에게 팀플 2회 금지 제재
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "대기중"
+        APPROVED = "APPROVED", "승인"
+        REJECTED = "REJECTED", "거절"
+
+    reporter = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reports_made",
+        help_text="신고자",
+    )
+
+    reported_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reports_received",
+        help_text="피신고자",
+    )
+
+    reason = models.TextField(
+        help_text="신고 사유",
+    )
+
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.PENDING,
+        help_text="신고 처리 상태",
+    )
+
+    admin_note = models.TextField(
+        null=True,
+        blank=True,
+        help_text="운영자 메모",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="처리 일시",
+    )
+
+    class Meta:
+        db_table = "reports"
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["status", "created_at"]),
+        ]
+
+    def approve(self):
+        """신고 승인 - 피신고자에게 2회 팀플 금지 제재"""
+        from django.utils import timezone
+        self.status = self.Status.APPROVED
+        self.processed_at = timezone.now()
+        self.reported_user.team_ban_count += 2
+        self.reported_user.save(update_fields=["team_ban_count"])
+        self.save()
+
+    def reject(self, admin_note: str = None):
+        """신고 거절"""
+        from django.utils import timezone
+        self.status = self.Status.REJECTED
+        self.processed_at = timezone.now()
+        if admin_note:
+            self.admin_note = admin_note
+        self.save()
+
+    def __str__(self) -> str:
+        return f"{self.reporter} → {self.reported_user} ({self.get_status_display()})"
