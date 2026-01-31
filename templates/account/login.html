@@ -18,11 +18,25 @@
         <!-- 로그인 제목 -->
         <h1 class="login-title">로그인</h1>
 
+        <!-- 에러 메시지만 표시 (로그인 실패 시) -->
+        {% if form.errors %}
+        <div class="error-messages">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <!-- 로그인 폼 -->
-        <form class="login-form" method="post" action="/accounts/login/">
+        <form class="login-form" method="post" action="{% url 'account_login' %}">
             {% csrf_token %}
             <div class="input-group">
-                <input type="text" id="username" name="username" placeholder="아이디" required>
+                <input type="text" id="login" name="login" placeholder="아이디 또는 이메일" required>
             </div>
 
             <div class="input-group">
@@ -34,25 +48,41 @@
 
         <!-- 링크 -->
         <div class="links">
-            <a href="/accounts/signup/" class="link">회원가입</a>
-            <a href="/accounts/password/reset/" class="link">비밀번호 찾기</a>
+            <a href="{% url 'account_signup' %}" class="link">회원가입</a>
+            <a href="{% url 'account_reset_password' %}" class="link">비밀번호 찾기</a>
         </div>
 
         <!-- 소셜 로그인 -->
         <div class="social-login">
-            <a href="#" class="social-icon">
-                <img src="{% static 'images/kakao-icon.png' %}" alt="Kakao">
-            </a>
-            <a href="#" class="social-icon">
-                <img src="{% static 'images/naver-icon.jpeg' %}" alt="Naver">
-            </a>
-            <a href="#" class="social-icon">
-                <img src="{% static 'images/google-icon.png' %}" alt="Google">
-            </a>
-            <a href="#" class="social-icon">
-                <img src="{% static 'images/github-icon.png' %}" alt="GitHub">
-            </a>
+            <p class="social-title">간편 로그인</p>
+            <div class="social-icons">
+                <a href="{% url 'kakao_login' %}" class="social-icon">
+                    <img src="{% static 'images/kakao-icon.png' %}" alt="Kakao">
+                </a>
+                <a href="{% url 'naver_login' %}" class="social-icon">
+                    <img src="{% static 'images/naver-icon.jpeg' %}" alt="Naver">
+                </a>
+                <a href="{% url 'google_login' %}" class="social-icon">
+                    <img src="{% static 'images/google-icon.png' %}" alt="Google">
+                </a>
+                <a href="{% url 'github_login' %}" class="social-icon">
+                    <img src="{% static 'images/github-icon.png' %}" alt="GitHub">
+                </a>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .error-messages, .messages { margin-bottom: 16px; text-align: center; }
+    .error { color: #ef4444; font-size: 14px; margin: 4px 0; }
+    .message { font-size: 14px; margin: 4px 0; padding: 8px; border-radius: 4px; }
+    .message.error { background: #fef2f2; color: #ef4444; }
+    .message.warning { background: #fffbeb; color: #d97706; }
+    .message.success { background: #f0fdf4; color: #22c55e; }
+    .social-login { margin-top: 24px; text-align: center; }
+    .social-title { color: #666; font-size: 14px; margin-bottom: 12px; }
+    .social-icons { display: flex; justify-content: center; gap: 16px; }
+    .social-icon img { width: 40px; height: 40px; border-radius: 50%; }
+</style>
 {% endblock %}

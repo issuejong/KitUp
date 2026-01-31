@@ -2,8 +2,42 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 
 from .forms import OnboardingForm, ProfileUpdateForm
+from .models import User
+
+
+@require_GET
+def check_username(request):
+    """아이디 중복 확인 API"""
+    username = request.GET.get("username", "").strip()
+    
+    if not username:
+        return JsonResponse({"available": False, "message": "아이디를 입력해주세요."})
+    
+    if len(username) < 4:
+        return JsonResponse({"available": False, "message": "아이디는 4자 이상이어야 합니다."})
+    
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({"available": False, "message": "이미 사용 중인 아이디입니다."})
+    
+    return JsonResponse({"available": True, "message": "사용 가능한 아이디입니다."})
+
+
+@require_GET
+def check_email(request):
+    """이메일 중복 확인 API"""
+    email = request.GET.get("email", "").strip()
+    
+    if not email:
+        return JsonResponse({"available": False, "message": "이메일을 입력해주세요."})
+    
+    if User.objects.filter(email=email).exists():
+        return JsonResponse({"available": False, "message": "이미 사용 중인 이메일입니다."})
+    
+    return JsonResponse({"available": True, "message": "사용 가능한 이메일입니다."})
 
 
 @login_required
