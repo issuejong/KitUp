@@ -98,13 +98,31 @@ WSGI_APPLICATION = "config.wsgi.application"
 # AllAuth settings 
 SITE_ID = 1
 AUTH_USER_MODEL = "accounts.User"
-# allauth 기본 로그인 방식 설정
-ACCOUNT_LOGIN_METHODS = {"username"}
+
+# allauth 설정
+ACCOUNT_LOGIN_METHODS = {"username", "email"}  # 아이디 또는 이메일로 로그인
+ACCOUNT_EMAIL_REQUIRED = True  # 이메일 필수
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # 이메일 인증 필수
 ACCOUNT_SIGNUP_FIELDS = [
     "username*",
+    "email*",
     "password1*",
     "password2*",
 ]
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # 이메일 링크 클릭만으로 인증 완료
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # 인증 링크 유효기간 (일)
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[KITUP] "  # 이메일 제목 접두사
+
+# 이메일 발송 설정 (개발용 - 콘솔 출력)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# 배포 시 실제 SMTP 설정으로 변경
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+# DEFAULT_FROM_EMAIL = "KITUP <noreply@kitup.com>"
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"          # 로그인 성공 후
