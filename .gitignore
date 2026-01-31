@@ -16,7 +16,6 @@ local_settings.py
 settings_local.py
 
 # Django media & static (선택)
-media/
 staticfiles/
 
 ############################
@@ -34,11 +33,6 @@ venv/
 env/
 ENV/
 pip-wheel-metadata/
-
-############################
-# Django collectstatic
-############################
-static/
 
 ############################
 # Docker
