@@ -3,12 +3,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
-from .views import initial_view
+from .views import main_view
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
     
-    path("", initial_view.as_view(), name="initial"),
+    path("", main_view, name="main"),  # 메인 화면
     path("admin/", admin.site.urls),
     
     #   allauth (로그인/소셜로그인)
