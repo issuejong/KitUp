@@ -1,4 +1,5 @@
-from datetime import timezone
+from django.urls import reverse
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
@@ -48,11 +49,11 @@ def level_test(request):
     
     - 특정 역할(role_code)에 대한 테스트를 진행
     - role_code는 GET 파라미터로 전달받음 -> 프론트에서 설정 필요
-    - 'accounts/level_test.html' 템플릿을 렌더링
+    - 'account/level_test.html' 템플릿을 렌더링
     """
     role_code = request.GET.get("role")
     context = {"role_code": role_code}
-    return render(request, "accounts/level_test.html", context)
+    return render(request, "account/level_test.html", context)
 
 @login_required
 def level_submit(request):
@@ -66,7 +67,7 @@ def level_submit(request):
     if request.method != "POST":
         return HttpResponseBadRequest("잘못된 요청입니다.")
     
-    role_code = request.POST.get("role_code")
+    role_code = request.POST.get("role")
     role = get_object_or_404(Role, code=role_code)
     level = request.POST.get("level")
     
@@ -79,7 +80,7 @@ def level_submit(request):
         },
     )
     
-    return redirect("test:test_result") + f"?role={role_code}"
+    return redirect(f"{reverse('accounts:test_result')}?role={role_code}")
 
 @login_required
 def test_result(request):
@@ -104,7 +105,7 @@ def test_result(request):
         "role": role,  # role.name 출력 가능
         "level": url_level.level if url_level else None,
     }
-    return render(request, "test/test_result.html", context)
+    return render(request, "account/test_result.html", context)
 
 
 @login_required
@@ -124,7 +125,7 @@ def profile_edit(request):
         form = ProfileUpdateForm(instance=request.user)
 
     context = {"form": form}
-    return render(request, "accounts/profile_edit.html", context)
+    return render(request, "account/profile_edit.html", context)
 
 
 @login_required

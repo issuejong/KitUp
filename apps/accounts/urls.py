@@ -9,6 +9,7 @@ urlpatterns = [
     
     # 레벨 진단 (Test)
     path("level-test/", views.level_test, name="level_test"),  # level_test.html
+    path("level-test/submit/", views.level_submit, name="level_submit"),
     path("level-test/result/", views.test_result, name="test_result"),  # test_result.html
     
     # 마이페이지
