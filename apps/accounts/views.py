@@ -1,12 +1,13 @@
+from datetime import timezone
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_GET
 
 from .forms import OnboardingForm, ProfileUpdateForm
-from .models import User
+from .models import Role, User, UserRoleLevel
 
 
 @require_GET
@@ -53,6 +54,32 @@ def level_test(request):
     context = {"role_code": role_code}
     return render(request, "accounts/level_test.html", context)
 
+@login_required
+def level_submit(request):
+    """
+    레벨 테스트 결과 제출 처리
+    
+    - POST 요청으로 역할 코드(role_code)와 레벨(level)을 전달받음
+    - UserRoleLevel 모델에 결과 저장 또는 업데이트
+    - 제출 후 테스트 결과 페이지로 리다이렉트
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("잘못된 요청입니다.")
+    
+    role_code = request.POST.get("role_code")
+    role = get_object_or_404(Role, code=role_code)
+    level = request.POST.get("level")
+    
+    UserRoleLevel.objects.update_or_create(
+        user=request.user,
+        role=role,
+        defaults={
+            "level": int(level),
+            "last_diagnosed_at": timezone.now(),
+        },
+    )
+    
+    return redirect("test:test_result") + f"?role={role_code}"
 
 @login_required
 def test_result(request):
