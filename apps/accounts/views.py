@@ -83,9 +83,28 @@ def level_submit(request):
 
 @login_required
 def test_result(request):
-    """레벨 테스트 결과"""
-    # TODO: 테스트 결과 로직 구현
-    return render(request, "accounts/test_result.html")
+    """
+    레벨 테스트 결과
+    
+    - 특정 역할(role_code)에 대한 사용자의 레벨 정보를 조회
+    - 'test/test_result.html' 템플릿을 렌더링
+    - 템플릿에 사용자 정보, 역할명, 레벨 전달
+    """
+    role_code = request.GET.get("role")
+
+    role = get_object_or_404(Role, code=role_code)
+    url_level = (
+        UserRoleLevel.objects.filter(user=request.user, role=role)
+        .select_related("role")
+        .first()
+    )
+
+    context = {
+        "user_obj": request.user,
+        "role": role,  # role.name 출력 가능
+        "level": url_level.level if url_level else None,
+    }
+    return render(request, "test/test_result.html", context)
 
 
 @login_required
