@@ -31,6 +31,14 @@ class User(AbstractUser):
         help_text="자기소개",
     )
 
+    github_id = models.CharField(
+        max_length=39,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="GitHub 아이디",
+    )
+
     team_ban_count = models.PositiveSmallIntegerField(
         default=0,
         help_text="남은 팀플 참여 금지 횟수",
