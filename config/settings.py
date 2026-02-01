@@ -18,7 +18,7 @@ SECRET_KEY = "django-insecure-)76zvrn)+9frg^h5=7wq!l=xlrqi-57@#7yjq3f(s14$$khudk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kitup.duckdns.org', '3.37.88.175', 'localhost', '127.0.0.1',]
 
 
 # Application definition
