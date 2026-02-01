@@ -98,14 +98,45 @@ def team_status(request):
     """
     팀 매칭 결과/대기 페이지
     
-    - 팀 매칭 결과 표시
-    - 시즌 정보 전달
+    - 팀 매칭 기간: 매칭 대기 화면
+    - 프로젝트 기간: 팀원 정보 화면
+    - 'teams/team.html' 템플릿을 렌더링
+    - is_matching_period 플래그로 분기 처리
     """
     season = Season.get_active_season()
+    team = None
+    team_members_data = []
     
-    # TODO: 팀 조회 로직
+    if season:
+        # 현재 사용자의 팀 조회
+        team = Team.objects.filter(
+            project__season=season,
+            members__user=request.user
+        ).prefetch_related(
+            'members__user',
+            'members__role'
+        ).distinct().first()
+        
+        # 프로젝트 기간에만 팀원 정보 수집
+        if team and season.is_project_period():
+            for member in team.members.all():
+                # 해당 역할의 레벨 조회
+                role_level = UserRoleLevel.objects.filter(
+                    user=member.user,
+                    role=member.role
+                ).first()
+                
+                team_members_data.append({
+                    'user': member.user,
+                    'role': member.role,
+                    'level': role_level.level if role_level else None,
+                })
+    
     context = {
         "season": season,
+        "team": team,
+        "team_members": team_members_data,
+        "is_matching_period": season.is_matching_period() if season else False,
     }
     return render(request, "teams/team.html", context)
 
