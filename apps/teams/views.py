@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
 from rest_framework import viewsets
+from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, extend_schema_view
+
+from apps.accounts.models import Role, UserRoleLevel
+from apps.projects.models import Season
 
 from .models import Team, TeamMember
 from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSerializer
@@ -16,23 +21,124 @@ from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSeriali
 
 @login_required
 def team_apply(request):
-    """팀 매칭 신청 페이지"""
-    # TODO: 팀 매칭 신청 로직 구현
-    return render(request, "teams/team_apply.html")
+    """
+    팀 매칭 신청 페이지
+    
+    - 활성화된 시즌 확인
+    - 팀매칭 기간인지 확인
+    - 유저의 역할별 레벨 정보를 함께 전달
+    - 'teams/team_apply.html' 템플릿을 렌더링
+    - 딕셔너리 형태로 역할 코드와 UserRoleLevel 객체 전달
+    - is_matching_period 플래그로 분기 처리
+    """
+    user = request.user
+    season = Season.get_active_season()
+
+    # 유저의 역할별 레벨
+    role_levels = (
+        UserRoleLevel.objects
+        .filter(user=user)
+        .select_related("role")
+    )
+
+    role_level_map = {
+        rl.role.code: rl
+        for rl in role_levels
+    }
+    
+    # 팀 매칭 기간 여부
+    is_matching_period = season and season.is_matching_period() if season else False
+
+    context = {
+        "user_obj": user,
+        "role_levels": role_level_map,
+        "season": season,
+        "is_matching_period": is_matching_period,
+    }
+
+    return render(request, "teams/team_apply.html", context)
 
 
 @login_required
 def passion_test(request):
-    """열정 테스트 페이지"""
-    # TODO: 열정 테스트 로직 구현
+    """
+    열정 테스트 페이지
+    
+    - 열정 레벨이 이미 있으면 team_status로 리다이렉트
+    - 없으면 'teams/passion_test.html' 템플릿을 렌더링
+    """
+    if request.user.passion_level:
+        # 이미 열정 테스트 완료
+        return redirect("teams:team_status")
+    
     return render(request, "teams/passion_test.html")
+
+@login_required
+def passion_submit(request):
+    """
+    열정 테스트 결과 제출 처리
+    
+    - POST 요청으로 열정 레벨(passion_level)을 전달받음
+    - User 모델에 열정 레벨 저장
+    - 제출 후 팀 매칭 결과 페이지로 리다이렉트
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("잘못된 요청입니다.")
+    
+    passion_level = request.POST.get("passion_level")
+    
+    request.user.passion_level = int(passion_level)
+    request.user.save(update_fields=["passion_level"])
+    
+    return redirect("teams:team_status")
 
 
 @login_required
 def team_status(request):
-    """팀 매칭 결과/대기 페이지"""
-    # TODO: 팀 매칭 상태 로직 구현
-    return render(request, "teams/team.html")
+    """
+    팀 매칭 결과/대기 페이지
+    
+    - 팀 매칭 기간: 매칭 대기 화면
+    - 프로젝트 기간: 팀원 정보 화면
+    - 'teams/team.html' 템플릿을 렌더링
+    - is_matching_period 플래그로 분기 처리
+    """
+    season = Season.get_active_season()
+    team = None
+    team_members_data = []
+    
+    if season:
+        # 현재 사용자의 팀 조회
+        team = Team.objects.filter(
+            project__season=season,
+            members__user=request.user
+        ).prefetch_related(
+            'members__user',
+            'members__role'
+        ).distinct().first()
+        
+        # 프로젝트 기간에만 팀원 정보 수집
+        if team and season.is_project_period():
+            for member in team.members.all():
+                # 해당 역할의 레벨 조회
+                role_level = UserRoleLevel.objects.filter(
+                    user=member.user,
+                    role=member.role
+                ).first()
+                
+                team_members_data.append({
+                    'user': member.user,
+                    'role': member.role,
+                    'level': role_level.level if role_level else None,
+                })
+    
+    context = {
+        "season": season,
+        "team": team,
+        "team_members": team_members_data,
+        "is_matching_period": season.is_matching_period() if season else False,
+    }
+    return render(request, "teams/team.html", context)
 
 
 # ================================
