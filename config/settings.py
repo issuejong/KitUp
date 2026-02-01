@@ -112,6 +112,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # DEFAULT_FROM_EMAIL = "KITUP <noreply@kitup.com>"
 
+# 비밀번호 재설정
+ACCOUNT_PASSWORD_RESET_ON_CHANGE = False  # 비밀번호 변경 시 재로그인 불필요
+
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"          # 로그인 성공 후
 LOGOUT_REDIRECT_URL = "/"         # 로그아웃 후
