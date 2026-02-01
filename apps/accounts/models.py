@@ -39,6 +39,13 @@ class User(AbstractUser):
         help_text="GitHub 아이디",
     )
 
+    passion_level = models.SmallIntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(4)],
+        help_text="열정 레벨 (1~4)",
+    )
+
     team_ban_count = models.PositiveSmallIntegerField(
         default=0,
         help_text="남은 팀플 참여 금지 횟수",
