@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
+from apps.accounts.models import UserRoleLevel
+
 from .models import Team, TeamMember
 from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSerializer
 
@@ -16,9 +18,33 @@ from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSeriali
 
 @login_required
 def team_apply(request):
-    """팀 매칭 신청 페이지"""
-    # TODO: 팀 매칭 신청 로직 구현
-    return render(request, "teams/team_apply.html")
+    """
+    팀 매칭 신청 페이지
+    
+    - 유저의 역할별 레벨 정보를 함께 전달
+    - 'teams/team_apply.html' 템플릿을 렌더링
+    - 딕셔너리 형태로 역할 코드와 UserRoleLevel 객체 전달
+    """
+    user = request.user
+
+    # 유저의 역할별 레벨
+    role_levels = (
+        UserRoleLevel.objects
+        .filter(user=user)
+        .select_related("role")
+    )
+
+    role_level_map = {
+        rl.role.code: rl
+        for rl in role_levels
+    }
+
+    context = {
+        "user_obj": user,
+        "role_levels": role_level_map,
+    }
+
+    return render(request, "teams/team_apply.html", context)
 
 
 @login_required
