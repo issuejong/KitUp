@@ -1,12 +1,15 @@
-from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 
 from rest_framework import viewsets
+from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
-from apps.accounts.models import UserRoleLevel
+from apps.accounts.models import Role, UserRoleLevel
+from apps.projects.models import ProjectApplication
 
 from .models import Team, TeamMember
 from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSerializer
@@ -49,9 +52,39 @@ def team_apply(request):
 
 @login_required
 def passion_test(request):
-    """열정 테스트 페이지"""
-    # TODO: 열정 테스트 로직 구현
+    """
+    열정 테스트 페이지
+    
+    - 'teams/passion_test.html' 템플릿을 렌더링
+    """
     return render(request, "teams/passion_test.html")
+
+@login_required
+def passion_submit(request):
+    """
+    열정 테스트 결과 제출 처리
+    
+    - POST 요청으로 열정 레벨(passion_level)을 전달받음
+    - ProjectApplication 모델에 열정 레벨 저장 또는 업데이트
+    - 제출 후 팀 매칭 결과 페이지로 리다이렉트
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("잘못된 요청입니다.")
+    
+    passion_level = request.POST.get("passion_level")
+    
+    role_code = request.POST.get("role")
+    role = get_object_or_404(Role, code=role_code)
+    
+    ProjectApplication.objects.update_or_create(
+        user=request.user,
+        role=role,
+        defaults={
+            "passion_level": int(passion_level),
+        },
+    )
+    
+    return redirect("teams:team_status")
 
 
 @login_required
