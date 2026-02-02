@@ -1,6 +1,74 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
+
+
+class Season(models.Model):
+    """
+    시즌 관리
+    - 관리자가 팀매칭 기간과 프로젝트 기간을 설정
+    - 여러 시즌 동시 운영 가능
+    """
+    
+    class Status(models.TextChoices):
+        UPCOMING = "UPCOMING", "예정"
+        MATCHING = "MATCHING", "팀매칭 중"
+        IN_PROJECT = "IN_PROJECT", "프로젝트 진행 중"
+        ENDED = "ENDED", "종료"
+    
+    name = models.CharField(
+        max_length=100,
+        help_text="시즌명 (예: 2026년 1월 시즌)",
+    )
+    
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.UPCOMING,
+    )
+    
+    # 팀매칭 기간
+    matching_start = models.DateTimeField(help_text="팀매칭 시작")
+    matching_end = models.DateTimeField(help_text="팀매칭 종료")
+    
+    # 프로젝트 기간
+    project_start = models.DateTimeField(help_text="프로젝트 시작")
+    project_end = models.DateTimeField(help_text="프로젝트 종료")
+    
+    is_active = models.BooleanField(
+        default=False,
+        help_text="현재 진행 중인 시즌",
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = "seasons"
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["is_active"]),
+            models.Index(fields=["status"]),
+        ]
+    
+    def __str__(self) -> str:
+        return f"{self.name} ({self.status})"
+    
+    def is_matching_period(self) -> bool:
+        """팀매칭 기간인지 확인"""
+        now = timezone.now()
+        return self.matching_start <= now <= self.matching_end
+    
+    def is_project_period(self) -> bool:
+        """프로젝트 기간인지 확인"""
+        now = timezone.now()
+        return self.project_start <= now <= self.project_end
+    
+    @classmethod
+    def get_active_season(cls):
+        """현재 활성화된 시즌 반환"""
+        return cls.objects.filter(is_active=True).first()
 
 
 class Project(models.Model):

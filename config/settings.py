@@ -18,8 +18,13 @@ SECRET_KEY = "django-insecure-)76zvrn)+9frg^h5=7wq!l=xlrqi-57@#7yjq3f(s14$$khudk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kitup.duckdns.org', '3.37.88.175', 'localhost', '127.0.0.1',]
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://kitup.duckdns.org',
+    'http://kitup.duckdns.org:8000',
+    'https://kitup.duckdns.org',
+]
 
 # Application definition
 
@@ -111,6 +116,9 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 # EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # DEFAULT_FROM_EMAIL = "KITUP <noreply@kitup.com>"
+
+# 비밀번호 재설정
+ACCOUNT_PASSWORD_RESET_ON_CHANGE = False  # 비밀번호 변경 시 재로그인 불필요
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"          # 로그인 성공 후
