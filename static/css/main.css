@@ -87,6 +87,15 @@ body {
 	align-items: center;
 }
 
+.m_note_btn {
+    display: block;
+    width: 20%;
+    margin: 30px auto;
+    background: #1D294B; color: #fff;
+    font-weight: 500; font-size: 16px;
+    border-radius: 20px; padding: 7px 30px;
+}
+
 /* 팀매칭 */
 .main-team {
 	margin-top: 90px;
@@ -113,7 +122,7 @@ body {
 .main-team .m_team_stack .m_design {
 	padding: 25px 0;
 	width: 30%;
-	height: 5%;
+	height: 10%;
 	text-align: center;
 	background: #fff;
 	border: 3px solid #00b9b050;
