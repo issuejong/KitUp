@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, Role, UserRoleLevel
+from .models import User, Role, UserRoleLevel, TechStack
 
 
 class UserRoleLevelInline(admin.TabularInline):
@@ -20,8 +20,19 @@ class UserAdmin(BaseUserAdmin):
     inlines = [UserRoleLevelInline]
     
     fieldsets = BaseUserAdmin.fieldsets + (
-        ("프로필 정보", {"fields": ("nickname", "profile_image", "bio")}),
+        ("프로필 정보", {"fields": ("nickname", "profile_image", "bio", "tech_stacks")}),
     )
+
+
+@admin.register(TechStack)
+class TechStackAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "category", "created_at"]
+    list_filter = ["category"]
+    search_fields = ["name"]
+    ordering = ["category", "name"]
+    fieldsets = [
+        ("기본 정보", {"fields": ["name", "category"]}),
+    ]
 
 
 @admin.register(Role)

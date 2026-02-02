@@ -3,6 +3,45 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
+class TechStack(models.Model):
+    """
+    기술 스택 (마스터 데이터)
+    - 프로그래밍 언어, 프레임워크, 도구 등
+    - 관리자만 추가/수정 가능
+    """
+
+    class Category(models.TextChoices):
+        LANGUAGE = "LANGUAGE", "프로그래밍 언어"
+        FRONTEND = "FRONTEND", "프론트엔드"
+        BACKEND = "BACKEND", "백엔드"
+        DATABASE = "DATABASE", "데이터베이스"
+        TOOL = "TOOL", "개발 도구"
+
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="기술 이름 (Python, React 등)",
+    )
+
+    category = models.CharField(
+        max_length=20,
+        choices=Category.choices,
+        help_text="기술 카테고리",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "tech_stacks"
+        ordering = ["category", "name"]
+        indexes = [
+            models.Index(fields=["category"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.get_category_display()})"
+
+
 class User(AbstractUser):
     """
     Custom User for StartLine.dev
@@ -44,6 +83,13 @@ class User(AbstractUser):
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(4)],
         help_text="열정 레벨 (1~4)",
+    )
+
+    tech_stacks = models.ManyToManyField(
+        TechStack,
+        related_name="users",
+        blank=True,
+        help_text="사용자가 보유한 기술 스택",
     )
 
     team_ban_count = models.PositiveSmallIntegerField(
