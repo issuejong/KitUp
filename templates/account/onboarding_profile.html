@@ -9,11 +9,25 @@
   </div>
 
   <div>
+    {{ form.github_id.errors }}
+    {{ form.github_id.label_tag }} {{ form.github_id }}
+  </div>
+
+  <div>
     {{ form.profile_image.errors }}
     {{ form.profile_image.label_tag }} {{ form.profile_image }}
   </div>
 
-  <button type="submit">=
+  <div>
+    {{ form.tech_stacks.errors }}
+    <label>{{ form.tech_stacks.label }}</label>
+    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+      {{ form.tech_stacks }}
+    </div>
+    <small>{{ form.tech_stacks.help_text }}</small>
+  </div>
+
+  <button type="submit">
     {% if user.nickname %}수정{% else %}저장{% endif %}
   </button>
 </form>
