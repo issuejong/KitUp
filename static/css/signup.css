@@ -16,13 +16,13 @@ body {
 
 .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 445px;
 }
 
 .signup-card {
     background: white;
     border-radius: 16px;
-    padding: 48px 40px;
+    padding: 48px 75px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
