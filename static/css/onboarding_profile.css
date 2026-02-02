@@ -1,4 +1,4 @@
-/* Onboarding Profile CSS - Works with existing HTML structure */
+/* Onboarding Profile CSS - With Styled Tech Stacks */
 
 /* CSS Variables */
 :root {
@@ -54,23 +54,17 @@ form > div:first-child {
   position: relative;
 }
 
-/* Hide the default label and error for profile image */
+/* Hide the default label for profile image */
 form > div:first-child label {
   display: none;
 }
 
-/* Profile Image Styling */
+/* Hide the actual file input */
 form > div:first-child input[type="file"] {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 10;
-  border-radius: 50%;
+  display: none;
 }
 
-/* Create the circular profile preview using ::before pseudo-element */
+/* Profile Image Preview Container */
 form > div:first-child::before {
   content: '';
   display: block;
@@ -79,11 +73,18 @@ form > div:first-child::before {
   border-radius: 50%;
   background: linear-gradient(135deg, var(--light-blue) 0%, #B3CDFC 100%);
   box-shadow: var(--shadow-md);
-  margin-bottom: 24px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
   position: relative;
+  z-index: 1;
 }
 
-/* User icon using ::after pseudo-element */
+form > div:first-child:hover::before {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+/* User icon - default state */
 form > div:first-child::after {
   content: '';
   position: absolute;
@@ -96,15 +97,20 @@ form > div:first-child::after {
   background-size: contain;
   background-repeat: no-repeat;
   pointer-events: none;
-  z-index: 5;
+  z-index: 2;
 }
 
-/* Camera icon button overlay */
-form > div:first-child input[type="file"]::before {
+/* Camera icon button - positioned at bottom right */
+form > div:first-child {
+  padding-bottom: 20px;
+}
+
+form > div:first-child label[for]:not([style*="display: none"])::after,
+form > div:first-child > *:last-child::after {
   content: '';
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 20px;
+  right: calc(50% - 60px + 6px);
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -117,11 +123,24 @@ form > div:first-child input[type="file"]::before {
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: transform 0.2s;
-  z-index: 15;
+  z-index: 3;
+  pointer-events: auto;
 }
 
-form > div:first-child input[type="file"]:hover::before {
-  transform: scale(1.1);
+/* Make the entire profile image area clickable */
+form > div:first-child {
+  cursor: pointer;
+}
+
+/* Add a class for when image is loaded */
+form > div:first-child.has-image::after {
+  display: none;
+}
+
+form > div:first-child.has-image::before {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Second div - Nickname field with button */
@@ -156,7 +175,7 @@ form > div:nth-child(2)::after {
   right: 4px;
   top: 50%;
   transform: translateY(-50%);
-  margin-top: 14px; /* Adjust for label height */
+  margin-top: 14px;
   background-color: var(--primary-blue);
   color: var(--white);
   padding: 10px 20px;
@@ -201,15 +220,20 @@ input[type="text"]:focus {
   box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
 }
 
-/* Tech Stacks Container */
+/* Tech Stacks Container - NEW STYLING */
 form > div:last-of-type > div {
   max-height: 300px !important;
   overflow-y: auto !important;
   border: 1px solid var(--border-color) !important;
-  padding: 10px !important;
+  padding: 16px !important;
   border-radius: 10px !important;
-  background-color: var(--background-gray) !important;
+  background-color: var(--white) !important;
   margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+  align-content: flex-start;
 }
 
 form > div:last-of-type > div::-webkit-scrollbar {
@@ -229,10 +253,53 @@ form > div:last-of-type > div::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
 
-/* Tech stacks select/checkboxes inside the container */
-form > div:last-of-type select,
+/* Hide default select/checkbox display */
+form > div:last-of-type select {
+  display: none;
+}
+
+/* Style checkboxes as chips/tags */
 form > div:last-of-type input[type="checkbox"] {
-  margin: 4px 0;
+  display: none;
+}
+
+/* Checkbox labels styled as chips */
+form > div:last-of-type label {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: var(--background-gray);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0;
+  user-select: none;
+}
+
+form > div:last-of-type label:hover {
+  background-color: var(--light-blue);
+  border-color: var(--primary-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Checked state */
+form > div:last-of-type input[type="checkbox"]:checked + label {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* Add checkmark icon to checked items */
+form > div:last-of-type input[type="checkbox"]:checked + label::before {
+  content: '✓';
+  margin-right: 6px;
+  font-weight: bold;
 }
 
 /* Help text for tech stacks */
@@ -319,11 +386,6 @@ form {
     height: 100px;
   }
 
-  form > div:first-child input[type="file"] {
-    width: 100px;
-    height: 100px;
-  }
-
   form > div:first-child::after {
     width: 40px;
     height: 40px;
@@ -343,6 +405,11 @@ form {
     right: auto;
     top: auto;
     transform: none;
+  }
+
+  form > div:last-of-type label {
+    font-size: 13px;
+    padding: 6px 12px;
   }
 }
 
