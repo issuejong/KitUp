@@ -1,3 +1,7 @@
+{% extends 'base.html' %} {% load static %} {% block header %}
+<link rel="stylesheet" href="{% static 'css/onboarding_profile.css' %}" />
+{% endblock %} {% block content %}
+
 <h1>{% if user.nickname %}프로필 수정{% else %}프로필 설정{% endif %}</h1>
 
 <form method="post" enctype="multipart/form-data">

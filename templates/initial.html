@@ -20,6 +20,11 @@
 		<p class="unlogin_content">로그인 후 이용해보세요.</p>
 		{% endif %}
 	</div>
+	{% if user.is_authenticated %}
+	<button class="m_note_btn" onclick="location.href = '/reflections/'">
+		기록하러 가기
+	</button>
+	{% else %} {% endif %}
 </div>
 <div class="main-team">
 	<!-- 기간별 분기 -->
@@ -59,8 +64,12 @@
             <button class="m_design_btn">팀 매칭 신청하기</button> -->
 			{% else %}
 			<img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
-            <p class="m_nolevel">로그인 후 레벨을 확인해보세요.</p>
-			<button class="m_design_btn" type="button" onclick="location.href='/accounts/login/'">
+			<p class="m_nolevel">로그인 후 레벨을 확인해보세요.</p>
+			<button
+				class="m_design_btn"
+				type="button"
+				onclick="location.href = '/accounts/login/'"
+			>
 				로그인하고 팀 매칭 신청하기
 			</button>
 			{% endif %}
@@ -92,7 +101,11 @@
 			{% else %}
 			<img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
 			<p class="m_nolevel">로그인 후 레벨을 확인해보세요.</p>
-			<button class="m_front_btn" type="button" onclick="location.href='/accounts/login/'">
+			<button
+				class="m_front_btn"
+				type="button"
+				onclick="location.href = '/accounts/login/'"
+			>
 				로그인하고 팀 매칭 신청하기
 			</button>
 			{% endif %}
@@ -124,7 +137,11 @@
 			{% else %}
 			<img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
 			<p class="m_nolevel">로그인 후 레벨을 확인해보세요.</p>
-			<button class="m_back_btn" type="button" onclick="location.href='/accounts/login/'">
+			<button
+				class="m_back_btn"
+				type="button"
+				onclick="location.href = '/accounts/login/'"
+			>
 				로그인하고 팀 매칭 신청하기
 			</button>
 			{% endif %}
@@ -143,27 +160,42 @@
 		<!-- 반복문으로 지금까지 있었던 프로젝트 등록 -->
 		<div class="m_project">
 			<div>
-				<img src="{% static 'images/example_img.png' %}" alt="예시이미지">
+				<img
+					src="{% static 'images/example_img.png' %}"
+					alt="예시이미지"
+				/>
 				<h3>서비스명</h3>
 				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
 			</div>
 			<div>
-				<img src="{% static 'images/example_img.png' %}" alt="예시이미지">
+				<img
+					src="{% static 'images/example_img.png' %}"
+					alt="예시이미지"
+				/>
 				<h3>서비스명</h3>
 				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
 			</div>
 			<div>
-				<img src="{% static 'images/example_img.png' %}" alt="예시이미지">
+				<img
+					src="{% static 'images/example_img.png' %}"
+					alt="예시이미지"
+				/>
 				<h3>서비스명</h3>
 				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
 			</div>
 			<div>
-				<img src="{% static 'images/example_img.png' %}" alt="예시이미지">
+				<img
+					src="{% static 'images/example_img.png' %}"
+					alt="예시이미지"
+				/>
 				<h3>서비스명</h3>
 				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
 			</div>
-            <div>
-				<img src="{% static 'images/example_img.png' %}" alt="예시이미지">
+			<div>
+				<img
+					src="{% static 'images/example_img.png' %}"
+					alt="예시이미지"
+				/>
 				<h3>서비스명</h3>
 				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
 			</div>
