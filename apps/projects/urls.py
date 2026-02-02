@@ -16,4 +16,7 @@ urlpatterns = [
     # KITUP 프로젝트 (모든 프로젝트)
     path("all/", views.kitup_list, name="kitup_list"),  # kitup_list.html
     path("all/<int:project_id>/", views.kitup_detail, name="kitup_detail"),  # kitup_detail.html
+    
+    # 팀 매칭 관리
+    path("matching/<int:season_id>/run/", views.run_team_matching, name="run_team_matching"),  # API
 ]
