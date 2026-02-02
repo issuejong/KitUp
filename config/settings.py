@@ -106,16 +106,14 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # 이메일 링크 클릭만으로 인증 �
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # 인증 링크 유효기간 (일)
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[KITUP] "  # 이메일 제목 접두사
 
-# 이메일 발송 설정 (개발용 - 콘솔 출력)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# 배포 시 실제 SMTP 설정으로 변경
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = "smtp.gmail.com"
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-# DEFAULT_FROM_EMAIL = "KITUP <noreply@kitup.com>"
+# 이메일 발송 설정
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "KITUP")
 
 # 비밀번호 재설정
 ACCOUNT_PASSWORD_RESET_ON_CHANGE = False  # 비밀번호 변경 시 재로그인 불필요
@@ -170,7 +168,7 @@ SOCIALACCOUNT_PROVIDERS = {
                 "key": "",
             }
         ],
-        "SCOPE": ["user:email"],  # 이메일 가져오려면 이거 필수급
+        "SCOPE": ["user:email"],
     },
 }
 
