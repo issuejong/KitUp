@@ -102,6 +102,7 @@ def team_status(request):
     - 프로젝트 기간: 팀원 정보 화면
     - 'teams/team.html' 템플릿을 렌더링
     - is_matching_period 플래그로 분기 처리
+    - 팀 매칭 여부(team_matched) 전달
     """
     season = Season.get_active_season()
     team = None
