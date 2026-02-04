@@ -252,7 +252,7 @@ body {
 
 .m_team_result:hover {
 	background: #4272EF;
-	transition: 0.5 ease-in-out;
+	transition: 0.3s ease-in-out;
 }
 
 .m_team_result p {
