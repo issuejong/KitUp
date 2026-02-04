@@ -28,7 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/web:latest
+          tags: ghcr.io/pirogramming/startlinedev/web:latest
 
   deploy:
     needs: build-and-push
