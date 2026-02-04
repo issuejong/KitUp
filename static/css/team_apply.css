@@ -2,6 +2,10 @@ body {
 	background: #f6f8ff;
 }
 
+button:hover {
+	cursor: pointer;
+}
+
 .team_matching {
     margin-top: 100px;
     text-align: center;
@@ -27,7 +31,7 @@ body {
 /* WEB 기획 */
 .t_stack .t_design {
 	padding: 20px 0;
-	width: 25%;
+	width: 27%;
 	height: 3%;
 	text-align: center;
 	background: #fff;
@@ -54,20 +58,25 @@ body {
 .t_stack .t_design .t_design_btn {
 	margin-top: 15px;
 	padding: 5px 0;
-	width: 150px;
-	height: 30px;
+	width: 70%;
+	height: 33px;
 	background: #00b9b0;
 	color: #fff;
 	border: none;
 	border-radius: 30px;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 550;
+}
+
+.t_stack .t_design .t_design_btn:hover {
+	background: #019890;
+	transition: 0.5s ease-in-out;
 }
 
 /* WEB 프론트엔드 */
 .t_stack .t_frontend {
 	padding: 20px 0;
-	width: 25%;
+	width: 27%;
 	height: 3%;
 	text-align: center;
 	background: #fff;
@@ -94,20 +103,25 @@ body {
 .t_stack .t_frontend .t_front_btn {
 	margin-top: 15px;
 	padding: 5px 0;
-	width: 150px;
-	height: 30px;
+	width: 70%;
+	height: 33px;
 	background: #ffce53;
 	color: #fff;
 	border: none;
 	border-radius: 30px;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 550;
+}
+
+.t_stack .t_frontend .t_front_btn:hover {
+	background: #E2BF67;
+	transition: 0.5s ease-in-out;
 }
 
 /* WEB 백엔드 */
 .t_stack .t_backend {
 	padding: 20px 0;
-	width: 25%;
+	width: 27%;
 	height: 3%;
 	text-align: center;
 	background: #fff;
@@ -134,14 +148,19 @@ body {
 .t_stack .t_backend .t_back_btn {
 	margin-top: 15px;
 	padding: 5px 0;
-	width: 150px;
-	height: 30px;
+	width: 70%;
+	height: 33px;
 	background: #ff3e88;
 	color: #fff;
 	border: none;
 	border-radius: 30px;
-	font-size: 14px;
+	font-size: 15px;
 	font-weight: 550;
+}
+
+.t_stack .t_backend .t_back_btn:hover {
+	background: #C03067;
+	transition: 0.5s ease-in-out;
 }
 
 .match_wait {
