@@ -7,6 +7,6 @@ class RetrospectiveForm(forms.ModelForm):
         model = Retrospective
         fields = ["project", "title", "content_md", "bookmarked"]
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "제목(선택)"}),
+            "title": forms.TextInput(attrs={"placeholder": "제목"}),
             "content_md": forms.Textarea(attrs={"rows": 16, "placeholder": "마크다운으로 작성하세요"}),
         }
