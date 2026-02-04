@@ -8,7 +8,7 @@ from rest_framework.exceptions import PermissionDenied, NotAuthenticated
 
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from .models import Retrospective
-from .serializers import RetrospectiveReadSerializer
+from .serializers import RetrospectiveReadSerializer, RetrospectiveWriteSerializer
 # from .models import Reflection
 
 
@@ -75,7 +75,7 @@ def note_delete(request, note_id):
 )
 class RetrospectiveViewSet(viewsets.ModelViewSet):
     serializer_class = RetrospectiveReadSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         u = self.request.user
@@ -84,13 +84,14 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
         # 내 회고만
         return (
             Retrospective.objects
-            .filter(user=self.request.user.id)
+            .filter(user_id=self.request.user.id)
             .select_related("project", "user")
             .order_by("-created_at")
         )
 
     def perform_create(self, serializer):
         # user는 서버에서 강제
+        print("AUTH:", self.request.user, self.request.user.is_authenticated)
         serializer.save(user=self.request.user)
 
     def get_object(self):
@@ -101,3 +102,11 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
         if obj.user_id != self.request.user.id:
             raise PermissionDenied("본인 회고만 접근 가능합니다.")
         return obj
+    
+    def get_serializer_class(self):
+        if self.action in ("list", "retrieve"):
+            return RetrospectiveReadSerializer
+        return RetrospectiveWriteSerializer
+    
+
+    

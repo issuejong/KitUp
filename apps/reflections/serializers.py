@@ -39,3 +39,6 @@ class RetrospectiveWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Retrospective
         fields = ["project", "title", "content_md", "bookmarked"]
+        extra_kwargs = {
+            "project": {"required": False, "allow_null": True},
+        }

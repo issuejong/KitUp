@@ -13,6 +13,8 @@ class Retrospective(models.Model):
         "projects.Project",
         on_delete=models.CASCADE,
         related_name="retrospectives",
+        # TODO 테스트용 nullable
+        null=True, blank=True,
     )
 
     user = models.ForeignKey(
