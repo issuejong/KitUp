@@ -8,8 +8,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 
 urlpatterns = [
     
-    path("", initial_view, name="initial"),  # 초기 화면 (initial.html)
-    path("main/", main_view, name="main"),  # 메인 화면 (main.html)
+    path("", main_view, name="main"),  # 메인 화면 (main.html)
     path("admin/", admin.site.urls),
     
     #   allauth (로그인/소셜로그인)

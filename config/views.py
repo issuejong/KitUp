@@ -1,15 +1,5 @@
 from django.shortcuts import render
 
-
-# 초기 화면 (initial.html)
-def initial_view(request):
-    """
-    초기 화면 (initial.html)
-    - 랜딩 페이지
-    """
-    return render(request, "initial.html")
-
-
 # 메인 화면 (main.html)
 def main_view(request):
     """
