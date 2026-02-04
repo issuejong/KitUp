@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import PermissionDenied, NotAuthenticated
 
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from .models import Retrospective
@@ -75,13 +75,16 @@ def note_delete(request, note_id):
 )
 class RetrospectiveViewSet(viewsets.ModelViewSet):
     serializer_class = RetrospectiveReadSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
+        u = self.request.user
+        if not u.is_authenticated:
+            return Retrospective.objects.none()
         # 내 회고만
         return (
             Retrospective.objects
-            .filter(user=self.request.user)
+            .filter(user=self.request.user.id)
             .select_related("project", "user")
             .order_by("-created_at")
         )
@@ -92,6 +95,8 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
 
     def get_object(self):
         # pk 직접 접근 차단
+        if not self.request.user.is_authenticated:
+            raise NotAuthenticated()
         obj = super().get_object()
         if obj.user_id != self.request.user.id:
             raise PermissionDenied("본인 회고만 접근 가능합니다.")
