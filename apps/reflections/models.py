@@ -14,6 +14,7 @@ class Retrospective(models.Model):
         on_delete=models.CASCADE,
         related_name="retrospectives",
         # TODO 테스트용 nullable
+        # 플젝 외의 개인 회고의 목적 있으면 nullable 유지
         null=True, blank=True,
     )
 
