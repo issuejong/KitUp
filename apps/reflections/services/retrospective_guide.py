@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
-from django.conf import settings
+from django.apps import apps
 
-GUIDE_DIR = Path(settings.BASE_DIR) / "reflections" / "guides"
+APP_PATH = Path(apps.get_app_config("reflections").path) 
+GUIDE_DIR = APP_PATH / "guide_templates"
 ALLOWED_TPLS = {"default", "compact"}  # 지금은 default만 쓰면 {"default"}로
 
 def load_guide(template_key: str) -> dict:
@@ -34,7 +35,7 @@ def build_markdown(guide: dict, answers: dict, title: str | None = None) -> str:
         order = q.get("order")
         qtitle = q.get("title", "")
         if order:
-            lines.append(f"## {order}️⃣ {qtitle}")
+            lines.append(f"## {order} {qtitle}")
         else:
             lines.append(f"## {qtitle}")
         lines.append("")
