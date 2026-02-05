@@ -13,6 +13,8 @@ class Retrospective(models.Model):
         "projects.Project",
         on_delete=models.CASCADE,
         related_name="retrospectives",
+        # TODO 테스트용 nullable
+        null=True, blank=True,
     )
 
     user = models.ForeignKey(
@@ -30,6 +32,12 @@ class Retrospective(models.Model):
 
     content_md = models.TextField(
         help_text="회고 내용 (마크다운)",
+    )
+
+    bookmarked = models.BooleanField(
+        default= False,
+        # TODO 회고인데 찜 -> 어감 이상함, 즐겨찾기나 북마크로 수정
+        help_text="찜 여부"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
