@@ -2,30 +2,36 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.conf import settings
+# from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied, NotAuthenticated
-
+import json
 from drf_spectacular.utils import extend_schema_view, extend_schema
+
 from .models import Retrospective
 from .serializers import RetrospectiveReadSerializer, RetrospectiveWriteSerializer
 from .forms import RetrospectiveForm
+from .services.retrospective_guide import load_guide, build_markdown
 
 from apps.projects.models import Project
 from apps.teams.models import TeamMember
+
 
 @login_required
 def note_list(request):
     """
     회고 목록 조회
+
     쿼리스트링: 
-      q: 검색
-      roles: 스택 필터링 ("BACKEND", "PM" 식의 복수 선택 가능, none은 개인 회고 조회)
-      bookmarked: 북마크 필터링
-      sort: 정렬 키워드 (new, old, title)
+      :q: 검색
+      :roles: 스택 필터링 ("BACKEND", "PM" 식의 복수 선택 가능, none은 개인 회고 조회)
+      :bookmarked: 북마크 필터링
+      :sort: 정렬 키워드 (new, old, title)
     """
-    # TODO: 회고 목록 로직 구현
     qs = (
         Retrospective.objects
         .filter(user = request.user)  # 해당 유저의 회고만
@@ -97,20 +103,41 @@ def note_list(request):
 
 @login_required
 def note_create(request):
-    """회고 작성"""
-    # TODO: 회고 작성 로직 구현
-    if request.method == "POST":
-        form = RetrospectiveForm(request.POST)
-        if form.is_valid():
-            note = form.save(commit=False)
-            note.user = request.user
-            note.save()
-            messages.success(request, "회고가 작성되었습니다.")
-            return redirect("reflections:note_detail", note_id=note.id)
-    else:
-        form = RetrospectiveForm()
+    """
+    회고 작성
+    
+    쿼리스트링:
+      :tpl: 선택할 질문 템플릿 (현재는 default 하나만)
+      
+    """
+    tpl = request.GET.get("tpl") or "default"
+    guide = load_guide(tpl)
 
-    context = {"form": form}
+    if request.method == "POST":
+        title = (request.POST.get("title") or "빈 제목").strip()
+        if not title:
+            context = {"guide": guide, "tpl": tpl, "error": "제목은 필수입니다."}
+            return render(request, "reflections/note_create.html", context)
+        
+        answers = dict() # qid: "답변 내용" 형식
+        for q in guide["questions"]:
+            qid = q["id"]
+            answers[qid] = (request.POST.get(f"a__{qid}") or "빈 답변 내용").strip()
+        
+        content_md = build_markdown(guide, answers)
+
+        Retrospective.objects.create(
+            author= request.user,
+            template_key=tpl,
+            title=title,
+            answers_json=answers,
+            content_md = content_md,
+        )
+        return redirect("reflections:note_list")
+    context = {
+        "guide": guide,
+        "tpl": tpl,
+    }
     return render(request, "reflections/note_create.html", context)
 
 
@@ -170,6 +197,8 @@ def note_delete(request, note_id):
 class RetrospectiveViewSet(viewsets.ModelViewSet):
     serializer_class = RetrospectiveReadSerializer
     permission_classes = [IsAuthenticated]
+    # filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project", "bookmarked", "template_key"]
 
     def get_queryset(self):
         u = self.request.user
@@ -185,7 +214,7 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # user는 서버에서 강제
-        print("AUTH:", self.request.user, self.request.user.is_authenticated)
+        # print("AUTH:", self.request.user, self.request.user.is_authenticated)
         serializer.save(user=self.request.user)
 
     def get_object(self):
@@ -197,10 +226,19 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("본인 회고만 접근 가능합니다.")
         return obj
     
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
             return RetrospectiveReadSerializer
         return RetrospectiveWriteSerializer
     
-
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        obj = serializer.instance
+        read = RetrospectiveReadSerializer(obj, context=self.get_serializer_context())
+        return Response(read.data, status=status.HTTP_201_CREATED)
     
