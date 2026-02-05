@@ -4,5 +4,11 @@
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
 {% endblock %} 
 {% block content %}
-프로젝트 
+<section class="p_header">
+    <a href="{% url 'projects:dashboard' %}" class="p_dashboard"><p >DASHBOARD</p></a>
+    <a href="{% url 'guides:mission' %}" class="p_mission"><p >MISSION</p></a>
+</section>
+<div class="dashboard">
+    
+</div>
 {% endblock %}
