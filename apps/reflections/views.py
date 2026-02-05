@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -11,18 +12,87 @@ from .models import Retrospective
 from .serializers import RetrospectiveReadSerializer, RetrospectiveWriteSerializer
 from .forms import RetrospectiveForm
 
+from apps.projects.models import Project
+from apps.teams.models import TeamMember
 
 @login_required
 def note_list(request):
-    """회고 목록"""
+    """
+    회고 목록 조회
+    쿼리스트링: 
+      q: 검색
+      roles: 스택 필터링 ("BACKEND", "PM" 식의 복수 선택 가능, none은 개인 회고 조회)
+      bookmarked: 북마크 필터링
+      sort: 정렬 키워드 (new, old, title)
+    """
     # TODO: 회고 목록 로직 구현
-    notes = (
+    qs = (
         Retrospective.objects
         .filter(user = request.user)  # 해당 유저의 회고만
         .select_related("project")    # 
         .order_by("-created_at")      # 시간 최신순
     )
-    return render(request, "reflections/note_list.html")
+
+    # 검색(제목/본문/프로젝트명)
+    q = request.GET.get("q", "").strip()
+    if q:
+        qs = qs.filter(
+            Q(title__icontains=q) | 
+            Q(content_md__icontains=q) | 
+            Q(project__name__icontains=q)
+        )
+    
+    # 스택 필터
+    role_codes  = request.GET.getlist("roles")
+    if role_codes :
+        get_personnal_retro = "none" in role_codes 
+
+        role_project_ids = (
+            TeamMember.objects
+            .filter(user=request.user, role__code__in=role_codes )
+            .values_list("team__project_id", flat=True)
+            .distinct()
+        )
+
+        if get_personnal_retro and role_project_ids:
+            qs = qs.filter(
+                Q(project__isnull=True) | 
+                Q(project_id__in = role_project_ids)
+            )
+        elif get_personnal_retro:
+            qs = qs.filter(project__isnull=True)
+        elif role_project_ids:
+            qs = qs.filter(project_id__in = role_project_ids)
+
+    # 북마크 필터
+    bookmarked = request.GET.get("bookmarked")
+    if bookmarked in ("1", "true", "True"):
+        qs = qs.filter(bookmarked=True)
+
+    # 정렬
+    sort = request.GET.get("sort", "new")
+    if sort == "old":
+        qs = qs.order_by("created_at")
+    elif sort == "title":
+        qs = qs.order_by("title")
+    else:
+        qs = qs.order_by("-created_at")
+    
+    my_projects = (
+        Project.objects
+        .filter(member__user=request.user)
+        .distinct()
+        .order_by("name")
+    )
+
+    context = {
+        "notes" : qs,
+        "my_projects": my_projects, # 내 프로젝트 조회 -> 필터에 보여주기
+        "q" : q,
+        "bookmarked": bookmarked,
+        "sort": sort,
+    }
+    return render(request, "reflections/note_list.html", context)
 
 
 @login_required
