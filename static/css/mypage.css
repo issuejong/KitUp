@@ -1,0 +1,214 @@
+/* ======================
+   공통 설정
+====================== */
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 전체 배경 */
+.mypage-wrapper {
+    background-color: #f0f4ff;
+    padding: 80px 20px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* 메인 카드 */
+.profile-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 40px;
+    padding: 60px;
+    display: flex;
+    gap: 60px;
+    position: relative;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.03);
+}
+
+/* 🔵 상단 연한 배경 */
+.profile-header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background: #edf2ff;
+    border-radius: 40px 40px 0 0;
+    z-index: 0;
+}
+
+/* 카드 내부 요소 위로 */
+.profile-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ======================
+   왼쪽 프로필
+====================== */
+.user-info-side {
+    flex: 0 0 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.profile-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background-color: #e2e2e2;
+    object-fit: cover;
+}
+
+.edit-badge {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    background: #666;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.level-tag {
+    background-color: #adc4ff;
+    color: white;
+    padding: 6px 30px;
+    border-radius: 25px;
+    font-weight: 800;
+    font-size: 20px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(173, 196, 255, 0.4);
+}
+
+.info-table {
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.info-row .label {
+    font-size: 18px;
+    font-weight: 900;
+    color: #333;
+}
+
+.info-row .value {
+    font-size: 17px;
+    color: #5c759d;
+    text-align: right;
+}
+
+.edit-button {
+    background-color: #4470ff;
+    color: white;
+    width: 100%;
+    max-width: 240px;
+    padding: 16px 0;
+    border-radius: 15px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 18px;
+}
+
+/* ======================
+   오른쪽 콘텐츠
+====================== */
+.content-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* 기술 스택 */
+.tech-stack-box {
+    border: 2px solid #b9ccff;
+    border-radius: 30px;
+    padding: 35px;
+}
+
+.side-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.tag-item {
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 17px;
+    background: white;
+    border: 2px solid #ddd;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* 태그 색상 */
+.tag-javascript { border-color: #00cfc1; color: #00cfc1; }
+.tag-reactnative { border-color: #ffc107; color: #ffc107; }
+.tag-html { border-color: #00cfc1; color: #00cfc1; }
+
+/* 프로젝트 카드 */
+.project-list-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.project-item-card {
+    background-color: #ebf1ff;
+    border-radius: 30px;
+    padding: 35px 30px;
+    min-height: 180px;
+}
+
+.item-label {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.item-project-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #4470ff;
+    margin-bottom: 8px;
+}
+
+.item-role-tag {
+    font-size: 14px;
+    color: #777;
+}
+
+.empty-msg {
+    color: #888;
+    font-weight: 500;
+}

@@ -8,6 +8,7 @@
 - tpl: template key
 - answers: dict (qid -> text)  (create는 빈 dict 가능)
 - note: (update에서만 있을 수 있음)
+- draft_key: (create에서만 있을 수 있음)  ✅ create 즉시 업로드용
 - error: (선택)
 {% endcomment %}
 
@@ -41,11 +42,14 @@
     {% endif %}
   </div>
 
+  <!-- ✅ 숨겨진 파일 인풋 1개만 두고 재사용 (create/update 공통) -->
+  <input id="assetFileInput" type="file" accept="image/*" style="display:none;" />
+
   <!-- 질문 리스트 -->
   <div style="display:flex; flex-direction:column; gap:18px;">
     {% for q in guide.questions %}
       <section style="border:1px solid #e5e7eb; border-radius:18px; overflow:hidden; background:#fff;">
-        
+
         <!-- header 태그 쓰지 마세요(공통 CSS 충돌 방지). div로 대체 -->
         <div style="background:#eef2ff; padding:12px 14px;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
@@ -53,8 +57,8 @@
               {{ q.order|default:forloop.counter }}. {{ q.title }}
             </div>
 
-            {# ✅ note가 있을 때만 업로드 가능(생성 페이지는 저장 후 업로드) #}
-            {% if note %}
+            {# ✅ create에서도 업로드 가능: note 있거나 draft_key 있으면 업로드 버튼 노출 #}
+            {% if note or draft_key %}
               <button
                 type="button"
                 data-asset-btn
@@ -64,7 +68,7 @@
                 이미지 업로드
               </button>
             {% else %}
-              <span style="font-size:12px; color:#6b7280;">저장 후 업로드</span>
+              <span style="font-size:12px; color:#6b7280;">현재 이미지 업로드가 불가능합니다.</span>
             {% endif %}
           </div>
 
@@ -87,71 +91,92 @@
         </div>
       </section>
     {% endfor %}
-    {# ✅ 숨겨진 파일 인풋 1개만 두고 재사용 #}
-    {% if note %}
-      <input id="assetFileInput" type="file" accept="image/*" style="display:none;" />
-
-      <script>
-        (function () {
-          const fileInput = document.getElementById("assetFileInput");
-          let currentQid = null;
-
-          // ✅ DRF action URL: retrospective-upload-asset (Router basename에 따라 다를 수 있음)
-          //    보통: "retrospective-upload-asset"
-          const uploadUrl = "{% url 'retrospective-upload-asset' note.id %}";
-
-          function insertAtCursor(textarea, text) {
-            const start = textarea.selectionStart ?? textarea.value.length;
-            const end = textarea.selectionEnd ?? textarea.value.length;
-            const before = textarea.value.slice(0, start);
-            const after = textarea.value.slice(end);
-            textarea.value = before + text + after;
-            const pos = start + text.length;
-            textarea.setSelectionRange(pos, pos);
-            textarea.focus();
-          }
-
-          document.querySelectorAll("[data-asset-btn]").forEach((btn) => {
-            btn.addEventListener("click", () => {
-              currentQid = btn.dataset.qid;
-              fileInput.value = "";
-              fileInput.click();
-            });
-          });
-
-          fileInput.addEventListener("change", async () => {
-            if (!fileInput.files || !fileInput.files[0] || !currentQid) return;
-
-            const fd = new FormData();
-            fd.append("image", fileInput.files[0]);
-            fd.append("alt_text", "image");
-
-            const res = await fetch(uploadUrl, {
-              method: "POST",
-              headers: {
-                "X-CSRFToken": (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "",
-              },
-              body: fd,
-            });
-
-            if (!res.ok) {
-              alert("업로드 실패");
-              return;
-            }
-
-            const data = await res.json();
-            const md = data.md || `![image](${data.url})`;
-
-            const ta = document.getElementById(`ta__${currentQid}`);
-            if (!ta) return;
-
-            // ✅ 질문 답변은 하나의 md로 본다: 커서 위치에 삽입
-            insertAtCursor(ta, (ta.value.endsWith("\n") || ta.value.length === 0) ? md : "\n" + md);
-          });
-        })();
-      </script>
-    {% endif %}
   </div>
+
+  <!-- ✅ 업로드 JS: note 있으면 note 업로드, 없으면 temp 업로드(draft_key) -->
+  <script>
+    (function () {
+      const fileInput = document.getElementById("assetFileInput");
+      let currentQid = null;
+
+      const csrfToken = (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "";
+
+      // note가 있으면 note 업로드 URL을 사용
+      const NOTE_ID = "{% if note %}{{ note.id }}{% else %}{% endif %}".trim();
+      const DRAFT_KEY = "{% if draft_key %}{{ draft_key }}{% else %}{% endif %}".trim();
+
+      // ✅ 아래 url name은 프로젝트에 맞춰야 합니다.
+      // - detail 업로드(기존): retrospective-upload-asset
+      // - temp 업로드(추가): retrospective-upload-temp-asset  (detail=False action: /retrospectives/assets/temp/)
+      const uploadUrlWithNote = NOTE_ID ? "{% if note %}{% url 'retrospective-upload-asset' note.id %}{% endif %}" : "";
+      const uploadUrlTemp = "{% url 'retrospective-upload-temp-asset' %}";
+
+      function insertAtCursor(textarea, text) {
+        const start = textarea.selectionStart ?? textarea.value.length;
+        const end = textarea.selectionEnd ?? textarea.value.length;
+        const before = textarea.value.slice(0, start);
+        const after = textarea.value.slice(end);
+        textarea.value = before + text + after;
+        const pos = start + text.length;
+        textarea.setSelectionRange(pos, pos);
+        textarea.focus();
+      }
+
+      document.querySelectorAll("[data-asset-btn]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentQid = btn.dataset.qid;
+          fileInput.value = "";
+          fileInput.click();
+        });
+      });
+
+      fileInput.addEventListener("change", async () => {
+        if (!fileInput.files || !fileInput.files[0] || !currentQid) return;
+
+        // create인데 draft_key가 없으면 업로드 불가
+        if (!NOTE_ID && !DRAFT_KEY) {
+          alert("draft_key가 없어서 업로드할 수 없습니다. (create view에서 draft_key를 내려주세요)");
+          return;
+        }
+
+        const fd = new FormData();
+        fd.append("image", fileInput.files[0]);
+        fd.append("alt_text", "image");
+
+        // ✅ temp 업로드면 draft_key 포함
+        const url = NOTE_ID ? uploadUrlWithNote : uploadUrlTemp;
+        if (!NOTE_ID) fd.append("draft_key", DRAFT_KEY);
+
+        let res;
+        try {
+          res = await fetch(url, {
+            method: "POST",
+            headers: { "X-CSRFToken": csrfToken },
+            body: fd,
+          });
+        } catch (e) {
+          console.error(e);
+          alert("업로드 요청 실패(네트워크)");
+          return;
+        }
+
+        if (!res.ok) {
+          const t = await res.text().catch(() => "");
+          console.error("upload failed:", res.status, t);
+          alert("업로드 실패");
+          return;
+        }
+
+        const data = await res.json();
+        const md = data.md || `![image](${data.url})`;
+
+        const ta = document.getElementById(`ta__${currentQid}`);
+        if (!ta) return;
+
+        insertAtCursor(ta, (ta.value.endsWith("\n") || ta.value.length === 0) ? md : "\n" + md);
+      });
+    })();
+  </script>
 
   <!-- 마크다운(내보내기용) -->
   <details style="margin-top:18px;">
@@ -167,73 +192,70 @@
       </p>
     </div>
   </details>
-  <!-- 업로드된 이미지 리스트 관리 -->
+
+  <!-- 업로드된 이미지 리스트 관리 (note 있을 때만) -->
   {% if note and note.assets.all %}
   <div style="margin-top:16px; border-top:1px solid #e5e7eb; padding-top:12px;">
     <div style="font-weight:600; margin-bottom:8px;">업로드된 이미지</div>
 
-      {% for asset in note.assets.all %}
-        <div
-          data-asset-row="{{ asset.id }}"
-          style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"
-        >
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <img
-              src="{{ asset.image.url }}"
-              alt="{{ asset.alt_text|default:'image' }}"
-              style="max-width:180px; border:1px solid #e5e7eb; border-radius:8px;"
-            />
-
-            <div style="font-size:11px; color:#6b7280;">
-              {{ asset.id }} / {{ asset.image.name|cut:"retrospectives/"|cut:"/" }}
-            </div>
+    {% for asset in note.assets.all %}
+      <div
+        data-asset-row="{{ asset.id }}"
+        style="display:flex; align-items:flex-start; gap:12px; margin-bottom:12px;"
+      >
+        <div style="flex:1;">
+          <img
+            src="{{ asset.image.url }}"
+            alt="{{ asset.alt_text|default:'image' }}"
+            style="max-width:180px; border:1px solid #e5e7eb; border-radius:8px;"
+          />
+          <div style="font-size:11px; color:#6b7280; margin-top:4px;">
+            UUID: {{ asset.id }}
           </div>
-
-
-          <button
-            type="button"
-            data-asset-delete
-            data-asset-id="{{ asset.id }}"
-            style="border:none; background:none; color:#ef4444; font-weight:700; cursor:pointer;"
-          >
-            X
-          </button>
         </div>
-      {% endfor %}
-    </div>
-    <script>
-      (function () {
-        const csrfToken =
-          (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "";
 
-        document.querySelectorAll("[data-asset-delete]").forEach((btn) => {
-          btn.addEventListener("click", async () => {
-            if (!confirm("이미지를 삭제할까요?")) return;
+        <button
+          type="button"
+          data-asset-delete
+          data-asset-id="{{ asset.id }}"
+          style="border:none; background:none; color:#ef4444; font-weight:700; cursor:pointer;"
+        >
+          X
+        </button>
+      </div>
+    {% endfor %}
+  </div>
 
-            const assetId = btn.dataset.assetId;
-            const url = "{% url 'retrospective-delete-asset' note.id 0 %}".replace("/0/", `/${assetId}/`);
+  <script>
+    (function () {
+      const csrfToken = (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "";
 
-            const res = await fetch(url, {
-              method: "DELETE",
-              headers: {
-                "X-CSRFToken": csrfToken,
-              },
-            });
+      document.querySelectorAll("[data-asset-delete]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (!confirm("이미지를 삭제할까요?")) return;
 
-            if (!res.ok) {
-              alert("삭제 실패");
-              return;
-            }
+          const assetId = btn.dataset.assetId;
 
-            // 화면에서만 제거
-            const row = document.querySelector(`[data-asset-row="${assetId}"]`);
-            if (row) row.remove();
+          // ✅ url name: retrospective-delete-asset
+          const url = "{% url 'retrospective-delete-asset' note.id 0 %}".replace("/0/", `/${assetId}/`);
+
+          const res = await fetch(url, {
+            method: "DELETE",
+            headers: { "X-CSRFToken": csrfToken },
           });
-        });
-      })();
-    </script>
-  {% endif %}
 
+          if (!res.ok) {
+            alert("삭제 실패");
+            return;
+          }
+
+          const row = document.querySelector(`[data-asset-row="${assetId}"]`);
+          if (row) row.remove();
+        });
+      });
+    })();
+  </script>
+  {% endif %}
 
   <!-- 액션 버튼 -->
   <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
@@ -248,4 +270,3 @@
   </div>
 
 </div>
-
