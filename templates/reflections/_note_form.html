@@ -1,0 +1,110 @@
+<!-- 테스트용 임시 템플릿 -->
+
+{% load reflections_extras %}
+
+{% comment %}
+필수 context:
+- guide: {"title": "...", "questions":[{"id":"q1", "label":"..."}, ...]}
+- tpl: template key
+- answers: dict (qid -> text)  (create는 빈 dict 가능)
+- note: (update에서만 있을 수 있음)
+- error: (선택)
+{% endcomment %}
+
+<div class="container" style="max-width: 920px; margin: 0 auto; padding: 32px 16px;">
+  {% if error %}
+    <div style="margin-bottom:12px; padding:12px; border:1px solid #fca5a5; background:#fef2f2; border-radius:10px;">
+      {{ error }}
+    </div>
+  {% endif %}
+
+  <!-- 제목 -->
+  <div style="margin-bottom: 18px;">
+    <input
+      name="title"
+      value="{% if note %}{{ note.title }}{% endif %}"
+      placeholder="제목을 입력하시오."
+      style="width:100%; font-size:42px; font-weight:700; border:none; outline:none; border-bottom:2px solid #e5e7eb; padding: 8px 0;"
+      required
+    />
+  </div>
+
+  <!-- (옵션) 템플릿/날짜 같은 메타 영역 -->
+  <div style="display:flex; gap:10px; justify-content:flex-end; margin-bottom:18px;">
+    <span style="padding:8px 12px; border:1px solid #e5e7eb; border-radius:999px; font-size:14px;">
+      template: {{ tpl }}
+    </span>
+    {% if note %}
+      <span style="padding:8px 12px; border:1px solid #e5e7eb; border-radius:999px; font-size:14px;">
+        {{ note.created_at|date:"Y.m.d (D)" }}
+      </span>
+    {% endif %}
+  </div>
+
+  <!-- 질문 리스트 -->
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    {% for q in guide.questions %}
+      <section style="border:1px solid #e5e7eb; border-radius:18px; overflow:hidden; background:#fff;">
+        
+        <!-- header 태그 쓰지 마세요(공통 CSS 충돌 방지). div로 대체 -->
+        <div style="background:#eef2ff; padding:12px 14px;">
+          <div style="font-weight:700;">
+            {{ q.order|default:forloop.counter }}. {{ q.title }}
+          </div>
+          {% if q.hint %}
+            <div style="margin-top:6px; font-size:13px; color:#4b5563; line-height:1.35;">
+              {{ q.hint }}
+            </div>
+          {% endif %}
+          {% if q.examples %}
+            <span style="margin:10px 0 0; padding-left:18px; color:#6b7280; font-size:12.5px; line-height:1.35;">
+            예시)
+            </span>
+            <ul style="margin:10px 0 0; padding-left:18px; color:#6b7280; font-size:12.5px; line-height:1.35;">
+              
+              {% for ex in q.examples %}
+                <li>{{ ex }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
+        <div style="padding:14px;">
+          <textarea
+            name="a__{{ q.id }}"
+            rows="5"
+            placeholder="여기에 답변을 입력하세요"
+            style="width:100%; resize:vertical; border:1px solid #e5e7eb; border-radius:14px; padding:12px; outline:none;"
+          >{{ answers|get_item:q.id }}</textarea>
+        </div>
+      </section>
+    {% endfor %}
+  </div>
+
+  <!-- 마크다운(내보내기용) -->
+  <details style="margin-top:18px;">
+    <summary style="cursor:pointer; font-weight:600;">내보내기용 마크다운 보기</summary>
+    <div style="margin-top:10px;">
+      <textarea
+        rows="10"
+        readonly
+        style="width:100%; border:1px solid #e5e7eb; border-radius:14px; padding:12px;"
+      >{% if note %}{{ note.content_md }}{% endif %}</textarea>
+      <p style="margin-top:8px; font-size:12px; color:#6b7280;">
+        * content_md는 저장/내보내기용이며, 작성 UI의 메인은 answers_json 입니다.
+      </p>
+    </div>
+  </details>
+
+  <!-- 액션 버튼 -->
+  <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+    <a href="{% url 'reflections:note_list' %}"
+       style="padding:10px 16px; border:1px solid #e5e7eb; border-radius:999px; text-decoration:none;">
+      목록
+    </a>
+    <button type="submit"
+            style="padding:10px 18px; border:none; border-radius:999px; background:#111827; color:white;">
+      저장
+    </button>
+  </div>
+</div>

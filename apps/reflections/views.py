@@ -114,13 +114,13 @@ def note_create(request):
       :tpl: 선택할 질문 템플릿 (현재는 default 하나만)
       
     """
-    tpl = request.GET.get("tpl") or "default"
-    guide = load_guide(tpl)
+    tpl_key = request.GET.get("tpl") or "default"
+    guide = load_guide(tpl_key)
 
     if request.method == "POST":
         title = (request.POST.get("title") or "빈 제목").strip()
         if not title:
-            context = {"guide": guide, "tpl": tpl, "error": "제목은 필수입니다."}
+            context = {"guide": guide, "tpl": tpl_key, "error": "제목은 필수입니다."}
             return render(request, "reflections/note_create.html", context)
         
         answers = dict() # qid: "답변 내용" 형식
@@ -132,7 +132,7 @@ def note_create(request):
 
         Retrospective.objects.create(
             user= request.user,
-            template_key=tpl,
+            template_key=tpl_key,
             title=title,
             answers_json=answers,
             content_md = content_md,
@@ -140,7 +140,8 @@ def note_create(request):
         return redirect("reflections:note_list")
     context = {
         "guide": guide,
-        "tpl": tpl,
+        "tpl": tpl_key,
+        "answers": {},
     }
     return render(request, "reflections/note_create.html", context)
 
@@ -152,30 +153,57 @@ def note_detail(request, note_id):
     note = get_object_or_404(Retrospective, id=note_id, user=request.user)
     context = {
         "note": note,
+        "guide": load_guide(note.template_key),
+        "answers": note.answers_json or {},
     }
     return render(request, "reflections/note_detail.html", context)
 
 
 @login_required
 def note_update(request, note_id):
-    """회고 수정"""
-    # TODO: 회고 수정 로직 구현
+    """회고 수정 - note_create와 동일하게 guide 기반으로 렌더/저장"""
     note = get_object_or_404(Retrospective, id=note_id, user=request.user)
 
+    tpl = note.template_key or "default"
+    guide = load_guide(tpl)
+
+    # 기존 답변(answers_json)로 textarea 기본값 채우기
+    existing_answers = note.answers_json or {}
+
     if request.method == "POST":
-        form = RetrospectiveForm(request.POST, instance=note)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "회고가 수정되었습니다.")
-            return redirect("reflections:note_detail", note_id = note.id)
-    else:
-        form = RetrospectiveForm(instance=note)
-        
+        title = (request.POST.get("title") or "빈 제목").strip()
+        if not title:
+            context = {
+                "note": note,
+                "guide": guide,
+                "tpl": tpl,
+                "answers": existing_answers,
+                "error": "제목은 필수입니다.",
+            }
+            return render(request, "reflections/note_update.html", context)
+
+        answers = {}
+        for q in guide["questions"]:
+            qid = q["id"]
+            answers[qid] = (request.POST.get(f"a__{qid}") or "").strip()
+
+        content_md = build_markdown(guide, answers)
+
+        note.title = title
+        note.answers_json = answers
+        note.content_md = content_md
+        note.save(update_fields=["title", "answers_json", "content_md", "updated_at"])
+
+        return redirect("reflections:note_detail", note_id=note.id)
+
     context = {
         "note": note,
-        "form": form,
+        "guide": guide,
+        "tpl": tpl,
+        "answers": existing_answers,
     }
     return render(request, "reflections/note_update.html", context)
+
 
 
 @login_required
