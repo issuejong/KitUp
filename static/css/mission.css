@@ -144,7 +144,7 @@
     border-radius: 20px;
 }
 
-/* 미션 아이템 */
+/* 카드 */
 .mission_item {
     width: 90%;
     margin: 0 auto;
@@ -301,11 +301,6 @@
     max-height: 300px;
     opacity: 1;
     margin-top: 15px;
-}
-
-/* 완료된 카드 */
-.mission_card.completed .check_icon {
-    /* check.png로 변경될 예정 */
 }
 
 .mission_card.completed {
