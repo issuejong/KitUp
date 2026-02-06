@@ -39,20 +39,8 @@
                         {{ form.github_id }}
                     </div>
                     <div class="info-row">
-                        <label class="label">현재 비밀번호 확인</label>
-                        {{ form.current_password }}
-                    </div>
-                    <div class="info-row">
-                        <label class="label">새 비밀번호</label>
-                        {{ form.new_password }}
-                    </div>
-                    <div class="info-row">
-                        <label class="label">비밀번호 확인</label>
-                        {{ form.new_password_confirm }}
-                    </div>
-                    <div class="info-row">
                         <label class="label">이메일</label>
-                        {{ form.email }}
+                        <input type="text" value="{{ user.email }}" class="input-field readonly" readonly>
                     </div>
                 </div>
 
