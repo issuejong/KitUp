@@ -372,18 +372,7 @@ let currentTrack = '';
 let currentQuestion = 0;
 let answers = [];
 
-// 페이지 로드 시 트랙 초기화
-window.addEventListener('DOMContentLoaded', function() {
-    currentTrack = document.getElementById('selected-track').value;
-    
-    if (!currentTrack || !questions[currentTrack]) {
-        alert('올바른 트랙을 선택해주세요.');
-        location.href = '/';
-        return;
-    }
-    
-    showQuestion(0);
-});
+
 
 // 문항 표시
 function showQuestion(index) {
