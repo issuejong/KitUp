@@ -1,3 +1,7 @@
+# reflections/models.py
+import os
+import uuid
+
 from django.conf import settings
 from django.db import models
 
@@ -13,9 +17,8 @@ class Retrospective(models.Model):
         "projects.Project",
         on_delete=models.CASCADE,
         related_name="retrospectives",
-        # TODO 테스트용 nullable
-        # 플젝 외의 개인 회고의 목적 있으면 nullable 유지
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
 
     user = models.ForeignKey(
@@ -52,8 +55,8 @@ class Retrospective(models.Model):
     )
 
     bookmarked = models.BooleanField(
-        default= False,
-        help_text="찜 여부"
+        default=False,
+        help_text="찜 여부",
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -69,3 +72,64 @@ class Retrospective(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user} - {self.project}: {self.title or '회고'}"
+
+
+def retrospective_asset_upload_to(instance: "RetrospectiveAsset", filename: str) -> str:
+    """
+    저장 경로:
+    media/retrospectives/<user_id>/<retrospective_id>/<uuid>.<ext>
+    """
+    _, ext = os.path.splitext(filename)
+    ext = (ext or "").lower()
+    return f"retrospectives/{instance.user_id}/{instance.retrospective_id}/{uuid.uuid4().hex}{ext}"
+
+
+class RetrospectiveAsset(models.Model):
+    """
+    회고 첨부 이미지
+    - 업로드 후 반환되는 image.url을 md 문법으로 본문에 삽입: ![alt](/media/...)
+    """
+
+    retrospective = models.ForeignKey(
+        Retrospective,
+        on_delete=models.CASCADE,
+        related_name="assets",
+    )
+
+    # 권한/조회 편의용 (중복이지만 실무에서 유용)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="retrospective_assets",
+    )
+
+    image = models.ImageField(
+        upload_to=retrospective_asset_upload_to,
+        help_text="첨부 이미지",
+    )
+
+    alt_text = models.CharField(
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="마크다운 이미지 alt 텍스트",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "retrospective_assets"
+        indexes = [
+            models.Index(fields=["retrospective", "created_at"]),
+            models.Index(fields=["user", "created_at"]),
+        ]
+        ordering = ["-created_at"]
+
+    def save(self, *args, **kwargs):
+        # retrospective.user와 항상 일치시키기
+        if self.retrospective_id and (not self.user_id):
+            self.user = self.retrospective.user
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"asset:{self.id} retro:{self.retrospective_id} user:{self.user_id}"

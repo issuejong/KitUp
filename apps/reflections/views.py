@@ -16,7 +16,6 @@ from drf_spectacular.utils import (
 
 from .models import Retrospective
 from .serializers import RetrospectiveReadSerializer, RetrospectiveWriteSerializer
-from .forms import RetrospectiveForm
 from .services.retrospective_guide import load_guide, build_markdown
 
 from apps.projects.models import Project
