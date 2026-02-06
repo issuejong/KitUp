@@ -146,24 +146,29 @@ def _update_project_progress(project, role):
     ProjectProgress 업데이트 로직
     특정 역할의 진척도를 계산하고 저장
     """
-    # 해당 역할의 모든 미션과 태스크
-    guide_cards = GuideCard.objects.filter(role=role, is_active=True)
+    from django.db.models import Count, Q
     
-    total_tasks = 0
-    completed_tasks = 0
+    # 1. 해당 역할의 모든 태스크 조회 (카드 통해서)
+    guide_cards = GuideCard.objects.filter(
+        role=role, 
+        is_active=True
+    ).prefetch_related('tasks')
     
+    # 2. 모든 task_id 수집
+    all_task_ids = []
     for card in guide_cards:
-        tasks = card.tasks.all()
-        total_tasks += tasks.count()
-        
-        completed = GuideTaskProgress.objects.filter(
-            task__in=tasks,
-            project=project,
-            is_completed=True
-        ).count()
-        completed_tasks += completed
+        all_task_ids.extend(card.tasks.values_list('id', flat=True))
     
-    # ProjectProgress 생성 또는 업데이트
+    total_tasks = len(all_task_ids)
+    
+    # 3. 한 번에 모든 진행 상태 조회 (N+1 해결)
+    completed_tasks = GuideTaskProgress.objects.filter(
+        task_id__in=all_task_ids,
+        project=project,
+        is_completed=True
+    ).count()
+    
+    # 4. ProjectProgress 생성 또는 업데이트
     progress, created = ProjectProgress.objects.get_or_create(
         project=project,
         role=role
