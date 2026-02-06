@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 
+import uuid
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -122,6 +123,11 @@ def note_create(request):
     tpl_key = request.GET.get("tpl") or "default"
     guide = load_guide(tpl_key)
 
+    # ✅ draft_key 발급/유지
+    if "retro_draft_key" not in request.session:
+        request.session["retro_draft_key"] = str(uuid.uuid4())
+    draft_key = request.session["retro_draft_key"]
+    
     if request.method == "POST":
         title = (request.POST.get("title") or "빈 제목").strip()
         if not title:
@@ -135,18 +141,30 @@ def note_create(request):
         
         content_md = build_markdown(guide, answers)
 
-        Retrospective.objects.create(
+        note = Retrospective.objects.create(
             user= request.user,
             template_key=tpl_key,
             title=title,
             answers_json=answers,
             content_md = content_md,
         )
+
+        # ✅ draft로 업로드된 이미지들을 note에 연결
+        RetrospectiveAsset.objects.filter(
+            user=request.user,
+            draft_key=draft_key,
+            retrospective__isnull=True,
+        ).update(retrospective=note, draft_key=None)
+
+        # ✅ draft_key 정리
+        request.session.pop("retro_draft_key", None)
+
         return redirect("reflections:note_list")
     context = {
         "guide": guide,
         "tpl": tpl_key,
         "answers": {},
+        "draft_key": draft_key,
     }
     return render(request, "reflections/note_create.html", context)
 
@@ -402,7 +420,11 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
         summary="회고 이미지 삭제",
         tags=["Retrospectives"]
     )
-    @action(detail=True, methods=["delete"], url_path=r"assets/(?P<asset_id>\d+)")
+    @action(
+        detail=True, 
+        methods=["delete"], 
+        url_path=r"assets/(?P<asset_id>\d+)"
+    )
     def delete_asset(self, request, pk=None, asset_id=None):
         retro = self.get_object()  # 본인 회고인지 포함해서 체크된다고 가정
 
@@ -416,3 +438,45 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
 
         asset.delete()  # ✅ 여기서 DB 삭제 + (아래 시그널/오버라이드 있으면 파일도 삭제)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @extend_schema(        
+        summary="회고 이미지 임시 업로드",
+        tags=["Retrospectives"]
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="assets/temp",
+        parser_classes=[MultiPartParser, FormParser],
+    )
+    def upload_temp_asset(self, request):
+        draft_key = request.data.get("draft_key")
+        if not draft_key:
+            return Response({"detail": "draft_key 필요"}, status=400)
+
+        try:
+            draft_uuid = uuid.UUID(str(draft_key))
+        except ValueError:
+            return Response({"detail": "draft_key 형식 오류"}, status=400)
+
+        f = request.FILES.get("image")
+        if not f:
+            return Response({"detail": "image 파일 필요"}, status=400)
+
+        ct = (getattr(f, "content_type", "") or "").lower()
+        if ct and not ct.startswith("image/"):
+            return Response({"detail": "이미지 파일만 업로드 가능합니다."}, status=400)
+
+        alt_text = (request.data.get("alt_text") or "").strip()
+
+        asset = RetrospectiveAsset.objects.create(
+            user=request.user,
+            draft_key=draft_uuid,
+            retrospective=None,
+            image=f,
+            alt_text=alt_text,
+        )
+
+        url = asset.image.url
+        md = f"![{alt_text or 'image'}]({url})"
+        return Response({"id": asset.id, "url": url, "md": md}, status=status.HTTP_201_CREATED)
