@@ -92,12 +92,16 @@ def note_list(request):
     else:
         qs = qs.order_by("-created_at")
     
+    my_project_ids = (
+        TeamMember.objects
+        .filter(user=request.user)
+        .values_list("team__project_id", flat=True)
+        .distinct()
+    )
+
     my_projects = (
         Project.objects
-        # Project -> team 에서 멤버에 포함되는지 여부 로직
-        # TODO 로직 확인해보기
-        .filter(member__user=request.user)
-        .distinct()
+        .filter(Q(id__in=my_project_ids) | Q(owner=request.user))
         .order_by("title")
     )
 
