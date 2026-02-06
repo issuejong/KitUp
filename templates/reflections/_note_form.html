@@ -167,6 +167,73 @@
       </p>
     </div>
   </details>
+  <!-- 업로드된 이미지 리스트 관리 -->
+  {% if note and note.assets.all %}
+  <div style="margin-top:16px; border-top:1px solid #e5e7eb; padding-top:12px;">
+    <div style="font-weight:600; margin-bottom:8px;">업로드된 이미지</div>
+
+      {% for asset in note.assets.all %}
+        <div
+          data-asset-row="{{ asset.id }}"
+          style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"
+        >
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <img
+              src="{{ asset.image.url }}"
+              alt="{{ asset.alt_text|default:'image' }}"
+              style="max-width:180px; border:1px solid #e5e7eb; border-radius:8px;"
+            />
+
+            <div style="font-size:11px; color:#6b7280;">
+              {{ asset.id }} / {{ asset.image.name|cut:"retrospectives/"|cut:"/" }}
+            </div>
+          </div>
+
+
+          <button
+            type="button"
+            data-asset-delete
+            data-asset-id="{{ asset.id }}"
+            style="border:none; background:none; color:#ef4444; font-weight:700; cursor:pointer;"
+          >
+            X
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      (function () {
+        const csrfToken =
+          (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "";
+
+        document.querySelectorAll("[data-asset-delete]").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            if (!confirm("이미지를 삭제할까요?")) return;
+
+            const assetId = btn.dataset.assetId;
+            const url = "{% url 'retrospective-delete-asset' note.id 0 %}".replace("/0/", `/${assetId}/`);
+
+            const res = await fetch(url, {
+              method: "DELETE",
+              headers: {
+                "X-CSRFToken": csrfToken,
+              },
+            });
+
+            if (!res.ok) {
+              alert("삭제 실패");
+              return;
+            }
+
+            // 화면에서만 제거
+            const row = document.querySelector(`[data-asset-row="${assetId}"]`);
+            if (row) row.remove();
+          });
+        });
+      })();
+    </script>
+  {% endif %}
+
 
   <!-- 액션 버튼 -->
   <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
@@ -179,4 +246,6 @@
       저장
     </button>
   </div>
+
 </div>
+
