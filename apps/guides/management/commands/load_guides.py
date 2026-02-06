@@ -21,8 +21,13 @@ class Command(BaseCommand):
             GuideTask.objects.all().delete()
             self.stdout.write(self.style.WARNING('기존 가이드 데이터를 삭제했습니다'))
 
-        # fixture 로드
+        # fixture 로드 (순서 중요: roles -> guides)
         try:
+            # 1. roles 먼저 로드 (FK 의존성)
+            call_command('loaddata', 'roles')
+            self.stdout.write(self.style.SUCCESS('✅ Roles 데이터 로드됨'))
+            
+            # 2. guides 로드
             call_command('loaddata', 'guides')
             self.stdout.write(
                 self.style.SUCCESS('✅ 가이드 데이터를 성공적으로 로드했습니다!')
