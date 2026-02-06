@@ -28,7 +28,11 @@
                 <div class="info-table">
                     <div class="info-row">
                         <label class="label">닉네임</label>
-                        {{ form.nickname }}
+                        <div class="nickname-check-wrapper">
+                            {{ form.nickname }}
+                            <button type="button" class="check-btn" id="check-nickname-btn">중복확인</button>
+                            <span class="check-status" id="check-status"></span>
+                        </div>
                     </div>
                     <div class="info-row">
                         <label class="label">아이디</label>
@@ -80,6 +84,67 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileInput = document.getElementById('id_profile_image');
     const previewImage = document.getElementById('preview-image');
     const defaultImageUrl = "{% static 'images/default_profile.png' %}";
+    const nicknameInput = document.getElementById('id_nickname');
+    const checkNicknameBtn = document.getElementById('check-nickname-btn');
+    const checkStatus = document.getElementById('check-status');
+    
+    // 닉네임 검증
+    if (checkNicknameBtn && nicknameInput) {
+        // 중복확인 버튼 클릭
+        checkNicknameBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            checkNicknameDuplicate();
+        });
+        
+        // 닉네임 입력 중 실시간 검증
+        nicknameInput.addEventListener('input', function() {
+            checkStatus.textContent = '';
+            checkStatus.className = 'check-status';
+            nicknameInput.classList.remove('valid', 'invalid');
+        });
+        
+        // Enter 키로도 검증
+        nicknameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkNicknameDuplicate();
+            }
+        });
+    }
+    
+    function checkNicknameDuplicate() {
+        const nickname = nicknameInput.value.trim();
+        const userId = "{{ user.id }}";
+        
+        if (!nickname) {
+            checkStatus.textContent = '닉네임을 입력하세요.';
+            checkStatus.className = 'check-status error';
+            nicknameInput.classList.add('invalid');
+            return;
+        }
+        
+        // API 호출
+        fetch(`/api/accounts/check-nickname/?nickname=${encodeURIComponent(nickname)}&user_id=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available) {
+                    checkStatus.textContent = '✓ ' + data.message;
+                    checkStatus.className = 'check-status success';
+                    nicknameInput.classList.add('valid');
+                    nicknameInput.classList.remove('invalid');
+                } else {
+                    checkStatus.textContent = '✗ ' + data.message;
+                    checkStatus.className = 'check-status error';
+                    nicknameInput.classList.add('invalid');
+                    nicknameInput.classList.remove('valid');
+                }
+            })
+            .catch(error => {
+                console.error('오류:', error);
+                checkStatus.textContent = '검증 중 오류가 발생했습니다.';
+                checkStatus.className = 'check-status error';
+            });
+    }
     
     if (profileInput) {
         // input 필드 숨기기

@@ -166,6 +166,65 @@
     color: #9ca3af;
 }
 
+/* 닉네임 검증 스타일 */
+.nickname-check-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.nickname-check-wrapper input {
+    flex: 1;
+}
+
+.check-btn {
+    padding: 10px 20px;
+    background-color: #4B7EFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.check-btn:hover {
+    background-color: #3563D9;
+}
+
+.check-btn:active {
+    background-color: #2548B8;
+}
+
+.check-status {
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.check-status.success {
+    color: #10B981;
+}
+
+.check-status.error {
+    color: #EF4444;
+}
+
+/* 입력 필드 유효성 표시 */
+.input-field.valid {
+    border: 2px solid #10B981;
+    background-color: #F0FDF4;
+}
+
+.input-field.invalid {
+    border: 2px solid #EF4444;
+    background-color: #FEF2F2;
+}
+
 /* 파일 입력 숨기기 */
 input[type="file"] {
     display: none;
