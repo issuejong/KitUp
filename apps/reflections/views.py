@@ -398,4 +398,21 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
         data = RetrospectiveAssetUploadSerializer(asset, context=self.get_serializer_context()).data
         return Response(data, status=status.HTTP_201_CREATED)
 
+    @extend_schema(        
+        summary="회고 이미지 삭제",
+        tags=["Retrospectives"]
+    )
+    @action(detail=True, methods=["delete"], url_path=r"assets/(?P<asset_id>\d+)")
+    def delete_asset(self, request, pk=None, asset_id=None):
+        retro = self.get_object()  # 본인 회고인지 포함해서 체크된다고 가정
 
+        asset = RetrospectiveAsset.objects.filter(
+            id=asset_id,
+            retrospective=retro,
+            user=request.user,
+        ).first()
+        if not asset:
+            return Response({"detail": "asset not found"}, status=404)
+
+        asset.delete()  # ✅ 여기서 DB 삭제 + (아래 시그널/오버라이드 있으면 파일도 삭제)
+        return Response(status=status.HTTP_204_NO_CONTENT)
