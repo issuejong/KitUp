@@ -86,4 +86,56 @@
         </main>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const profileInput = document.getElementById('id_profile_image');
+    const previewImage = document.getElementById('preview-image');
+    const defaultImageUrl = "{% static 'images/default_profile.png' %}";
+    
+    if (profileInput) {
+        // input 필드 숨기기
+        profileInput.style.display = 'none';
+        
+        // 파일 선택 시 미리보기
+        profileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // 이미지 파일인지 확인
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                    };
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('이미지 파일만 선택할 수 있습니다.');
+                    profileInput.value = '';
+                }
+            } else {
+                // 파일 선택 취소 시 기본 이미지로 복원
+                previewImage.src = defaultImageUrl;
+            }
+        });
+    }
+    
+    // 이미지 로드 실패 시 기본 이미지 표시
+    if (previewImage) {
+        previewImage.addEventListener('error', function() {
+            this.src = defaultImageUrl;
+        });
+    }
+    
+    // 모든 Django form input 필드에 input-field 클래스 추가
+    const formInputs = document.querySelectorAll('.info-row input[type="text"], .info-row input[type="email"], .info-row input[type="password"]');
+    formInputs.forEach(input => {
+        if (!input.classList.contains('readonly')) {
+            input.classList.add('input-field');
+        }
+    });
+});
+</script>
 {% endblock %}
