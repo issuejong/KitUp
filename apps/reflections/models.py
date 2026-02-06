@@ -94,6 +94,7 @@ class RetrospectiveAsset(models.Model):
         Retrospective,
         on_delete=models.CASCADE,
         related_name="assets",
+        null=True, blank=True,
     )
 
     # 권한/조회 편의용 (중복이지만 실무에서 유용)
@@ -102,6 +103,11 @@ class RetrospectiveAsset(models.Model):
         on_delete=models.CASCADE,
         related_name="retrospective_assets",
     )
+
+    # 임시 저장용 키 (회고 작성 중 업로드된 이미지 구분용)
+    draft_key = models.UUIDField(
+        null=True, blank=True, db_index=True
+    )  
 
     image = models.ImageField(
         upload_to=retrospective_asset_upload_to,
