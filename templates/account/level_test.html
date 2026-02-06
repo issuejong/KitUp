@@ -57,7 +57,7 @@
 <script>
 // 문항 데이터
 const questions = {
-  frontend: [
+  FRONTEND: [
     {
       question: "1. Figma를 얼마나 활용할 수 있나요?",
       options: [
@@ -160,7 +160,7 @@ const questions = {
     }
   ],
 
-  backend: [
+  BACKEND: [
     {
       question: "1. Django 같은 서버 프레임워크를 사용해 본 적이 있나요?",
       options: [
@@ -263,7 +263,7 @@ const questions = {
     }
   ],
 
-  pm: [
+  PM: [
     {
       question: "1. 프로젝트 목표를 문서로 정리해 팀과 공유해본 적이 있나요?",
       options: [
@@ -489,9 +489,9 @@ document.getElementById('level-test-form').addEventListener('submit', function(e
             
             // 결과 표시
             const trackNames = {
-                frontend: '프론트엔드',
-                backend: '백엔드',
-                pm: '기획자(PM)'
+                FRONTEND: '프론트엔드',
+                BACKEND: '백엔드',
+                PM: '기획자(PM)'
             };
             
             document.getElementById('result-track').textContent = trackNames[currentTrack];
