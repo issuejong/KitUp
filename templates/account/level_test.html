@@ -372,15 +372,11 @@ let currentTrack = '';
 let currentQuestion = 0;
 let answers = [];
 
-// 페이지 로드 시 트랙 초기화
+
+//답변 초기화
 window.addEventListener('DOMContentLoaded', function() {
     currentTrack = document.getElementById('selected-track').value;
-    
-    if (!currentTrack || !questions[currentTrack]) {
-        alert('올바른 트랙을 선택해주세요.');
-        location.href = '/';
-        return;
-    }
+    answers = new Array(10).fill(null);
     
     showQuestion(0);
 });
