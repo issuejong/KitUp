@@ -12,21 +12,21 @@
 	text-align: center;
 	padding: 15px;
 	text-decoration: none;
-	background: #eaf0ff;
+	background: #F6F8FF;
 }
 
 .p_header .p_dashboard {
 	background: #fff;
-    color: #cad9ff;
+    color: #EAF0FF;
 }
 
 .p_header .p_mission {
-	background: #eaf0ff;
+	background: #F6F8FF;
     color: #1d294b;
 }
 
 .p_header .p_dashboard:hover {
-	background: #eaf0ff;
+	background: #EAF0FF;
 	color: #1d294b;
 	transition: 0.3s ease-in-out;
 }
@@ -38,7 +38,7 @@
 
 /* 진척도 */
 .mission_progress {
-    background: #eaf0ff;
+    background: #F6F8FF;
     width: 90%; height: 350px;
     padding: 50px 20px;
     margin: 0 auto 80px;
