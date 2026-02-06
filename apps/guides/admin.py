@@ -6,7 +6,7 @@ from .models import GuideCard, GuideTask, GuideTaskProgress, ProjectProgress
 class GuideTaskInline(admin.TabularInline):
     model = GuideTask
     extra = 0
-    fields = ["title", "order_no", "is_required"]
+    fields = ["title", "description", "order_no", "is_required"]
 
 
 @admin.register(GuideCard)

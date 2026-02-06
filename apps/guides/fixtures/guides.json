@@ -1,0 +1,314 @@
+[
+  {
+    "model": "guides.GuideCard",
+    "pk": 1,
+    "fields": {
+      "role": 1,
+      "title": "1단계: 팀 소개",
+      "content_md": "# PM의 역할\n\nPM(Product Manager)은 제품의 방향성을 결정하고 팀을 이끌어가는 역할입니다.",
+      "order_no": 1,
+      "is_active": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideCard",
+    "pk": 2,
+    "fields": {
+      "role": 1,
+      "title": "2단계: 요구사항",
+      "content_md": "# 요구사항 정의\n\n프로젝트의 핵심 요구사항을 정의하는 단계입니다.",
+      "order_no": 2,
+      "is_active": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideCard",
+    "pk": 3,
+    "fields": {
+      "role": 2,
+      "title": "1단계: 개발환경",
+      "content_md": "# 프론트엔드 개발 환경\n\n프로젝트 개발을 위한 기본 환경을 설정합니다.",
+      "order_no": 1,
+      "is_active": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideCard",
+    "pk": 4,
+    "fields": {
+      "role": 2,
+      "title": "2단계: 레이아웃",
+      "content_md": "# 페이지 레이아웃 구현\n\nUI 디자인을 기반으로 HTML/CSS 레이아웃을 구현합니다.",
+      "order_no": 2,
+      "is_active": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideCard",
+    "pk": 5,
+    "fields": {
+      "role": 3,
+      "title": "1단계: API설계",
+      "content_md": "# 백엔드 API 설계\n\n프로젝트의 핵심 API와 데이터베이스를 설계합니다.",
+      "order_no": 1,
+      "is_active": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideCard",
+    "pk": 6,
+    "fields": {
+      "role": 3,
+      "title": "2단계: 기능구현",
+      "content_md": "# 핵심 기능 구현\n\nAPI 설계를 기반으로 실제 기능을 구현합니다.",
+      "order_no": 2,
+      "is_active": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 1,
+    "fields": {
+      "card": 1,
+      "title": "영상시청",
+      "description": "팀 소개 영상 시청",
+      "order_no": 1,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 2,
+    "fields": {
+      "card": 1,
+      "title": "팀목표논의",
+      "description": "팀 회의 진행",
+      "order_no": 2,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 3,
+    "fields": {
+      "card": 1,
+      "title": "역할정의",
+      "description": "역할 할당",
+      "order_no": 3,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 4,
+    "fields": {
+      "card": 2,
+      "title": "페르소나작성",
+      "description": "사용자 페르소나",
+      "order_no": 1,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 5,
+    "fields": {
+      "card": 2,
+      "title": "기능목록",
+      "description": "기능 목록 작성",
+      "order_no": 2,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 6,
+    "fields": {
+      "card": 2,
+      "title": "1차기능확정",
+      "description": "핵심 기능 확정",
+      "order_no": 3,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 7,
+    "fields": {
+      "card": 3,
+      "title": "Node설치",
+      "description": "Node.js 설치",
+      "order_no": 1,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 8,
+    "fields": {
+      "card": 3,
+      "title": "프로젝트초기화",
+      "description": "npm init 진행",
+      "order_no": 2,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 9,
+    "fields": {
+      "card": 3,
+      "title": "라이브러리설치",
+      "description": "필수 라이브러리",
+      "order_no": 3,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 10,
+    "fields": {
+      "card": 4,
+      "title": "Header/Footer",
+      "description": "공통 컴포넌트",
+      "order_no": 1,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 11,
+    "fields": {
+      "card": 4,
+      "title": "메인페이지",
+      "description": "메인 레이아웃",
+      "order_no": 2,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 12,
+    "fields": {
+      "card": 4,
+      "title": "반응형테스트",
+      "description": "모바일 테스트",
+      "order_no": 3,
+      "is_required": false,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 13,
+    "fields": {
+      "card": 5,
+      "title": "DB스키마",
+      "description": "스키마 설계",
+      "order_no": 1,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 14,
+    "fields": {
+      "card": 5,
+      "title": "API명세서",
+      "description": "API 문서 작성",
+      "order_no": 2,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 15,
+    "fields": {
+      "card": 5,
+      "title": "인증시스템",
+      "description": "인증 설계",
+      "order_no": 3,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 16,
+    "fields": {
+      "card": 6,
+      "title": "모델구현",
+      "description": "Django 모델",
+      "order_no": 1,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 17,
+    "fields": {
+      "card": 6,
+      "title": "API구현",
+      "description": "API 엔드포인트",
+      "order_no": 2,
+      "is_required": true,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  },
+  {
+    "model": "guides.GuideTask",
+    "pk": 18,
+    "fields": {
+      "card": 6,
+      "title": "테스트작성",
+      "description": "단위 테스트",
+      "order_no": 3,
+      "is_required": false,
+      "created_at": "2026-02-06T00:00:00Z",
+      "updated_at": "2026-02-06T00:00:00Z"
+    }
+  }
+]
