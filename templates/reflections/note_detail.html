@@ -62,37 +62,15 @@
   <div style="display:flex; flex-direction:column; gap:18px;">
     {% for q in guide.questions %}
       <section style="border:1px solid #e5e7eb; border-radius:18px; overflow:hidden; background:#fff;">
-
-        <!-- header 태그 금지(공통 CSS 충돌 방지) -->
-        <div style="background:#eef2ff; padding:12px 14px;">
-          <div style="font-weight:700;">
-            {{ q.order|default:forloop.counter }}. {{ q.title }}
-          </div>
-
-          {% if q.hint %}
-            <div style="margin-top:6px; font-size:13px; color:#4b5563; line-height:1.35;">
-              {{ q.hint }}
-            </div>
-          {% endif %}
-
-          {% if q.examples %}
-            <ul style="margin:10px 0 0; padding-left:18px; color:#6b7280; font-size:12.5px; line-height:1.35;">
-              {% for ex in q.examples %}
-                <li>{{ ex }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
+        <div style="background:#eef2ff; padding:12px 14px; font-weight:700;">
+          {{ q.order|default:forloop.counter }}. {{ q.title }}
         </div>
-
         <div style="padding:14px;">
-          <textarea
-            rows="5"
-            readonly
-            style="width:100%; resize:vertical; border:1px solid #e5e7eb; border-radius:14px; padding:12px; outline:none; background:#f9fafb; color:#111827;"
-          >{{ answers|get_item:q.id }}</textarea>
+          {{ answers|get_item:q.id|md }}
         </div>
       </section>
     {% endfor %}
+
   </div>
 
   <!-- md는 내보내기용(접기) -->

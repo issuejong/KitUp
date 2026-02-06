@@ -48,37 +48,109 @@
         
         <!-- header 태그 쓰지 마세요(공통 CSS 충돌 방지). div로 대체 -->
         <div style="background:#eef2ff; padding:12px 14px;">
-          <div style="font-weight:700;">
-            {{ q.order|default:forloop.counter }}. {{ q.title }}
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div style="font-weight:700;">
+              {{ q.order|default:forloop.counter }}. {{ q.title }}
+            </div>
+
+            {# ✅ note가 있을 때만 업로드 가능(생성 페이지는 저장 후 업로드) #}
+            {% if note %}
+              <button
+                type="button"
+                data-asset-btn
+                data-qid="{{ q.id }}"
+                style="padding:6px 10px; border:1px solid #111827; border-radius:10px; background:#111827; color:white; font-size:12px;"
+              >
+                이미지 업로드
+              </button>
+            {% else %}
+              <span style="font-size:12px; color:#6b7280;">저장 후 업로드</span>
+            {% endif %}
           </div>
+
           {% if q.hint %}
             <div style="margin-top:6px; font-size:13px; color:#4b5563; line-height:1.35;">
               {{ q.hint }}
             </div>
           {% endif %}
-          {% if q.examples %}
-            <span style="margin:10px 0 0; padding-left:18px; color:#6b7280; font-size:12.5px; line-height:1.35;">
-            예시)
-            </span>
-            <ul style="margin:10px 0 0; padding-left:18px; color:#6b7280; font-size:12.5px; line-height:1.35;">
-              
-              {% for ex in q.examples %}
-                <li>{{ ex }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
+
+          ...
         </div>
 
         <div style="padding:14px;">
           <textarea
+            id="ta__{{ q.id }}"
             name="a__{{ q.id }}"
             rows="5"
-            placeholder="여기에 답변을 입력하세요"
-            style="width:100%; resize:vertical; border:1px solid #e5e7eb; border-radius:14px; padding:12px; outline:none;"
+            ...
           >{{ answers|get_item:q.id }}</textarea>
         </div>
       </section>
     {% endfor %}
+    {# ✅ 숨겨진 파일 인풋 1개만 두고 재사용 #}
+    {% if note %}
+      <input id="assetFileInput" type="file" accept="image/*" style="display:none;" />
+
+      <script>
+        (function () {
+          const fileInput = document.getElementById("assetFileInput");
+          let currentQid = null;
+
+          // ✅ DRF action URL: retrospective-upload-asset (Router basename에 따라 다를 수 있음)
+          //    보통: "retrospective-upload-asset"
+          const uploadUrl = "{% url 'retrospective-upload-asset' note.id %}";
+
+          function insertAtCursor(textarea, text) {
+            const start = textarea.selectionStart ?? textarea.value.length;
+            const end = textarea.selectionEnd ?? textarea.value.length;
+            const before = textarea.value.slice(0, start);
+            const after = textarea.value.slice(end);
+            textarea.value = before + text + after;
+            const pos = start + text.length;
+            textarea.setSelectionRange(pos, pos);
+            textarea.focus();
+          }
+
+          document.querySelectorAll("[data-asset-btn]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              currentQid = btn.dataset.qid;
+              fileInput.value = "";
+              fileInput.click();
+            });
+          });
+
+          fileInput.addEventListener("change", async () => {
+            if (!fileInput.files || !fileInput.files[0] || !currentQid) return;
+
+            const fd = new FormData();
+            fd.append("image", fileInput.files[0]);
+            fd.append("alt_text", "image");
+
+            const res = await fetch(uploadUrl, {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "",
+              },
+              body: fd,
+            });
+
+            if (!res.ok) {
+              alert("업로드 실패");
+              return;
+            }
+
+            const data = await res.json();
+            const md = data.md || `![image](${data.url})`;
+
+            const ta = document.getElementById(`ta__${currentQid}`);
+            if (!ta) return;
+
+            // ✅ 질문 답변은 하나의 md로 본다: 커서 위치에 삽입
+            insertAtCursor(ta, (ta.value.endsWith("\n") || ta.value.length === 0) ? md : "\n" + md);
+          });
+        })();
+      </script>
+    {% endif %}
   </div>
 
   <!-- 마크다운(내보내기용) -->

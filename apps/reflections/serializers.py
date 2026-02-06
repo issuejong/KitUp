@@ -1,6 +1,6 @@
 # reflections/serializers.py
 from rest_framework import serializers
-from .models import Retrospective
+from .models import Retrospective, RetrospectiveAsset 
 from .services.retrospective_guide import load_guide, build_markdown
 
 
@@ -84,3 +84,20 @@ class RetrospectiveWriteSerializer(serializers.ModelSerializer):
             validated_data, template_key, answers_json, title
         )
         return super().update(instance, validated_data)
+    
+class RetrospectiveAssetUploadSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+    md = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RetrospectiveAsset
+        fields = ["id", "alt_text", "image", "url", "md", "created_at"]
+        read_only_fields = ["id", "url", "md", "created_at"]
+
+    def get_url(self, obj):
+        return obj.image.url if obj.image else ""
+
+    def get_md(self, obj):
+        alt = obj.alt_text or "image"
+        url = self.get_url(obj)
+        return f"![{alt}]({url})" if url else ""

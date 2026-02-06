@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.db.models import Q
 
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied, NotAuthenticated
@@ -14,8 +16,12 @@ from drf_spectacular.utils import (
     OpenApiTypes,
 )
 
-from .models import Retrospective
-from .serializers import RetrospectiveReadSerializer, RetrospectiveWriteSerializer
+from .models import Retrospective, RetrospectiveAsset
+from .serializers import (
+    RetrospectiveReadSerializer,
+    RetrospectiveWriteSerializer,
+    RetrospectiveAssetUploadSerializer, 
+)
 from .services.retrospective_guide import load_guide, build_markdown
 
 from apps.projects.models import Project
@@ -346,4 +352,50 @@ class RetrospectiveViewSet(viewsets.ModelViewSet):
         obj = write.save(user=request.user)
         read = RetrospectiveReadSerializer(obj, context=self.get_serializer_context())
         return Response(read.data, status=status.HTTP_201_CREATED)
+    
+    @extend_schema(
+        summary="회고 이미지 업로드",
+        tags=["Retrospectives"],
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "image": {"type": "string", "format": "binary"},
+                    "alt_text": {"type": "string"},
+                },
+                "required": ["image"],
+            }
+        },
+        responses={201: RetrospectiveAssetUploadSerializer},
+    )
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="assets",
+        parser_classes=[MultiPartParser, FormParser],
+    )
+    def upload_asset(self, request, pk=None):
+        retro = self.get_object()  # 여기서 본인 회고 체크됨
+
+        f = request.FILES.get("image")
+        if not f:
+            return Response({"detail": "image 파일이 필요합니다."}, status=400)
+
+        # 간단한 이미지 타입 체크(추가 안전장치)
+        ct = (getattr(f, "content_type", "") or "").lower()
+        if ct and not ct.startswith("image/"):
+            return Response({"detail": "이미지 파일만 업로드 가능합니다."}, status=400)
+
+        alt_text = (request.data.get("alt_text") or "").strip()
+
+        asset = RetrospectiveAsset.objects.create(
+            retrospective=retro,
+            user=request.user,
+            image=f,
+            alt_text=alt_text,
+        )
+
+        data = RetrospectiveAssetUploadSerializer(asset, context=self.get_serializer_context()).data
+        return Response(data, status=status.HTTP_201_CREATED)
+
 

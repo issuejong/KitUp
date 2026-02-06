@@ -81,6 +81,8 @@ htmlcov/
 # 기타
 ############################
 .cache/
+/media/
+
 
 *.pem
 kitup-key.pem
