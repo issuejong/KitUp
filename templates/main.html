@@ -71,24 +71,24 @@
 		<div class="m_frontend">
 			<h3>WEB 프론트엔드</h3>
 			{% if user.is_authenticated %}
-			{% with pm_level=user.get_role_level|add:"PM" %}
-			{% if pm_level == 1 %}
+			{% with fe_level=user.get_role_level|add:"FRONTEND" %}
+			{% if fe_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1" />
 			<p class="m_level">Lv1</p>
-			{% elif pm_level == 2 %}
+			{% elif fe_level == 2 %}
 			<img src="{% static 'images/Level2.png' %}" alt="Level2">
             <p class="m_level">Lv2</p>
-			{% elif pm_level == 3 %}
+			{% elif fe_level == 3 %}
 			<img src="{% static 'images/Level3.png' %}" alt="Level3">
             <p class="m_level">Lv3</p>
-			{% elif pm_level == 4 %}
+			{% elif fe_level == 4 %}
 			<img src="{% static 'images/Level4.png' %}" alt="Level4">
             <p class="m_level">Lv4</p>
-            <button class="m_front_btn" onclick="window.location.href='{% url 'teams:passion_test' %}?role=FRONTEND'">팀 매칭 신청하기</button>
+            <button class="m_front_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=FRONTEND'">팀 매칭 신청하기</button>
 			{% else %}
 			<img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
 			<p class="m_nolevel">아직 레벨 진단이 완료되지 않았어요!</p>
-			<button class="m_front_btn" onclick="window.location.href='{% url 'accounts:level_test' %}?role=FRONTEND'">레벨 진단하기</button>
+			<button class="m_front_btn" type="button" onclick="window.location.href='{% url 'accounts:level_test' %}?role=FRONTEND'">레벨 진단하기</button>
 			{% endif %}
 			{% endwith %}
 			{% else %}
@@ -106,27 +106,26 @@
 		<div class="m_backend">
 			<h3>WEB 백엔드</h3>
 			{% if user.is_authenticated %}
-			<!-- 레벨 분기 -->
-			<!-- 레벨X -->
-			<!-- <img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
-			<p class="m_nolevel">아직 레벨 진단이 완료되지 않았어요!</p>
-			<button class="m_back_btn" type="button">레벨 진단하기</button> -->
-			<!-- 레벨1 -->
-			<!-- <img src="{% static 'images/Level1.png' %}" alt="Level1" />
+			{% with be_level=user.get_role_level|add:"BACKEND" %}
+			{% if be_level == 1 %}
+			<img src="{% static 'images/Level1.png' %}" alt="Level1" />
 			<p class="m_level">Lv1</p>
-			<button class="m_back_btn">팀 매칭 신청하기</button> -->
-			<!-- 레벨2 -->
-			<!-- <img src="{% static 'images/Level2.png' %}" alt="Level2">
+			{% elif be_level == 2 %}
+			<img src="{% static 'images/Level2.png' %}" alt="Level2">
             <p class="m_level">Lv2</p>
-            <button class="m_back_btn">팀 매칭 신청하기</button> -->
-			<!-- 레벨3 -->
-			<!-- <img src="{% static 'images/Level3.png' %}" alt="Level3">
+			{% elif be_level == 3 %}
+			<img src="{% static 'images/Level3.png' %}" alt="Level3">
             <p class="m_level">Lv3</p>
-            <button class="m_back_btn">팀 매칭 신청하기</button> -->
-			<!-- 레벨4 -->
+			{% elif be_level == 4 %}
 			<img src="{% static 'images/Level4.png' %}" alt="Level4" />
 			<p class="m_level">Lv4</p>
-			<button class="m_back_btn">팀 매칭 신청하기</button>
+			<button class="m_back_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=BACKEND'">팀 매칭 신청하기</button>
+			{% else %}
+			<img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
+			<p class="m_nolevel">아직 레벨 진단이 완료되지 않았어요!</p>
+			<button class="m_back_btn" type="button" onclick="window.location.href='{% url 'accounts:level_test' %}?role=BACKEND'">레벨 진단하기</button>
+			{% endif %}
+			{% endwith %}
 			{% else %}
 			<img src="{% static 'images/nolevel.png' %}" alt="nolevel" />
 			<p class="m_nolevel">로그인 후 레벨을 확인해보세요.</p>
