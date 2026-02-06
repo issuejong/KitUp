@@ -1,0 +1,182 @@
+<!-- 테스트용 임시 템플릿 -->
+
+{% load reflections_extras %}
+
+{% comment %}
+필수 context:
+- guide: {"title": "...", "questions":[{"id":"q1", "label":"..."}, ...]}
+- tpl: template key
+- answers: dict (qid -> text)  (create는 빈 dict 가능)
+- note: (update에서만 있을 수 있음)
+- error: (선택)
+{% endcomment %}
+
+<div class="container" style="max-width: 920px; margin: 0 auto; padding: 32px 16px;">
+  {% if error %}
+    <div style="margin-bottom:12px; padding:12px; border:1px solid #fca5a5; background:#fef2f2; border-radius:10px;">
+      {{ error }}
+    </div>
+  {% endif %}
+
+  <!-- 제목 -->
+  <div style="margin-bottom: 18px;">
+    <input
+      name="title"
+      value="{% if note %}{{ note.title }}{% endif %}"
+      placeholder="제목을 입력하시오."
+      style="width:100%; font-size:42px; font-weight:700; border:none; outline:none; border-bottom:2px solid #e5e7eb; padding: 8px 0;"
+      required
+    />
+  </div>
+
+  <!-- (옵션) 템플릿/날짜 같은 메타 영역 -->
+  <div style="display:flex; gap:10px; justify-content:flex-end; margin-bottom:18px;">
+    <span style="padding:8px 12px; border:1px solid #e5e7eb; border-radius:999px; font-size:14px;">
+      template: {{ tpl }}
+    </span>
+    {% if note %}
+      <span style="padding:8px 12px; border:1px solid #e5e7eb; border-radius:999px; font-size:14px;">
+        {{ note.created_at|date:"Y.m.d (D)" }}
+      </span>
+    {% endif %}
+  </div>
+
+  <!-- 질문 리스트 -->
+  <div style="display:flex; flex-direction:column; gap:18px;">
+    {% for q in guide.questions %}
+      <section style="border:1px solid #e5e7eb; border-radius:18px; overflow:hidden; background:#fff;">
+        
+        <!-- header 태그 쓰지 마세요(공통 CSS 충돌 방지). div로 대체 -->
+        <div style="background:#eef2ff; padding:12px 14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div style="font-weight:700;">
+              {{ q.order|default:forloop.counter }}. {{ q.title }}
+            </div>
+
+            {# ✅ note가 있을 때만 업로드 가능(생성 페이지는 저장 후 업로드) #}
+            {% if note %}
+              <button
+                type="button"
+                data-asset-btn
+                data-qid="{{ q.id }}"
+                style="padding:6px 10px; border:1px solid #111827; border-radius:10px; background:#111827; color:white; font-size:12px;"
+              >
+                이미지 업로드
+              </button>
+            {% else %}
+              <span style="font-size:12px; color:#6b7280;">저장 후 업로드</span>
+            {% endif %}
+          </div>
+
+          {% if q.hint %}
+            <div style="margin-top:6px; font-size:13px; color:#4b5563; line-height:1.35;">
+              {{ q.hint }}
+            </div>
+          {% endif %}
+
+          ...
+        </div>
+
+        <div style="padding:14px;">
+          <textarea
+            id="ta__{{ q.id }}"
+            name="a__{{ q.id }}"
+            rows="5"
+            ...
+          >{{ answers|get_item:q.id }}</textarea>
+        </div>
+      </section>
+    {% endfor %}
+    {# ✅ 숨겨진 파일 인풋 1개만 두고 재사용 #}
+    {% if note %}
+      <input id="assetFileInput" type="file" accept="image/*" style="display:none;" />
+
+      <script>
+        (function () {
+          const fileInput = document.getElementById("assetFileInput");
+          let currentQid = null;
+
+          // ✅ DRF action URL: retrospective-upload-asset (Router basename에 따라 다를 수 있음)
+          //    보통: "retrospective-upload-asset"
+          const uploadUrl = "{% url 'retrospective-upload-asset' note.id %}";
+
+          function insertAtCursor(textarea, text) {
+            const start = textarea.selectionStart ?? textarea.value.length;
+            const end = textarea.selectionEnd ?? textarea.value.length;
+            const before = textarea.value.slice(0, start);
+            const after = textarea.value.slice(end);
+            textarea.value = before + text + after;
+            const pos = start + text.length;
+            textarea.setSelectionRange(pos, pos);
+            textarea.focus();
+          }
+
+          document.querySelectorAll("[data-asset-btn]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              currentQid = btn.dataset.qid;
+              fileInput.value = "";
+              fileInput.click();
+            });
+          });
+
+          fileInput.addEventListener("change", async () => {
+            if (!fileInput.files || !fileInput.files[0] || !currentQid) return;
+
+            const fd = new FormData();
+            fd.append("image", fileInput.files[0]);
+            fd.append("alt_text", "image");
+
+            const res = await fetch(uploadUrl, {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "",
+              },
+              body: fd,
+            });
+
+            if (!res.ok) {
+              alert("업로드 실패");
+              return;
+            }
+
+            const data = await res.json();
+            const md = data.md || `![image](${data.url})`;
+
+            const ta = document.getElementById(`ta__${currentQid}`);
+            if (!ta) return;
+
+            // ✅ 질문 답변은 하나의 md로 본다: 커서 위치에 삽입
+            insertAtCursor(ta, (ta.value.endsWith("\n") || ta.value.length === 0) ? md : "\n" + md);
+          });
+        })();
+      </script>
+    {% endif %}
+  </div>
+
+  <!-- 마크다운(내보내기용) -->
+  <details style="margin-top:18px;">
+    <summary style="cursor:pointer; font-weight:600;">내보내기용 마크다운 보기</summary>
+    <div style="margin-top:10px;">
+      <textarea
+        rows="10"
+        readonly
+        style="width:100%; border:1px solid #e5e7eb; border-radius:14px; padding:12px;"
+      >{% if note %}{{ note.content_md }}{% endif %}</textarea>
+      <p style="margin-top:8px; font-size:12px; color:#6b7280;">
+        * content_md는 저장/내보내기용이며, 작성 UI의 메인은 answers_json 입니다.
+      </p>
+    </div>
+  </details>
+
+  <!-- 액션 버튼 -->
+  <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+    <a href="{% url 'reflections:note_list' %}"
+       style="padding:10px 16px; border:1px solid #e5e7eb; border-radius:999px; text-decoration:none;">
+      목록
+    </a>
+    <button type="submit"
+            style="padding:10px 18px; border:none; border-radius:999px; background:#111827; color:white;">
+      저장
+    </button>
+  </div>
+</div>
