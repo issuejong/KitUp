@@ -4,7 +4,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
-    background-color: #EAF0FF;
+    background-color: #fff;
     min-height: 100vh;
 }
 
@@ -25,14 +25,14 @@
     left: 0;
     right: 0;
     height: 180px;
-    background: linear-gradient(180deg, #C5D9FF 0%, #EAF0FF 100%);
+    background-color: #EAF0FF;
     border-radius: 20px 20px 0 0;
     z-index: 0;
 }
 
-/* 왼쪽 프로필 영역 - 50% */
+/* 왼쪽 프로필 영역 - 70% */
 .user-info-side {
-    flex: 0 0 50%;
+    flex: 0 0 70%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -196,9 +196,9 @@ input[type="file"] {
     background-color: #3d5dd1;
 }
 
-/* 오른쪽 콘텐츠 영역 - 50% */
+/* 오른쪽 콘텐츠 영역 - 30% */
 .content-side {
-    flex: 0 0 50%;
+    flex: 0 0 30%;
     display: flex;
     flex-direction: column;
     justify-content: center;
