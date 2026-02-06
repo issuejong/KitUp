@@ -183,12 +183,23 @@ button:hover {
     width: 60%; height: 40px;
     background: #fff;
     border-radius: 25px;
-    padding: 10px 10px 10px 20px;
+    padding: 10px 5px 10px 20px;
+}
+
+.match_wait form:focus-within {
+    border: 1px solid #4272EF;
+    box-shadow: 0 2px 15px rgba(66, 114, 239, 0.2);
 }
 
 .match_wait form input {
+	width: 80%;
     border: none;
     font-size: 15px;
+    color: #888888;
+	outline: none;
+}
+
+.match_wait form input::placeholder {
     color: #888888;
 }
 
@@ -197,4 +208,9 @@ button:hover {
     background: #4272EF; color: #fff;
     border: none; border-radius: 20px;
     padding: 7px 15px;
+}
+
+.match_wait form button:hover {
+    background: #1F4CC0;
+    transition: 0.3s ease;
 }
