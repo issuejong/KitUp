@@ -36,6 +36,14 @@
          style="padding:10px 12px; border:1px solid #111827; border-radius:12px; text-decoration:none; color:#fff; background:#111827;">
         수정하기
       </a>
+
+      <button
+        data-bookmark-toggle
+        data-note-id="{{ note.id }}"
+        data-bookmarked="{{ note.bookmarked }}"
+      >
+        ★
+      </button>
     </div>
   </div>
 
@@ -70,7 +78,6 @@
         </div>
       </section>
     {% endfor %}
-
   </div>
 
   <!-- md는 내보내기용(접기) -->
@@ -80,12 +87,53 @@
     </summary>
     <div style="padding:14px;">
       <textarea
+        id="full_md"
         rows="12"
         readonly
         style="width:100%; resize:vertical; border:1px solid #e5e7eb; border-radius:14px; padding:12px; outline:none; background:#f9fafb; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"
       >{{ note.content_md }}</textarea>
+      <button
+        type="button"
+        data-md-copy
+        data-target-id="full_md"
+      >
+        MD 복사
+      </button>
     </div>
+    
+
   </details>
 
 </div>
+<script>
+  document.querySelectorAll("[data-bookmark-toggle]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      console.log("bookmark toggle clicked: ", btn.dataset.bookmarked);
+      const noteId = btn.dataset.noteId;
+
+      // TODO: PATCH /retrospectives/{id}/
+      // body: { bookmarked: !current }
+
+      // 성공 시
+      btn.dataset.bookmarked = btn.dataset.bookmarked === "true" ? "false" : "true";
+    });
+  });
+
+  document.querySelectorAll("[data-md-copy]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const ta = document.getElementById(btn.dataset.targetId);
+      // console.log("md copy clicked: ", ta);
+      if (!ta) return;
+
+      try {
+        await navigator.clipboard.writeText(ta.value);
+        alert("마크다운 복사됨");
+      } catch (e) {
+        console.error(e);
+        alert("복사 실패");
+      }
+    });
+  });
+
+</script>
 {% endblock %}
