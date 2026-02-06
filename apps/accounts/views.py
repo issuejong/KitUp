@@ -154,7 +154,7 @@ def mypage(request):
 
     - 로그인한 사용자의 정보, 역할 레벨, 팀 프로젝트 참여 내역 등을 조회
     - 'account/mypage.html' 템플릿을 렌더링
-    - 프로젝트 내역은 team_members -> team -> project 경로로 조회한다.
+    - 프로젝트 내역은 team_memberships -> team -> project 경로로 조회한다.
     """
 
     user = request.user
@@ -162,9 +162,9 @@ def mypage(request):
     # 역할별 스킬 레벨 (user_role_levels + roles)
     role_levels = user.role_levels.select_related("role").all()
 
-    # 팀 프로젝트 참여 내역 (team_members + role + team + project)
+    # 팀 프로젝트 참여 내역 (team_memberships + role + team + project)
     memberships = (
-        user.team_members
+        user.team_memberships
             .select_related("team__project", "role")
             .order_by("-joined_at")
     )
