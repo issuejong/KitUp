@@ -373,6 +373,13 @@ let currentQuestion = 0;
 let answers = [];
 
 
+//답변 초기화
+window.addEventListener('DOMContentLoaded', function() {
+    currentTrack = document.getElementById('selected-track').value;
+    answers = new Array(10).fill(null);
+    
+    showQuestion(0);
+});
 
 // 문항 표시
 function showQuestion(index) {
