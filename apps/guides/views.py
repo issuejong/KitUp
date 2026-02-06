@@ -36,23 +36,35 @@ def mission(request):
         is_active=True
     ).prefetch_related('tasks')
     
+    # 1. 모든 task 수집
+    all_tasks = []
+    cards_tasks_map = {}  # card_id -> tasks
+    for card in guide_cards:
+        card_tasks = list(card.tasks.all())
+        cards_tasks_map[card.id] = card_tasks
+        all_tasks.extend(card_tasks)
+    
+    # 2. 한 번에 모든 progress 조회 (N+1 해결)
+    progress_map = {}
+    for progress in GuideTaskProgress.objects.filter(
+        task__in=all_tasks,
+        project=project
+    ):
+        progress_map[progress.task_id] = progress
+    
     # 각 미션의 진행도 계산
     mission_data = []
     for card in guide_cards:
-        tasks = card.tasks.all()
-        completed_tasks = GuideTaskProgress.objects.filter(
-            task__in=tasks,
-            project=project,
-            is_completed=True
-        ).count()
+        tasks = cards_tasks_map[card.id]
+        completed_tasks = sum(
+            1 for task in tasks 
+            if progress_map.get(task.id, GuideTaskProgress()).is_completed
+        )
         
         # 태스크 데이터
         task_progress_data = []
         for task in tasks:
-            progress = GuideTaskProgress.objects.filter(
-                task=task,
-                project=project
-            ).first()
+            progress = progress_map.get(task.id)
             
             task_progress_data.append({
                 'task': task,
