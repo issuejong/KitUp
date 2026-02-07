@@ -306,3 +306,130 @@
 .mission_card.completed {
     opacity: 0.8;
 }
+
+/* 진척도 바 통합 스타일 */
+.role_progress_bar {
+    margin: 20px 0 15px 100px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.role_progress_bar > h3 {
+    width: 30px;
+    font-size: 20px;
+    font-weight: 550;
+}
+
+.progress_bar_container {
+    position: relative;
+    flex: 1;
+    height: 15px;
+    background: #DDDDDD;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress_bar_fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
+
+.progress_bar_fill.pm_color {
+    background: #37D3BF;
+}
+
+.progress_bar_fill.fe_color {
+    background: #FFDF6E;
+}
+
+.progress_bar_fill.be_color {
+    background: #FF69A4;
+}
+
+.progress_percent {
+    min-width: 45px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4272EF;
+}
+
+/* 미션 설명 스타일 */
+.mission_description {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.mission_description ul,
+.mission_description ol {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.mission_description li {
+    margin-bottom: 8px;
+}
+
+.mission_description strong {
+    color: #4272EF;
+    font-weight: 600;
+}
+
+.mission_description em {
+    color: #6B7280;
+    font-style: italic;
+}
+
+/* 태스크 리스트 */
+.task_list {
+    margin-top: 15px;
+}
+
+.task_item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: #F9FAFB;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.task_item:hover {
+    background: #F3F4F6;
+}
+
+.task_item.completed {
+    opacity: 0.6;
+}
+
+.task_item.completed label {
+    text-decoration: line-through;
+    color: #9CA3AF;
+}
+
+.task_checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: #4272EF;
+}
+
+.task_item label {
+    flex: 1;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+}
+
+/* 기존 mission_input 제거 */
+.mission_input {
+    display: none;
+}
