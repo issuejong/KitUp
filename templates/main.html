@@ -162,52 +162,26 @@
 		<h3>KITUP 프로젝트</h3>
 	</div>
 	<div class="m_project_content">
-		<!-- 프로젝트 없는 경우 -->
+		{% if archived_projects %}
+		<div class="m_project">
+			{% for project in archived_projects %}
+			<div>
+				{% if project.project_image %}
+				<img src="{{ project.project_image.url }}" alt="{{ project.title }}" />
+				{% else %}
+				<img
+					src="{% static 'images/example_img.png' %}"
+					alt="예시이미지"
+				/>
+				{% endif %}
+				<h3>서비스명</h3>
+				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
 		<h3 class="m_noproject">진행된 KITUP 프로젝트가 없습니다.</h3>
-		<!-- 프로젝트 있는 경우 -->
-		<!-- 반복문으로 지금까지 있었던 프로젝트 등록 -->
-		<!-- <div class="m_project">
-			<div>
-				<img
-					src="{% static 'images/example_img.png' %}"
-					alt="예시이미지"
-				/>
-				<h3>서비스명</h3>
-				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
-			</div>
-			<div>
-				<img
-					src="{% static 'images/example_img.png' %}"
-					alt="예시이미지"
-				/>
-				<h3>서비스명</h3>
-				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
-			</div>
-			<div>
-				<img
-					src="{% static 'images/example_img.png' %}"
-					alt="예시이미지"
-				/>
-				<h3>서비스명</h3>
-				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
-			</div>
-			<div>
-				<img
-					src="{% static 'images/example_img.png' %}"
-					alt="예시이미지"
-				/>
-				<h3>서비스명</h3>
-				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
-			</div>
-			<div>
-				<img
-					src="{% static 'images/example_img.png' %}"
-					alt="예시이미지"
-				/>
-				<h3>서비스명</h3>
-				<p>서비스명은 이러이러한 기능을 하는 플랫폼이다</p>
-			</div>
-		</div> -->
+		{% endif %}
 	</div>
 </div>
 {% endblock %}
