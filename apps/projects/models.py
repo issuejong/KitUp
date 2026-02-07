@@ -86,6 +86,15 @@ class Project(models.Model):
         COMPLETED = "COMPLETED", "완료"
         ARCHIVED = "ARCHIVED", "보관됨"
 
+    season = models.ForeignKey(
+        Season,
+        on_delete=models.CASCADE,
+        related_name="projects",
+        null=True,
+        blank=True,
+        help_text="속한 시즌",
+    )
+
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
