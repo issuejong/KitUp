@@ -12,6 +12,12 @@
 		<input type="text" placeholder="이메일을 입력해주세요" />
 		<button>알림받기</button>
 	</form>
+	<div class="matching_actions">
+		<form method="post" action="{% url 'teams:team_matching_cancel' %}" class="cancel_form">
+			{% csrf_token %}
+			<button type="submit" class="cancel_button">매칭 취소</button>
+		</form>
+	</div>
 </div>
 
 <!-- 매칭 성공 -->
