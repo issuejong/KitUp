@@ -40,12 +40,15 @@
 			{% if pm_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1">
             <p class="m_level">Lv1</p>
+			<button class="m_design_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=PM'">팀 매칭 신청하기</button>
 			{% elif pm_level == 2 %}
 			<img src="{% static 'images/Level2.png' %}" alt="Level2">
             <p class="m_level">Lv2</p>
+			<button class="m_design_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=PM'">팀 매칭 신청하기</button>
 			{% elif pm_level == 3 %}
 			<img src="{% static 'images/Level3.png' %}" alt="Level3">
             <p class="m_level">Lv3</p>
+			<button class="m_design_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=PM'">팀 매칭 신청하기</button>
 			{% elif pm_level == 4 %}
 			<img src="{% static 'images/Level4.png' %}" alt="Level4">
             <p class="m_level">Lv4</p>
@@ -75,12 +78,15 @@
 			{% if fe_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1" />
 			<p class="m_level">Lv1</p>
+			<button class="m_front_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=FRONTEND'">팀 매칭 신청하기</button>
 			{% elif fe_level == 2 %}
 			<img src="{% static 'images/Level2.png' %}" alt="Level2">
             <p class="m_level">Lv2</p>
+			<button class="m_front_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=FRONTEND'">팀 매칭 신청하기</button>
 			{% elif fe_level == 3 %}
 			<img src="{% static 'images/Level3.png' %}" alt="Level3">
             <p class="m_level">Lv3</p>
+			<button class="m_front_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=FRONTEND'">팀 매칭 신청하기</button>
 			{% elif fe_level == 4 %}
 			<img src="{% static 'images/Level4.png' %}" alt="Level4">
             <p class="m_level">Lv4</p>
@@ -110,12 +116,15 @@
 			{% if be_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1" />
 			<p class="m_level">Lv1</p>
+			<button class="m_back_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=BACKEND'">팀 매칭 신청하기</button>
 			{% elif be_level == 2 %}
 			<img src="{% static 'images/Level2.png' %}" alt="Level2">
             <p class="m_level">Lv2</p>
+			<button class="m_back_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=BACKEND'">팀 매칭 신청하기</button>
 			{% elif be_level == 3 %}
 			<img src="{% static 'images/Level3.png' %}" alt="Level3">
             <p class="m_level">Lv3</p>
+			<button class="m_back_btn" type="button" onclick="window.location.href='{% url 'teams:passion_test' %}?role=BACKEND'">팀 매칭 신청하기</button>
 			{% elif be_level == 4 %}
 			<img src="{% static 'images/Level4.png' %}" alt="Level4" />
 			<p class="m_level">Lv4</p>
