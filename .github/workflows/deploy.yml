@@ -43,11 +43,11 @@ jobs:
           script: |
             cd /home/ubuntu/kitup
             # 서버에서도 GHCR 이미지를 받을 수 있게 로그인
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
             # 최신 이미지 가져오고 컨테이너 재실행
             docker-compose pull web
-            docker-compose up -d --build web
+            docker-compose up -d web
             
             # 후처리 작업 (DB 동기화 및 정적파일 수집)
             docker-compose exec -T web python manage.py migrate
