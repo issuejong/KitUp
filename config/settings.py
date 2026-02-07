@@ -117,6 +117,7 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", '"KITUP" <noreply@kitup.com
 
 # 비밀번호 재설정
 ACCOUNT_PASSWORD_RESET_ON_CHANGE = False  # 비밀번호 변경 시 재로그인 불필요
+PASSWORD_RESET_TIMEOUT = 86400  # 비밀번호 초기화 토큰 유효시간 (초 단위, 24시간)
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"          # 로그인 성공 후
