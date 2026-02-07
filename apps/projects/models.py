@@ -166,10 +166,10 @@ class Project(models.Model):
         help_text="팀 규칙 (마크다운)",
     )
 
-    related_links = models.JSONField(
-        default=dict,
+    related_links = models.TextField(
+        null=True,
         blank=True,
-        help_text="관련 링크 (Notion, Figma, GitHub 등)",
+        help_text="관련 링크 (마크다운)",
     )
 
     is_favorite = models.BooleanField(
