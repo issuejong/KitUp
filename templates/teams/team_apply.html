@@ -11,7 +11,7 @@
 		<div class="t_design">
 			<h3>WEB 기획</h3>
 			{% if user.is_authenticated %}
-			{% with pm_level=user.get_role_level|add:"PM" %}
+			{% with pm_level=role_levels.PM %}
 			{% if pm_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1">
             <p class="t_level">Lv1</p>
@@ -46,7 +46,7 @@
 		<div class="t_frontend">
 			<h3>WEB 프론트엔드</h3>
 			{% if user.is_authenticated %}
-			{% with fe_level=user.get_role_level|add:"FRONTEND" %}
+			{% with fe_level=role_levels.FRONTEND %}
 			{% if fe_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1" />
 			<p class="t_level">Lv1</p>
@@ -81,7 +81,7 @@
 		<div class="t_backend">
 			<h3>WEB 백엔드</h3>
 			{% if user.is_authenticated %}
-			{% with be_level=user.get_role_level|add:"BACKEND" %}
+			{% with be_level=role_levels.BACKEND %}
 			{% if be_level == 1 %}
 			<img src="{% static 'images/Level1.png' %}" alt="Level1" />
 			<p class="t_level">Lv1</p>

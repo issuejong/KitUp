@@ -122,7 +122,7 @@ const questions = {
       question: "7. 컴포넌트 단위로 UI를 나누어 만들어본 적이 있나요?",
       options: [
         "컴포넌트 개념이 익숙하지 않다",
-        "튜토리얼에서 컴포넌트를 사용해봤다",
+        "강의 예제를 따라 컴포넌트를 만들어본 적이 있다",
         "재사용 가능한 컴포넌트를 만들어봤다",
         "프로젝트에서 컴포넌트 구조를 설계해봤다",
         "확장성과 유지보수를 고려한 컴포넌트 설계가 가능하다"
@@ -468,6 +468,7 @@ document.getElementById('level-test-form').addEventListener('submit', function(e
     }
     
     // 서버로 결과 전송
+    console.log('제출 데이터:', {track: currentTrack, level: level});
     fetch('/api/accounts/level-test/submit/', {
         method: 'POST',
         headers: {
@@ -481,8 +482,12 @@ document.getElementById('level-test-form').addEventListener('submit', function(e
             answers: answers
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('응답 상태:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.log('응답 데이터:', data);
         if (data.success) {
             // 트랙 완료 표시
             document.getElementById('track-completed').value = 'true';
