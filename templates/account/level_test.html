@@ -376,6 +376,7 @@ let answers = [];
 //답변 초기화
 window.addEventListener('DOMContentLoaded', function() {
     currentTrack = document.getElementById('selected-track').value;
+    console.log('DEBUG: currentTrack 설정됨 -', currentTrack);
     answers = new Array(10).fill(null);
     
     showQuestion(0);

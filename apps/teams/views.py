@@ -61,7 +61,7 @@ def team_apply(request):
     )
 
     role_level_map = {
-        rl.role.code: rl
+        rl.role.code: rl.level
         for rl in role_levels
     }
     
