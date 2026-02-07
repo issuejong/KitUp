@@ -220,7 +220,6 @@ hr {
     scroll-behavior: smooth;
 }
 
-/* 스크롤바 스타일링 */
 .t_member::-webkit-scrollbar {
     height: 8px;
 }
