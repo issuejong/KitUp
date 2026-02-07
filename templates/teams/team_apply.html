@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% load static %} {% block header %}
 <link rel="stylesheet" href="{% static 'css/team_apply.css' %}" />
 {% endblock %} {% block content %}
-{% if season and season.is_matching_period %}
+{% if season.status == 'MATCHING' %}
 <div class="team_matching">
 	<h3>팀 매칭 모집 기간이 시작됐어요!</h3>
 	<p>
