@@ -8,6 +8,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
 from apps.accounts.models import Role, UserRoleLevel
 from apps.projects.models import Season
 
@@ -94,6 +98,56 @@ def passion_test(request):
 
 @login_required
 def passion_submit(request):
+    """
+    열정 테스트 결과 제출 처리
+    
+    - POST 요청으로 열정 레벨(passion_level)을 전달받음
+    - User 모델에 열정 레벨 저장
+    - 제출 후 팀 매칭 결과 페이지로 리다이렉트
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("잘못된 요청입니다.")
+    
+    passion_level = request.POST.get("passion_level")
+    
+    request.user.passion_level = int(passion_level)
+    request.user.save(update_fields=["passion_level"])
+    
+    return redirect("teams:team_status")
+
+
+@login_required
+@require_POST
+def passion_submit_api(request):
+    """
+    열정 테스트 결과 제출 처리 (API)
+    
+    - POST 요청으로 passion_level을 JSON으로 받음
+    - User 모델에 열정 레벨 저장
+    - JSON 응답으로 success 여부 반환
+    """
+    try:
+        data = json.loads(request.body)
+        passion_level = data.get("passion_level")
+        
+        if passion_level is None:
+            return JsonResponse({"success": False, "error": "필수 데이터가 없습니다."})
+        
+        request.user.passion_level = int(passion_level)
+        request.user.save(update_fields=["passion_level"])
+        
+        return JsonResponse({"success": True})
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "잘못된 JSON 형식입니다."})
+    except Exception as e:
+        print(f"DEBUG: 열정 테스트 저장 에러 - {e}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@login_required
+def passion_submit_old(request):
     """
     열정 테스트 결과 제출 처리
     

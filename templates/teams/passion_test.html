@@ -269,7 +269,8 @@ document.getElementById('passion-test-form').addEventListener('submit', function
     }
     
     // 서버로 결과 전송
-    fetch('/api/passion-test/submit/', {
+    console.log('제출 데이터:', {passion_level: passionLevel, total_score: totalScore});
+    fetch('/api/teams/passion-test/submit/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -282,8 +283,12 @@ document.getElementById('passion-test-form').addEventListener('submit', function
             answers: answers
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('응답 상태:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.log('응답 데이터:', data);
         if (data.success) {
             // 결과 표시 (점수는 보이지 않음)
             document.getElementById('result-level').textContent = passionLevel;
