@@ -2,7 +2,7 @@ body {
     background: #F6F8FF;
 }
 
-/* 매칭 대기 */
+/* 매칭 성공 */
 .team_matching h3 {
     font-size: 27px;
     font-weight: 600;
@@ -46,38 +46,6 @@ body {
 
 .team_matching form button:hover {
     background: #1F4CC0;
-    transition: 0.3s ease;
-}
-
-/* 매칭 취소 */
-.matching_actions {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-}
-
-.cancel_form {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.cancel_button {
-    width: 150px;
-    height: 40px;
-    padding: 10px 20px;
-    background: #FF6B6B;
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-.cancel_button:hover {
-    background: #E63946;
     transition: 0.3s ease;
 }
 

@@ -60,20 +60,20 @@
         <div class="t_content">
             <p><span class="t_role">PM</span>
                    {% for member in members %}
-                    {% if member.role.name == "기획자" %}
+                    {% if member.role.code == "PM" %}
                     {{ member.user.username }}
                     {% endif %}
                     {% endfor %}</p>
             <p><span class="t_role">FE</span> 
                    {% for member in members %}
-                    {% if member.role.name == "프론트엔드" %}
+                    {% if member.role.code == "FRONTEND" %}
                     {{ member.user.username }}
                     {% endif %}
                     {% endfor %}
                 </p>
             <p><span class="t_role">BE</span> 
                    {% for member in members %}
-                    {% if member.role.name == "백엔드" %}
+                    {% if member.role.code == "BACKEND" %}
                     {{ member.user.username }}
                     {% endif %}
                     {% endfor %}
