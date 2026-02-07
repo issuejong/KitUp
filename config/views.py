@@ -20,6 +20,7 @@ def main_view(request):
     season = Season.get_active_season()
     context = {
         'season': season,
+        'user_obj': user,
     }
     
     # 로그인 상태만 추가 데이터 조회

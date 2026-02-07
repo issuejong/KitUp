@@ -1,27 +1,8 @@
 {% extends 'base.html' %} {% load static %} {% block header %}
 <link rel="stylesheet" href="{% static 'css/team.css' %}" />
 {% endblock %} {% block content %}
-<!-- 매칭 대기 -->
-{% if is_matching_period %}
-<div class="team_success">
-	<h3>
-		팀 매칭 신청이 완료되었어요. <br />
-		팀 매칭 결과가 발표되면 메일로 알려드릴게요.
-	</h3>
-	<form action="submit">
-		<input type="text" placeholder="이메일을 입력해주세요" />
-		<button>알림받기</button>
-	</form>
-	<div class="matching_actions">
-		<form method="post" action="{% url 'teams:team_matching_cancel' %}" class="cancel_form">
-			{% csrf_token %}
-			<button type="submit" class="cancel_button">매칭 취소</button>
-		</form>
-	</div>
-</div>
-
-<!-- 매칭 성공 -->
-{% elif team_matched %}
+<!-- 1. 팀 매칭 성공 -->
+{% if team_matched %}
 <div class="team_success">
 	<h3>
 		팀 매칭이 완료 되었어요. <br />
@@ -89,7 +70,7 @@
 	>
 </div>
 
-<!-- 매칭 실패 -->
+<!-- 2. 팀 매칭 실패 -->
 {% else %}
 <div class="team_fail">
     <h3>팀 매칭에 실패했어요. <br>

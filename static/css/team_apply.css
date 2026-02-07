@@ -6,6 +6,146 @@ button:hover {
 	cursor: pointer;
 }
 
+/* 팀 매칭 기간 X */
+.match_wait {
+    margin-top: 120px;
+    text-align: center;
+    align-items: center;
+}
+
+.match_wait h3 {
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.match_wait form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px auto 0;
+    width: 60%; height: 40px;
+    background: #fff;
+    border-radius: 25px;
+    padding: 10px 5px 10px 20px;
+}
+
+.match_wait form:focus-within {
+    border: 1px solid #4272EF;
+    box-shadow: 0 2px 15px rgba(66, 114, 239, 0.2);
+}
+
+.match_wait form input {
+	width: 80%;
+    border: none;
+    font-size: 15px;
+    color: #888888;
+	outline: none;
+}
+
+.match_wait form input::placeholder {
+    color: #888888;
+}
+
+.match_wait form button {
+    font-size: 15px;
+    background: #4272EF; color: #fff;
+    border: none; border-radius: 20px;
+    padding: 7px 15px;
+}
+
+.match_wait form button:hover {
+    background: #1F4CC0;
+    transition: 0.3s ease;
+}
+
+/* 매칭 대기 */
+.team_waiting {
+    margin-top: 120px;
+    text-align: center;
+    align-items: center;
+}
+
+.team_waiting > h3 {
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.team_waiting > form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px auto 0;
+    width: 60%; height: 40px;
+    background: #fff;
+    border-radius: 25px;
+    padding: 10px 5px 10px 20px;
+}
+
+.team_waiting > form:focus-within {
+    border: 1px solid #4272EF;
+    box-shadow: 0 2px 15px rgba(66, 114, 239, 0.2);
+}
+
+.team_waiting > form > input {
+	width: 80%;
+    border: none;
+    font-size: 15px;
+    color: #888888;
+	outline: none;
+}
+
+.team_waiting > form > input::placeholder {
+    color: #888888;
+}
+
+.team_waiting > form > button {
+    font-size: 15px;
+    background: #4272EF; color: #fff;
+    border: none; border-radius: 20px;
+    padding: 7px 15px;
+}
+
+.team_waiting > form > button:hover {
+    background: #1F4CC0;
+    transition: 0.3s ease;
+}
+
+/* 매칭 취소 */
+.matching_actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.cancel_form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.cancel_button {
+    width: 150px;
+    height: 40px;
+    padding: 10px 20px;
+    background: #FF6B6B;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.cancel_button:hover {
+    background: #E63946;
+    transition: 0.3s ease;
+}
+
+
+/* 팀 매칭 기간 O / 매칭 신청 X */
 .team_matching {
     margin-top: 100px;
     text-align: center;
@@ -161,56 +301,4 @@ button:hover {
 .t_stack .t_backend .t_back_btn:hover {
 	background: #C03067;
 	transition: 0.5s ease-in-out;
-}
-
-.match_wait {
-    margin-top: 120px;
-    text-align: center;
-    align-items: center;
-}
-
-.match_wait h3 {
-    font-size: 27px;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-.match_wait form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 30px auto 0;
-    width: 60%; height: 40px;
-    background: #fff;
-    border-radius: 25px;
-    padding: 10px 5px 10px 20px;
-}
-
-.match_wait form:focus-within {
-    border: 1px solid #4272EF;
-    box-shadow: 0 2px 15px rgba(66, 114, 239, 0.2);
-}
-
-.match_wait form input {
-	width: 80%;
-    border: none;
-    font-size: 15px;
-    color: #888888;
-	outline: none;
-}
-
-.match_wait form input::placeholder {
-    color: #888888;
-}
-
-.match_wait form button {
-    font-size: 15px;
-    background: #4272EF; color: #fff;
-    border: none; border-radius: 20px;
-    padding: 7px 15px;
-}
-
-.match_wait form button:hover {
-    background: #1F4CC0;
-    transition: 0.3s ease;
 }

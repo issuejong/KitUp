@@ -39,7 +39,8 @@
 /* 진척도 */
 .mission_progress {
     background: #F6F8FF;
-    width: 90%; height: 350px;
+    width: 90%;
+    height: 350px;
     padding: 50px 20px;
     margin: 0 auto 80px;
 }
@@ -50,11 +51,13 @@
 }
 
 .mp_title > img {
-    width: 100px; height: 100px;
+    width: 100px;
+    height: 100px;
 }
 
 .mp_title > div > h3 {
-    font-size: 25px; font-weight: 600;
+    font-size: 25px;
+    font-weight: 600;
     margin-bottom: 15px;
 }
 
@@ -63,88 +66,58 @@
     color: #FF0000;
 }
 
-.pm_progress {
+/* 진척도 바 */
+.role_progress_bar {
     margin: 20px 0 15px 100px;
     display: flex;
     align-items: center;
+    gap: 15px;
 }
 
-.pm_progress > h3 {
+.role_progress_bar > h3 {
     width: 30px;
-    font-size: 20px; font-weight: 550;
-    margin-right: 15px;
+    font-size: 20px;
+    font-weight: 550;
 }
 
-.pm_progress > .pm_bar {
+.progress_bar_container {
     position: relative;
-    width: 85%; height: 15px;
+    flex: 1;
+    height: 15px;
     background: #DDDDDD;
     border-radius: 20px;
+    overflow: hidden;
 }
 
-.pm_progress > .pm_bar > .pm_real {
+.progress_bar_fill {
     position: absolute;
-    top: 0; left: 0;
-    width: 60%; height: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
+
+.progress_bar_fill.pm_color {
     background: #37D3BF;
-    border-radius: 20px;
 }
 
-.front_progress {
-    margin: 20px 0 15px 100px;
-    display: flex;
-    align-items: center;
-}
-
-.front_progress > h3 {
-    width: 30px;
-    font-size: 20px; font-weight: 550;
-    margin-right: 15px;
-}
-
-.front_progress > .front_bar {
-    position: relative;
-    width: 85%; height: 15px;
-    background: #DDDDDD;
-    border-radius: 20px;
-}
-
-.front_progress > .front_bar > .front_real {
-    position: absolute;
-    top: 0; left: 0;
-    width: 50%; height: 100%;
+.progress_bar_fill.fe_color {
     background: #FFDF6E;
-    border-radius: 20px;
 }
 
-.back_progress {
-    margin: 20px 0 15px 100px;
-    display: flex;
-    align-items: center;
-}
-
-.back_progress > h3 {
-    width: 30px;
-    font-size: 20px; font-weight: 550;
-    margin-right: 15px;
-}
-
-.back_progress > .back_bar {
-    position: relative;
-    width: 85%; height: 15px;
-    background: #DDDDDD;
-    border-radius: 20px;
-}
-
-.back_progress > .back_bar > .back_real {
-    position: absolute;
-    top: 0; left: 0;
-    width: 70%; height: 100%;
+.progress_bar_fill.be_color {
     background: #FF69A4;
-    border-radius: 20px;
 }
 
-/* 카드 */
+.progress_percent {
+    min-width: 45px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4272EF;
+}
+
+/* 미션 아이템 */
 .mission_item {
     width: 90%;
     margin: 0 auto;
@@ -152,6 +125,7 @@
     gap: 20px;
 }
 
+/* 타임라인 */
 .timeline_dot {
     display: flex;
     flex-direction: column;
@@ -161,7 +135,8 @@
 }
 
 .circle {
-    width: 30px; height: 30px;
+    width: 30px;
+    height: 30px;
     background: #EAF0FF;
     border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -172,7 +147,7 @@
     justify-content: center;
     font-size: 16px;
     font-weight: 700;
-    color: #fff;
+    color: #1d294b;
     transition: all 0.3s ease;
 }
 
@@ -200,10 +175,6 @@
 
 .mission_item.completed .line {
     background: #4272EF;
-}
-
-.mission_item:last-child .line {
-    display: none;
 }
 
 .mission_item:last-child .line {
@@ -256,37 +227,13 @@
     transform: scale(1.1);
 }
 
-/* 카드 내용 */
+/* 카드 내용 (기본 숨김) */
 .card_content {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     margin-top: 0;
-}
-
-.card_description {
-    font-size: 14px;
-    color: #6B7280;
-    margin: 15px 0 10px 0;
-}
-
-.mission_input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #E0E7FF;
-    border-radius: 12px;
-    font-size: 15px;
-    color: #9CA3AF;
-    background: #fff;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-}
-
-.mission_input:focus {
-    outline: none;
-    border-color: #4272EF;
-    color: #1d294b;
 }
 
 /* 활성화된 카드 */
@@ -298,7 +245,7 @@
 }
 
 .mission_card.active .card_content {
-    max-height: 300px;
+    max-height: 500px;
     opacity: 1;
     margin-top: 15px;
 }
@@ -307,73 +254,25 @@
     opacity: 0.8;
 }
 
-/* 진척도 바 통합 스타일 */
-.role_progress_bar {
-    margin: 20px 0 15px 100px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.role_progress_bar > h3 {
-    width: 30px;
-    font-size: 20px;
-    font-weight: 550;
-}
-
-.progress_bar_container {
-    position: relative;
-    flex: 1;
-    height: 15px;
-    background: #DDDDDD;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.progress_bar_fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    border-radius: 20px;
-    transition: width 0.5s ease;
-}
-
-.progress_bar_fill.pm_color {
-    background: #37D3BF;
-}
-
-.progress_bar_fill.fe_color {
-    background: #FFDF6E;
-}
-
-.progress_bar_fill.be_color {
-    background: #FF69A4;
-}
-
-.progress_percent {
-    min-width: 45px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #4272EF;
-}
-
-/* 미션 설명 스타일 */
+/* 마크다운 콘텐츠 스타일 */
 .mission_description {
     font-size: 14px;
     color: #374151;
     line-height: 1.6;
-    margin-bottom: 15px;
+}
+
+.mission_description p {
+    margin: 10px 0;
 }
 
 .mission_description ul,
 .mission_description ol {
-    margin-left: 20px;
-    margin-top: 10px;
+    margin: 10px 0 10px 20px;
 }
 
 .mission_description li {
     margin-bottom: 8px;
+    line-height: 1.6;
 }
 
 .mission_description strong {
@@ -384,52 +283,39 @@
 .mission_description em {
     color: #6B7280;
     font-style: italic;
+    font-size: 13px;
 }
 
-/* 태스크 리스트 */
-.task_list {
-    margin-top: 15px;
-}
-
-.task_item {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    background: #F9FAFB;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.task_item:hover {
+.mission_description code {
     background: #F3F4F6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
 }
 
-.task_item.completed {
-    opacity: 0.6;
+.mission_description p {
+    margin: 8px 0;
+    white-space: pre-wrap;
 }
 
-.task_item.completed label {
-    text-decoration: line-through;
-    color: #9CA3AF;
+.mission_description strong {
+    color: #4272EF;
+    font-weight: 600;
 }
 
-.task_checkbox {
-    width: 18px;
-    height: 18px;
-    margin-right: 10px;
-    cursor: pointer;
-    accent-color: #4272EF;
+.mission_description ul {
+    list-style: disc;
+    margin-left: 20px;
 }
 
-.task_item label {
-    flex: 1;
-    font-size: 14px;
-    color: #374151;
-    cursor: pointer;
+.mission_description li {
+    margin-bottom: 12px;
+    line-height: 1.6;
 }
 
-/* 기존 mission_input 제거 */
-.mission_input {
-    display: none;
+.mission_description li em {
+    display: block;
+    margin-top: 4px;
+    color: #6B7280;
+    font-size: 13px;
 }

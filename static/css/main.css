@@ -96,6 +96,12 @@ body {
     border-radius: 20px; padding: 7px 30px;
 }
 
+.m_note_btn:hover {
+	cursor: pointer;
+	background: #1A3C97;
+	transition: 0.3s ease;
+}
+
 /* 팀매칭 */
 .main-team {
 	margin-top: 90px;
@@ -111,6 +117,7 @@ body {
 	font-size: 35px;
 }
 
+/* 팀 매칭 기간 O 매칭 신청 X */
 .main-team .m_team_stack {
 	width: 90%;
 	margin: 40px auto 0;
@@ -145,7 +152,7 @@ body {
 	font-size: 16px;
 }
 
-.main-team .m_team_stack .m_design .m_design_btn {
+.m_design_btn {
 	margin-top: 15px;
 	padding: 10px 0;
 	width: 250px;
@@ -156,6 +163,12 @@ body {
 	border-radius: 30px;
 	font-size: 18px;
 	font-weight: 550;
+}
+
+.m_design_btn:hover {
+	background: #019890;
+	cursor: pointer;
+	transition: 0.3s ease;
 }
 
 /* WEB 프론트엔드 */
@@ -185,7 +198,7 @@ body {
 	font-size: 16px;
 }
 
-.main-team .m_team_stack .m_frontend .m_front_btn {
+.m_front_btn {
 	margin-top: 15px;
 	padding: 5px 0;
 	width: 250px;
@@ -196,6 +209,12 @@ body {
 	border-radius: 30px;
 	font-size: 18px;
 	font-weight: 550;
+}
+
+.m_front_btn:hover {
+	cursor: pointer;
+	background: #E2BF67;
+	transition: 0.3s ease;
 }
 
 /* WEB 백엔드 */
@@ -225,7 +244,7 @@ body {
 	font-size: 16px;
 }
 
-.main-team .m_team_stack .m_backend .m_back_btn {
+m_back_btn {
 	margin-top: 15px;
 	padding: 10px 0;
 	width: 250px;
@@ -236,6 +255,12 @@ body {
 	border-radius: 30px;
 	font-size: 18px;
 	font-weight: 550;
+}
+
+.m_back_btn:hover {
+	cursor: pointer;
+	background: #C03067;
+	transition: 0.3s ease;
 }
 
 /* 팀 매칭 결과 */
@@ -258,6 +283,91 @@ body {
 .m_team_result p {
 	font-weight: 550; font-size: 18px;
 	line-height: 30px;
+}
+
+/* 팀 매칭 O 매칭 결과 X */
+.team_waiting {
+    margin-top: 120px;
+    text-align: center;
+    align-items: center;
+}
+
+.team_waiting > h3 {
+    font-size: 27px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.team_waiting > form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px auto 0;
+    width: 60%; height: 40px;
+    background: #fff;
+    border-radius: 25px;
+    padding: 10px 5px 10px 20px;
+}
+
+.team_waiting > form:focus-within {
+    border: 1px solid #4272EF;
+    box-shadow: 0 2px 15px rgba(66, 114, 239, 0.2);
+}
+
+.team_waiting > form > input {
+	width: 80%;
+    border: none;
+    font-size: 15px;
+    color: #888888;
+	outline: none;
+}
+
+.team_waiting > form > input::placeholder {
+    color: #888888;
+}
+
+.team_waiting > form > button {
+    font-size: 15px;
+    background: #4272EF; color: #fff;
+    border: none; border-radius: 20px;
+    padding: 7px 15px;
+}
+
+.team_waiting > form > button:hover {
+    background: #1F4CC0;
+    transition: 0.3s ease;
+}
+
+/* 매칭 취소 */
+.matching_actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.cancel_form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.cancel_button {
+    width: 150px;
+    height: 40px;
+    padding: 10px 20px;
+    background: #FF6B6B;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.cancel_button:hover {
+    background: #E63946;
+    transition: 0.3s ease;
 }
 
 /* KITUP 프로젝트 */
