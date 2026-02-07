@@ -1,22 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     const missionCards = document.querySelectorAll('.mission_card');
-    const totalMissions = missionCards.length;
+    const userRole = document.body.dataset.userRole || 'PM'; // PM, FRONTEND, BACKEND
     
-    // 페이지 로드 시 진척도 계산
-    updateProgress();
+    // 페이지 로드 시 저장된 진척도 불러오기
+    loadProgress();
     
     missionCards.forEach(card => {
         const cardHeader = card.querySelector('.card_header');
         
         // 카드 클릭 - 펼치기/접기
         cardHeader.addEventListener('click', function(e) {
-            // 체크 아이콘 클릭은 제외
             if (e.target.classList.contains('check_icon')) return;
             
             const isActive = card.classList.contains('active');
             const missionItem = card.closest('.mission_item');
             
-            // 다른 모든 카드 닫기
             document.querySelectorAll('.mission_card').forEach(c => {
                 c.classList.remove('active');
             });
@@ -24,20 +22,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.classList.remove('active');
             });
             
-            // 클릭한 카드 열기
             if (!isActive) {
                 card.classList.add('active');
                 missionItem.classList.add('active');
             }
         });
         
-        // 체크 아이콘 클릭 시 완료 처리
+        // 체크 아이콘 클릭
         const checkIcon = card.querySelector('.check_icon');
         checkIcon.addEventListener('click', function(e) {
             e.stopPropagation();
             
             const card = this.closest('.mission_card');
             const missionItem = card.closest('.mission_item');
+            const missionNumber = missionItem.dataset.number;
             const isCompleted = card.classList.contains('completed');
             
             if (isCompleted) {
@@ -52,35 +50,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.src = this.src.replace('nocheck.png', 'check.png');
             }
             
-            // 진척도 업데이트
-            updateProgress();
-            
-            // 로컬스토리지에 저장
+            // 로컬스토리지에 저장 & 진척도 업데이트
             saveProgress();
+            updateProgress();
         });
     });
     
     // 진척도 계산 및 업데이트
     function updateProgress() {
+        const totalMissions = missionCards.length;
         const completedMissions = document.querySelectorAll('.mission_card.completed').length;
         const percent = Math.round((completedMissions / totalMissions) * 100);
         
-        // 현재 사용자 역할에 따라 해당 진척도 바 업데이트
-        const userRole = getUserRole(); // PM, FRONTEND, BACKEND
-        
-        if (userRole === 'PM') {
-            updateProgressBar('pm', percent);
-        } else if (userRole === 'FRONTEND') {
-            updateProgressBar('fe', percent);
-        } else if (userRole === 'BACKEND') {
-            updateProgressBar('be', percent);
-        }
+        updateProgressBar(userRole, percent);
     }
     
     // 진척도 바 업데이트
     function updateProgressBar(role, percent) {
-        const progressBar = document.getElementById(`${role}_progress`);
-        const percentText = document.getElementById(`${role}_percent`);
+        let barId, percentId;
+        
+        if (role === 'PM') {
+            barId = 'pm_progress';
+            percentId = 'pm_percent';
+        } else if (role === 'FRONTEND') {
+            barId = 'fe_progress';
+            percentId = 'fe_percent';
+        } else if (role === 'BACKEND') {
+            barId = 'be_progress';
+            percentId = 'be_percent';
+        }
+        
+        const progressBar = document.getElementById(barId);
+        const percentText = document.getElementById(percentId);
         
         if (progressBar && percentText) {
             progressBar.style.width = `${percent}%`;
@@ -88,28 +89,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 현재 사용자 역할 가져오기
-    function getUserRole() {
-        // HTML에서 역할 정보를 data 속성으로 넣어야 함
-        const body = document.body;
-        return body.dataset.userRole || 'PM';
-    }
-    
     // 로컬스토리지에 진행 상황 저장
     function saveProgress() {
         const completedMissions = [];
-        document.querySelectorAll('.mission_card.completed').forEach((card, index) => {
-            const missionNumber = card.closest('.mission_item').dataset.number;
-            completedMissions.push(missionNumber);
+        document.querySelectorAll('.mission_item').forEach(item => {
+            const card = item.querySelector('.mission_card');
+            if (card.classList.contains('completed')) {
+                const missionNumber = item.dataset.number;
+                completedMissions.push(missionNumber);
+            }
         });
         
-        const userRole = getUserRole();
         localStorage.setItem(`mission_progress_${userRole}`, JSON.stringify(completedMissions));
     }
     
     // 로컬스토리지에서 진행 상황 불러오기
     function loadProgress() {
-        const userRole = getUserRole();
         const saved = localStorage.getItem(`mission_progress_${userRole}`);
         
         if (saved) {
@@ -128,11 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
-            updateProgress();
         }
+        
+        // 진척도 업데이트
+        updateProgress();
     }
-    
-    // 페이지 로드 시 저장된 진행 상황 불러오기
-    loadProgress();
 });

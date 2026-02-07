@@ -10,6 +10,7 @@
         <h3>진행 중인 프로젝트가 없습니다.</h3>
     </div>
 {% else %}
+<body data-user-role="{{ role.code }}"></body>
 
 <section class="p_header">
 	<a href="{% url 'projects:dashboard' %}" class="p_dashboard"><p>DASHBOARD</p></a>
