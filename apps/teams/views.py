@@ -1,6 +1,7 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from rest_framework import viewsets
 from django.utils import timezone
@@ -110,6 +111,34 @@ def passion_submit(request):
     request.user.save(update_fields=["passion_level"])
     
     return redirect("teams:team_status")
+
+
+@login_required
+def team_matching_cancel(request):
+    """
+    팀 매칭 신청 취소
+    
+    - 팀 매칭 기간 중에만 취소 가능
+    - 프로젝트 기간이면 취소 불가능
+    - 사용자의 TeamMember 레코드 삭제
+    - passion_level을 NULL로 초기화 (다시 열정 테스트 강제)
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("잘못된 요청입니다.")
+    
+    season = Season.get_active_season()
+    
+    # 팀 매칭 기간이 아니면 취소 불가능
+    if not season or not season.is_matching_period():
+        messages.error(request, "❌ 팀 매칭 기간이 아닙니다. 취소할 수 없습니다.")
+        return redirect("teams:team_status")
+    
+    # 열정 레벨 초기화
+    request.user.passion_level = None
+    request.user.save(update_fields=["passion_level"])
+    
+    messages.success(request, "✅ 팀 매칭 신청이 취소되었습니다.")
+    return redirect("teams:team_apply")
 
 
 @login_required
