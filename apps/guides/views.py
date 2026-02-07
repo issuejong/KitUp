@@ -75,9 +75,9 @@ def mission(request):
         mission_data.append({
             'card': card,
             'content_html': GuideService.render_markdown(card.content_md),
-            'total_tasks': tasks.count(),
+            'total_tasks': len(tasks),
             'completed_tasks': completed_tasks,
-            'progress_percent': int((completed_tasks / tasks.count() * 100) if tasks.count() > 0 else 0),
+            'progress_percent': int((completed_tasks / len(tasks) * 100) if len(tasks) > 0 else 0),
             'task_progress_data': task_progress_data,
         })
     
