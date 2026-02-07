@@ -215,12 +215,15 @@ def project_detail(request, project_id):
 def kitup_list(request):
     """모든 KITUP 프로젝트 리스트 (완료된 보관 프로젝트)"""
     # 보관된 프로젝트만 조회 (ARCHIVED 상태)
+    # TODO 정렬 기능을 위한 GET 설정
+
     projects = Project.objects.filter(
         status=Project.Status.ARCHIVED
     ).select_related('team').order_by('-created_at')
     
     context = {
         "projects": projects,
+        # TODO 팀 멤버 조회하게 넘겨주기
     }
     return render(request, "projects/kitup_list.html", context)
 
@@ -235,6 +238,7 @@ def kitup_detail(request, project_id):
     
     return render(request, "projects/kitup_detail.html", context)
 
+# TODO 즐겨찾기 토글을 위한 POST 뷰 추가
 
 # ================================
 # 팀 매칭 관리 API
