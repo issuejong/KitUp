@@ -23,6 +23,16 @@ def _get_project_context(project, user):
     members = team.members.filter(is_active=True).select_related("user", "role")
     member_count_by_role = team.get_member_count_by_role()
     
+    # 각 멤버에 레벨 정보 추가
+    members_with_level = []
+    for member in members:
+        member_data = {
+            'member': member,
+            'level': member.user.get_role_level(member.role.code)
+        }
+        members_with_level.append(member_data)
+    
+
     # 시즌 정보
     season = None
     active_season = Season.get_active_season()
@@ -63,6 +73,7 @@ def _get_project_context(project, user):
         "project": project,
         "team": team,
         "members": members,
+        "members_with_level": members_with_level,
         "member_count_by_role": member_count_by_role,
         "season": season,
         "guide_progress": guide_progress,
