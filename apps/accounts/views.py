@@ -1,3 +1,4 @@
+import json
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -5,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.http import HttpResponseBadRequest, JsonResponse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 
 from .forms import OnboardingForm, ProfileUpdateForm
 from .models import Role, User, UserRoleLevel
@@ -88,31 +89,39 @@ def level_test(request):
     return render(request, "account/level_test.html", context)
 
 @login_required
+@require_POST
 def level_submit(request):
     """
-    레벨 테스트 결과 제출 처리
+    레벨 테스트 결과 제출 처리 (API)
     
-    - POST 요청으로 역할 코드(role_code)와 레벨(level)을 전달받음
+    - POST 요청으로 track(역할 코드), level, total_score, answers를 JSON으로 받음
     - UserRoleLevel 모델에 결과 저장 또는 업데이트
-    - 제출 후 테스트 결과 페이지로 리다이렉트
+    - JSON 응답으로 success 여부 반환
     """
-    if request.method != "POST":
-        return HttpResponseBadRequest("잘못된 요청입니다.")
-    
-    role_code = request.POST.get("role")
-    role = get_object_or_404(Role, code=role_code)
-    level = request.POST.get("level")
-    
-    UserRoleLevel.objects.update_or_create(
-        user=request.user,
-        role=role,
-        defaults={
-            "level": int(level),
-            "last_diagnosed_at": timezone.now(),
-        },
-    )
-    
-    return redirect(f"{reverse('accounts:test_result')}?role={role_code}")
+    try:
+        data = json.loads(request.body)
+        role_code = data.get("track")
+        level = data.get("level")
+        
+        if not role_code or level is None:
+            return JsonResponse({"success": False, "error": "필수 데이터가 없습니다."})
+        
+        role = get_object_or_404(Role, code=role_code)
+        
+        UserRoleLevel.objects.update_or_create(
+            user=request.user,
+            role=role,
+            defaults={
+                "level": int(level),
+                "last_diagnosed_at": timezone.now(),
+            },
+        )
+        
+        return JsonResponse({"success": True})
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "잘못된 JSON 형식입니다."})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
 
 @login_required
 def test_result(request):

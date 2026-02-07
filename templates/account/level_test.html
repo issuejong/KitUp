@@ -10,7 +10,7 @@
 {% block content %}
 <div class="level-test-container">
     <!-- 숨겨진 트랙 체크 필드 -->
-    <input type="hidden" id="selected-track" name="selected_track" value="{{ role}}">
+    <input type="hidden" id="selected-track" name="selected_track" value="{{ role_code}}">
     <input type="hidden" id="track-completed" name="track_completed" value="false">
 
     <!-- 문항 화면 -->
@@ -468,7 +468,7 @@ document.getElementById('level-test-form').addEventListener('submit', function(e
     }
     
     // 서버로 결과 전송
-    fetch('/api/level-test/submit/', {
+    fetch('/api/accounts/level-test/submit/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -496,7 +496,6 @@ document.getElementById('level-test-form').addEventListener('submit', function(e
             
             document.getElementById('result-track').textContent = trackNames[currentTrack];
             document.getElementById('result-level').textContent = level;
-            document.getElementById('result-score').textContent = totalScore;
             document.getElementById('result-description').textContent = description;
             
             document.getElementById('questions-screen').style.display = 'none';
