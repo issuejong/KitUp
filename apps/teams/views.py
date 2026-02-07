@@ -98,6 +98,37 @@ def passion_test(request):
     return render(request, "teams/passion_test.html")
 
 @login_required
+@require_POST
+def passion_submit_api(request):
+    """
+    열정 테스트 결과 제출 처리 (API)
+    
+    - POST 요청으로 passion_level을 JSON으로 받음
+    - User 모델에 열정 레벨 저장
+    - JSON 응답으로 success 여부 반환
+    """
+    try:
+        data = json.loads(request.body)
+        passion_level = data.get("passion_level")
+        
+        if passion_level is None:
+            return JsonResponse({"success": False, "error": "필수 데이터가 없습니다."})
+        
+        request.user.passion_level = int(passion_level)
+        request.user.save(update_fields=["passion_level"])
+        
+        print(f"DEBUG: 열정 테스트 저장 완료 - user={request.user}, passion_level={passion_level}")
+        return JsonResponse({"success": True})
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "잘못된 JSON 형식입니다."})
+    except Exception as e:
+        print(f"DEBUG: 열정 테스트 저장 에러 - {e}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({"success": False, "error": str(e)})
+
+
+@login_required
 def passion_submit(request):
     """
     열정 테스트 결과 제출 처리
