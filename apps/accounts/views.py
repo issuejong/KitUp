@@ -103,10 +103,16 @@ def level_submit(request):
         role_code = data.get("track")
         level = data.get("level")
         
+        print(f"DEBUG: role_code={role_code}, level={level}")  # 디버그 로그
+        
         if not role_code or level is None:
             return JsonResponse({"success": False, "error": "필수 데이터가 없습니다."})
         
-        role = get_object_or_404(Role, code=role_code)
+        try:
+            role = Role.objects.get(code=role_code)
+            print(f"DEBUG: role found - {role}")  # 디버그 로그
+        except Role.DoesNotExist:
+            return JsonResponse({"success": False, "error": f"역할을 찾을 수 없습니다: {role_code}"})
         
         UserRoleLevel.objects.update_or_create(
             user=request.user,
@@ -117,10 +123,15 @@ def level_submit(request):
             },
         )
         
+        print(f"DEBUG: 저장 완료 - user={request.user}, role={role}, level={level}")  # 디버그 로그
         return JsonResponse({"success": True})
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        print(f"DEBUG: JSON 에러 - {e}")  # 디버그 로그
         return JsonResponse({"success": False, "error": "잘못된 JSON 형식입니다."})
     except Exception as e:
+        print(f"DEBUG: 기타 에러 - {e}")  # 디버그 로그
+        import traceback
+        traceback.print_exc()
         return JsonResponse({"success": False, "error": str(e)})
 
 @login_required
