@@ -53,9 +53,7 @@
                 <h3 class="side-title">기술 스택</h3>
                 <div class="tags">
                     {% for rl in role_levels %}
-                        {% with role_code=rl.role.code|lower %}
-                            <span class="tag-item tag-{{ role_code }}"># {{ rl.role.name }}</span>
-                        {% endwith %}
+                        <span class="tag-item tag-{{ rl.role.code }}"># {{ rl.role.name }}</span>
                     {% empty %}
                         <p class="empty-msg">등록된 스택이 없습니다.</p>
                     {% endfor %}

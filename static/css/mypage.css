@@ -8,7 +8,7 @@
 }
 
 .profile-card {
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     border-radius: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     overflow: visible;
@@ -191,6 +191,25 @@
     font-size: 17px;
     font-weight: 600;
     border: 2px solid;
+}
+
+/* 역할별 색상 */
+.tag-pm {
+    color: #6B8AFF;
+    border-color: #6B8AFF;
+    background-color: transparent;
+}
+
+.tag-frontend {
+    color: #FFC107;
+    border-color: #FFC107;
+    background-color: transparent;
+}
+
+.tag-backend {
+    color: #06D6A0;
+    border-color: #06D6A0;
+    background-color: transparent;
 }
 
 /* 기술 스택별 색상 */
