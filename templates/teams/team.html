@@ -1,7 +1,21 @@
 {% extends 'base.html' %} {% load static %} {% block header %}
 <link rel="stylesheet" href="{% static 'css/team.css' %}" />
 {% endblock %} {% block content %}
+<!-- 매칭 대기 -->
+{% if is_matching_period %}
+<div class="team_success">
+	<h3>
+		팀 매칭 신청이 완료되었어요. <br />
+		팀 매칭 결과가 발표되면 메일로 알려드릴게요.
+	</h3>
+	<form action="submit">
+		<input type="text" placeholder="이메일을 입력해주세요" />
+		<button>알림받기</button>
+	</form>
+</div>
+
 <!-- 매칭 성공 -->
+{% elif team_matched %}
 <div class="team_success">
 	<h3>
 		팀 매칭이 완료 되었어요. <br />
@@ -52,7 +66,8 @@
 				/>
 				{% endif %}
 			</div>
-			<p class="u_name">{{ item.user.nickname }} (Lv{{ item.level }})</p>
+			<p class="u_name">{{ item.user.nickname }} <br>
+			<span>Lv{{ item.level }}</span>	</p>
 			{% if item.role.code == "PM" %}
 			<p class="u_design">기획자</p>
 			{% elif item.role.code == "FRONTEND" %}
@@ -67,10 +82,13 @@
 		><p>내 프로젝트로 이동</p></a
 	>
 </div>
+
 <!-- 매칭 실패 -->
-<!-- <div class="team_fail">
+{% else %}
+<div class="team_fail">
     <h3>팀 매칭에 실패했어요. <br>
     다음 팀 매칭을 기다려주세요.</h3>
     <a href="{% url 'main' %}"><p>메인화면으로 이동</p></a>
-</div> -->
+</div>
+{% endif %}
 {% endblock %}
