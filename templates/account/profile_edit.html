@@ -66,9 +66,9 @@
             <section class="tech-stack-box">
                 <h3 class="side-title">기술 스택</h3>
                 <div class="tags">
-                    {% for role_level in user.role_levels.all %}
-                    <div class="tag-item tag-{{ role_level.role.code|lower }}">
-                        # {{ role_level.role.name }}
+                    {% for tech in user.tech_stacks.all %}
+                    <div class="tag-item">
+                        # {{ tech.name }}
                     </div>
                     {% empty %}
                     <p class="empty-msg">등록된 기술 스택이 없습니다.</p>
