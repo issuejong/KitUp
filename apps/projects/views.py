@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.views.decorators.http import require_POST, require_http_methods
 
 from apps.projects.models import Season, Project
-from apps.projects.forms import ProjectDashboardEditForm, ProjectRelatedLinksForm
+from apps.projects.forms import ProjectDashboardEditForm
 from apps.projects.services import TeamMatchingService
 from apps.teams.models import Team, TeamMember
 
@@ -155,12 +155,9 @@ def dashboard_update(request, project_id):
     
     if request.method == "POST":
         form = ProjectDashboardEditForm(request.POST, request.FILES, instance=project)
-        links_form = ProjectRelatedLinksForm(request.POST)
         
-        if form.is_valid() and links_form.is_valid():
-            project = form.save(commit=False)
-            project.related_links = links_form.to_dict()
-            project.save()
+        if form.is_valid():
+            form.save()
             
             messages.success(request, "✅ 프로젝트 정보가 수정되었습니다.")
             return redirect("projects:dashboard_detail", project_id=project_id)
@@ -168,17 +165,10 @@ def dashboard_update(request, project_id):
             messages.error(request, "❌ 입력 오류가 있습니다. 다시 확인해주세요.")
     else:
         form = ProjectDashboardEditForm(instance=project)
-        related_links = project.related_links or {}
-        links_form = ProjectRelatedLinksForm(initial={
-            "notion_url": related_links.get("notion"),
-            "figma_url": related_links.get("figma"),
-            "github_url": related_links.get("github"),
-        })
     
     context = {
         "project": project,
         "form": form,
-        "links_form": links_form,
     }
     
     return render(request, "projects/dashboard_update.html", context)
