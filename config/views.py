@@ -17,7 +17,10 @@ def main_view(request):
     """
     
     user = request.user
-    context = {}
+    season = Season.get_active_season()
+    context = {
+        'season': season,
+    }
     
     # 로그인 상태만 추가 데이터 조회
     if user.is_authenticated:

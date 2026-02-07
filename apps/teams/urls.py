@@ -4,6 +4,9 @@ from . import views
 app_name = "teams"
 
 urlpatterns = [
+    # 소속팀 여부에 따라 이동 url 상이 (team/team_apply)
+    path('matching/', views.team_matching_router, name='matching_router'),
+
     # 팀 매칭 신청
     path("apply/", views.team_apply, name="team_apply"),  # team_apply.html
     

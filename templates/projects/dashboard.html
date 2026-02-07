@@ -79,38 +79,36 @@
                     {% endfor %}
                 </p>
             <div class="t_member">
-                {% for member in members %}
+                {% for item in members_with_level %}
                 <div class="member">
                     <div class="profile_section">
                     <!-- 프로필 사진 -->
-                    {% if member.user.profile_image %}
-                        <img src="{{ member.user.profile_image.url }}" alt="프로필사진" class="profile">
+                    {% if item.member.user.profile_image %}
+                        <img src="{{ item.member.user.profile_image.url }}" alt="프로필사진" class="profile">
                     {% else %}
                     <img src="{% static 'images/default_img.png' %}" alt="프로필사진" class="profile">
                     {% endif %}
                     <!-- 레벨 사진 -->
-                    {% with level=member.user.get_role_level %}
-                    {% if level == 1 %}
+                    {% if item.level == 1 %}
                     <img src="{% static 'images/Level1.png' %}" alt="레벨1" class="level">
-                    {% elif level == 2 %}
+                    {% elif item.level == 2 %}
                     <img src="{% static 'images/Level2.png' %}" alt="레벨2" class="level">
-                    {% elif level == 3 %}
+                    {% elif item.level == 3 %}
                     <img src="{% static 'images/Level3.png' %}" alt="레벨3" class="level">
-                    {% elif level == 4 %}
+                    {% elif item.level == 4 %}
                     <img src="{% static 'images/Level4.png' %}" alt="레벨4" class="level">
                     {% endif %}
-                    {% endwith %}
                     </div>
-                    <h3>{{ member.user.nickname|default:member.user.username }}</h3>
-                    <p class="info">✉️ {{ member.user.email }}</p>
-                    {% if member.user.github_id %}
-                        <p class="info">🖥️ @{{ member.user.github_id }}</p>
+                    <h3>{{ item.member.user.nickname|default:item.member.user.username }}</h3>
+                    <p class="info">✉️ {{ item.member.user.email }}</p>
+                    {% if item.member.user.github_id %}
+                        <p class="info">🖥️ @{{ item.member.user.github_id }}</p>
                     {% endif %}
-                    {% if member.role.code == "PM" %}
+                    {% if item.member.role.code == "PM" %}
                     <p class="role_design">기획자</p>
-                    {% elif member.role.code == "FRONTEND" %}
+                    {% elif item.member.role.code == "FRONTEND" %}
                     <p class="role_frontend">프론트엔드</p>
-                    {% elif member.role.code == "BACKEND" %}
+                    {% elif item.member.role.code == "BACKEND" %}
                     <p class="role_backend">백엔드</p>
                     {% endif %}
                 </div>

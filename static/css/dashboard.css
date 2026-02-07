@@ -227,11 +227,13 @@ hr {
 
 /* 팀원 카드 */
 .t_member > .member {
+    position: relative;
     background: #fff;
     box-shadow: 1px 2px 2px 1px #ccc;
     padding: 15px 25px;
     min-width: 200px;
     max-width: 200px;
+    min-height: 300px;
     text-align: center;
     border-radius: 20px;
     flex-shrink: 0;
@@ -259,7 +261,7 @@ hr {
     height: 35px;
     position: absolute;
     bottom: 0;
-    right: calc(50% - 65px);
+    right: calc(50% - 55px);
 }
 
 .member > h3 {
@@ -277,10 +279,12 @@ hr {
 }
 
 .member > .role_design {
+    position: absolute;
+    bottom: 15px; right: 50px;
     font-size: 16px;
     margin: 15px auto;
     padding: 5px 0;
-    width: 60%;
+    width: 50%;
     height: 30px;
     border: 1px solid #00B9B0;
     border-radius: 20px;
@@ -289,10 +293,12 @@ hr {
 }
 
 .member > .role_frontend {
+    position: absolute;
+    bottom: 15px; right: 40px;
     font-size: 16px;
     margin: 15px auto;
     padding: 5px 0;
-    width: 70%;
+    width: 60%;
     height: 30px;
     border: 1px solid #FFCE53;
     border-radius: 20px;
@@ -301,10 +307,12 @@ hr {
 }
 
 .member > .role_backend {
+    position: absolute;
+    bottom: 15px; right: 50px;
     font-size: 16px;
     margin: 15px auto;
     padding: 5px 0;
-    width: 70%;
+    width: 50%;
     height: 30px;
     border: 1px solid #FF3E88;
     border-radius: 20px;

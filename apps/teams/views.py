@@ -19,6 +19,25 @@ from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSeriali
 # Template Views (HTML 렌더링)
 # ================================
 
+# apps/teams/views.py
+
+@login_required
+def team_matching_router(request):
+    """
+    사용자의 상태를 확인하여 매칭 신청 페이지 또는 결과 페이지로 보냄
+    """
+    season = Season.get_active_season()
+    
+    # 1. 사용자가 이미 팀에 속해 있는지 확인
+    user_has_team = TeamMember.objects.filter(user=request.user).exists()
+    
+    # 2. 팀이 있다면 결과 페이지(team.html)로 이동
+    if user_has_team:
+        return redirect('teams:team_status')
+    
+    # 3. 팀이 없다면 신청 페이지(team_apply.html)로 이동
+    return redirect('teams:team_apply')
+
 @login_required
 def team_apply(request):
     """
