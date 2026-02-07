@@ -1,52 +1,77 @@
-{% extends 'base.html' %} {% load static %} {% block header %}
+{% extends 'base.html' %} 
+{% load static %} 
+{% block header %}
 <link rel="stylesheet" href="{% static 'css/mission.css' %}" />
-{% endblock %} {% block content %}
+{% endblock %} 
+{% block content %}
+
+{% if not project %}
+    <div class="no_project">
+        <h3>진행 중인 프로젝트가 없습니다.</h3>
+    </div>
+{% else %}
+<body data-user-role="{{ role.code }}"></body>
+
 <section class="p_header">
-	<a href="{% url 'projects:dashboard' %}" class="p_dashboard"
-		><p>DASHBOARD</p></a
-	>
+	<a href="{% url 'projects:dashboard' %}" class="p_dashboard"><p>DASHBOARD</p></a>
 	<a href="{% url 'guides:mission' %}" class="p_mission"><p>MISSION</p></a>
 </section>
+
+<!-- 진척도 섹션 -->
 <div class="mission_progress">
 	<div class="mp_title">
 		<img src="{% static 'images/rocket.png' %}" alt="rocket" />
 		<div>
-			<h3>{서비스명}의 진척도</h3>
+			<h3>{{ project.title }}의 진척도</h3>
 			<p>*파트별로 진행 속도를 맞추는 것을 권장드려요!</p>
 		</div>
 	</div>
-	<div class="pm_progress">
+	
+	<div class="role_progress_bar">
 		<h3>PM</h3>
-		<div class="pm_bar">
-            <p class="pm_real"></p>
-        </div>
+		<div class="progress_bar_container">
+			<div class="progress_bar_fill pm_color" id="pm_progress" style="width: 0%"></div>
+		</div>
+		<span class="progress_percent" id="pm_percent">0%</span>
 	</div>
-	<div class="front_progress">
+	
+	<div class="role_progress_bar">
 		<h3>FE</h3>
-		<div class="front_bar">
-            <p class="front_real"></p>
-        </div>
+		<div class="progress_bar_container">
+			<div class="progress_bar_fill fe_color" id="fe_progress" style="width: 0%"></div>
+		</div>
+		<span class="progress_percent" id="fe_percent">0%</span>
 	</div>
-	<div class="back_progress">
+	
+	<div class="role_progress_bar">
 		<h3>BE</h3>
-		<div class="back_bar">
-            <p class="back_real"></p>
-        </div>
+		<div class="progress_bar_container">
+			<div class="progress_bar_fill be_color" id="be_progress" style="width: 0%"></div>
+		</div>
+		<span class="progress_percent" id="be_percent">0%</span>
 	</div>
 </div>
+
+<!-- PM 가이드 -->
+{% if role.code == "PM" %}
+
 <div class="mission_item" data-number="1">
     <div class="timeline_dot">
         <div class="circle">1</div>
         <div class="line"></div>
     </div>
     <div class="card_wrapper">
-        <div class="mission_card" data-mission="1">
+        <div class="mission_card">
             <div class="card_header">
-                <h3>Github repository 생성하기</h3>
+                <h3>팀 커뮤니케이션 채널 개설</h3>
                 <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
             </div>
             <div class="card_content">
-                <input type="text" placeholder="Github repository 생성하기" class="mission_input">
+                <ul>
+                    <li>1. 디스코드/슬랙 등 팀플용 채널 생성</li>
+                    <li>2. 팀원 이메일로 초대 링크 공유</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(검색 키워드: 디스코드 서버 만들기 / 슬랙 워크스페이스 만들기)</em></p>
             </div>
         </div>
     </div>
@@ -58,14 +83,17 @@
         <div class="line"></div>
     </div>
     <div class="card_wrapper">
-        <div class="mission_card" data-mission="2">
+        <div class="mission_card">
             <div class="card_header">
-                <h3>Github repository에 팀원 초대하기</h3>
+                <h3>문서 협업 툴 준비</h3>
                 <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
             </div>
             <div class="card_content">
-                <p class="card_description">(팀트랙 or 유튜브 제목)</p>
-                <input type="text" placeholder="Github repository에 팀원 초대하기" class="mission_input">
+                <ul>
+                    <li>1. 노션/구글독스 계정 생성</li>
+                    <li>2. 팀 회의록 페이지 생성 및 공유</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(검색 키워드: 노션 회의록 템플릿)</em></p>
             </div>
         </div>
     </div>
@@ -77,13 +105,17 @@
         <div class="line"></div>
     </div>
     <div class="card_wrapper">
-        <div class="mission_card" data-mission="3">
+        <div class="mission_card">
             <div class="card_header">
-                <h3>Github branch 파기</h3>
+                <h3>첫 팀 미팅 진행</h3>
                 <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
             </div>
             <div class="card_content">
-                <input type="text" placeholder="Github branch 파기" class="mission_input">
+                <ul>
+                    <li>1. 자기소개</li>
+                    <li>2. 프로젝트 참여 목적 공유</li>
+                    <li>3. 팀 규칙 간단히 정하기</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -95,18 +127,746 @@
         <div class="line"></div>
     </div>
     <div class="card_wrapper">
-        <div class="mission_card" data-mission="4">
+        <div class="mission_card">
             <div class="card_header">
-                <h3>Github repository 생성하기</h3>
+                <h3>기본 운영 규칙 합의</h3>
                 <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
             </div>
             <div class="card_content">
-                <input type="text" placeholder="Github repository 생성하기" class="mission_input">
+                <ul>
+                    <li>1. 정기 회의 주기</li>
+                    <li>2. 스크럼(데일리/주간) 여부</li>
+                    <li>3. 응답 시간 기준</li>
+                    <li>4. 연락 불가 일정 미리 공유</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<div class="mission_item" data-number="5">
+    <div class="timeline_dot">
+        <div class="circle">5</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>아이디어 공유 미팅 진행</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 각자 생각한 서비스/프로젝트 아이디어 공유</li>
+                    <li>2. 현실성/기간 고려해 후보 압축</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="mission_item" data-number="6">
+    <div class="timeline_dot">
+        <div class="circle">6</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>프로젝트 방향 결정</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 서비스 목표 (학습용 / 포폴 / 출시)</li>
+                    <li>2. MVP 범위 합의</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="7">
+    <div class="timeline_dot">
+        <div class="circle">7</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>기획 문서 작성</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 서비스 개요</li>
+                    <li>2. 주요 기능</li>
+                    <li>3. 사용자 흐름 정리</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(검색 키워드: 서비스 기획서 작성 양식)</em></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="8">
+    <div class="timeline_dot">
+        <div class="circle">8</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>팀원 피드백 반영</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 프론트/백 의견 수렴</li>
+                    <li>2. 기술적으로 어려운 부분 조정</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="9">
+    <div class="timeline_dot">
+        <div class="circle">9</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>역할별 업무 범위 정리</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 프론트 / 백 / 기타 역할 명확화</li>
+                    <li>2. 누가 무엇을 언제까지 할지 정리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="10">
+    <div class="timeline_dot">
+        <div class="circle">10</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>진행 상황 주기적 체크</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 일정 밀리는 부분 확인</li>
+                    <li>2. 병목 발생 시 우선순위 재조정</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="11">
+    <div class="timeline_dot">
+        <div class="circle">11</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>팀 분위기 관리</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 진행 중 어려움 공유</li>
+                    <li>2. 중간 목표 달성 시 간단한 피드백</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="12">
+    <div class="timeline_dot">
+        <div class="circle">12</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>결과물 활용 방향 논의</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 배포 여부</li>
+                    <li>2. 포트폴리오 정리</li>
+                    <li>3. 홍보 방식 논의</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(오픈채팅 / SNS / 커뮤니티 등)</em></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif role.code == "FRONTEND" %}
+
+<!-- Frontend 가이드 13개 -->
+<div class="mission_item" data-number="1">
+    <div class="timeline_dot">
+        <div class="circle">1</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>팀 커뮤니케이션 채널 참여</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. PM이 공유한 팀플 채널 입장</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="2">
+    <div class="timeline_dot">
+        <div class="circle">2</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>기획 내용 숙지</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 기획 문서 읽고 전체 흐름 파악</li>
+                    <li>2. 핵심 사용자 화면 정리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="3">
+    <div class="timeline_dot">
+        <div class="circle">3</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>디자인 컨셉 리서치</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 유사 서비스/디자인 레퍼런스 조사</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(검색 키워드: Pinterest UI reference)</em></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="4">
+    <div class="timeline_dot">
+        <div class="circle">4</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>레퍼런스 공유 및 합의</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 팀원들에게 디자인 방향 공유</li>
+                    <li>2. 피드백 반영해 방향 확정</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="5">
+    <div class="timeline_dot">
+        <div class="circle">5</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>디자인 도구 선택</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. Figma / Adobe XD / 기타 도구 선택</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(검색 키워드: Figma 사용법)</em></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="6">
+    <div class="timeline_dot">
+        <div class="circle">6</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>컬러·폰트 가이드 정리</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 컬러칩</li>
+                    <li>2. 기본 폰트</li>
+                    <li>3. 버튼/텍스트 스타일</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="7">
+    <div class="timeline_dot">
+        <div class="circle">7</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>와이어프레임 제작</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 주요 화면 구조 설계</li>
+                    <li>2. 사용자 흐름 중심으로 구성</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="8">
+    <div class="timeline_dot">
+        <div class="circle">8</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>와이어프레임 리뷰</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 팀원 피드백 반영</li>
+                    <li>2. 수정사항 반영</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="9">
+    <div class="timeline_dot">
+        <div class="circle">9</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>최종 UI 디자인 완성</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 색상/아이콘/여백 적용</li>
+                </ul>
+                <p class="search_keyword"><em style="color: #4272EF;">(검색 키워드: 사용자 편의성 UI 디자인)</em></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="10">
+    <div class="timeline_dot">
+        <div class="circle">10</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>퍼블리싱 또는 프론트 구현</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. HTML/CSS 또는 React/Vue 등 선택</li>
+                    <li>2. 컴포넌트 단위로 구현</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="11">
+    <div class="timeline_dot">
+        <div class="circle">11</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>백엔드 연동 고려</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 데이터 위치/형식 파악</li>
+                    <li>2. API 연동 포인트 확인</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="12">
+    <div class="timeline_dot">
+        <div class="circle">12</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>반응형/기본 UX 점검</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 모바일/데스크톱 기본 대응</li>
+                    <li>2. 버튼/폼 동작 확인</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="13">
+    <div class="timeline_dot">
+        <div class="circle">13</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>UI 수정 및 정리</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 실제 사용 시 불편한 부분 개선</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% elif role.code == "BACKEND" %}
+
+<!-- Backend 가이드 13개 -->
+<div class="mission_item" data-number="1">
+    <div class="timeline_dot">
+        <div class="circle">1</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>기획 및 기능 범위 파악</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 어떤 기능을 서버에서 담당하는지 확인</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="2">
+    <div class="timeline_dot">
+        <div class="circle">2</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>기술 스택 결정</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. Django / Spring / Node 등 선택</li>
+                    <li>2. DB 종류 선택</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="3">
+    <div class="timeline_dot">
+        <div class="circle">3</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>프로젝트 초기 세팅</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 서버 프로젝트 생성</li>
+                    <li>2. 기본 폴더 구조 정리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="4">
+    <div class="timeline_dot">
+        <div class="circle">4</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>DB 모델 설계</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 핵심 엔티티 정의</li>
+                    <li>2. 관계 설정</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="5">
+    <div class="timeline_dot">
+        <div class="circle">5</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>기본 CRUD 설계</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 생성 / 조회 / 수정 / 삭제 흐름 정리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="6">
+    <div class="timeline_dot">
+        <div class="circle">6</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>API 구조 설계</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 엔드포인트 네이밍</li>
+                    <li>2. 요청/응답 형식 정의</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="7">
+    <div class="timeline_dot">
+        <div class="circle">7</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>인증/권한 고려</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 로그인 여부</li>
+                    <li>2. 사용자별 접근 제한</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="8">
+    <div class="timeline_dot">
+        <div class="circle">8</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>API 구현</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 기능 단위로 구현</li>
+                    <li>2. 예외 상황 처리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="9">
+    <div class="timeline_dot">
+        <div class="circle">9</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>API 테스트</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. Postman / curl / 테스트 코드로 요청 확인</li>
+                    <li>2. 정상/에러 케이스 점검</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="10">
+    <div class="timeline_dot">
+        <div class="circle">10</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>프론트 연동 지원</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 프론트 요청 사항 반영</li>
+                    <li>2. 데이터 형식 조정</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="11">
+    <div class="timeline_dot">
+        <div class="circle">11</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>환경 설정 분리</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 로컬 / 배포 환경 구분</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="12">
+    <div class="timeline_dot">
+        <div class="circle">12</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>배포 준비</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 서버 실행 방식 정리</li>
+                    <li>2. 도메인/HTTPS 고려</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mission_item" data-number="13">
+    <div class="timeline_dot">
+        <div class="circle">13</div>
+        <div class="line"></div>
+    </div>
+    <div class="card_wrapper">
+        <div class="mission_card">
+            <div class="card_header">
+                <h3>기능 안정화</h3>
+                <img src="{% static 'images/nocheck.png' %}" alt="체크" class="check_icon">
+            </div>
+            <div class="card_content">
+                <ul>
+                    <li>1. 에러 로그 확인</li>
+                    <li>2. 성능/보안 기본 점검</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% endif %}
 
 <script src="{% static 'js/mission.js' %}"></script>
 {% endblock %}
