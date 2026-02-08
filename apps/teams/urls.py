@@ -21,4 +21,7 @@ urlpatterns = [
     
     # 팀 매칭 결과/대기 화면
     path("status/", views.team_status, name="team_status"),  # team.html
+    
+    # 이메일 알림 활성화
+    path("enable-notifications/", views.enable_email_notifications, name="enable_notifications"),
 ]

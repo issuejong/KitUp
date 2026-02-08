@@ -28,6 +28,20 @@ from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSeriali
 # apps/teams/views.py
 
 @login_required
+@require_POST
+def enable_email_notifications(request):
+    """
+    사용자의 이메일 알림을 활성화하고 team_apply로 리다이렉트
+    """
+    user = request.user
+    user.email_notifications_enabled = True
+    user.save()
+    
+    messages.success(request, "✅ 알림을 활성화했습니다.")
+    return redirect("teams:team_apply")
+
+
+@login_required
 def team_matching_router(request):
     """
     사용자의 상태를 확인하여 매칭 신청 페이지 또는 결과 페이지로 보냄
@@ -168,9 +182,10 @@ def team_matching_cancel(request):
         messages.error(request, "❌ 팀 매칭 기간이 아닙니다. 취소할 수 없습니다.")
         return redirect("teams:team_status")
     
-    # 열정 레벨 초기화
+    # 열정 레벨 초기화 및 이메일 알림 비활성화
     request.user.passion_level = None
-    request.user.save(update_fields=["passion_level"])
+    request.user.email_notifications_enabled = False
+    request.user.save(update_fields=["passion_level", "email_notifications_enabled"])
     
     messages.success(request, "✅ 팀 매칭 신청이 취소되었습니다.")
     return redirect("teams:team_apply")

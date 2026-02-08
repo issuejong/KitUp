@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ngettext
 
 from .models import Season, Project, ProjectApplication
-from .services import TeamMatchingService
+from .services import TeamMatchingService, EmailService
 
 
 @admin.register(Season)
@@ -13,7 +13,7 @@ class SeasonAdmin(admin.ModelAdmin):
     list_filter = ["status", "is_active", "created_at"]
     search_fields = ["name"]
     ordering = ["-created_at"]
-    actions = ["activate_season", "deactivate_season", "run_team_matching"]
+    actions = ["activate_season", "deactivate_season", "run_team_matching", "send_matching_start_email", "send_matching_results_email"]
     
     def activate_season(self, request, queryset):
         """시즌 활성화 (이전 활성 시즌은 자동 비활성화)"""
@@ -52,7 +52,46 @@ class SeasonAdmin(admin.ModelAdmin):
                     f"❌ [{season.name}] 팀 매칭 오류: {str(e)}",
                     messages.ERROR,
                 )
+    
+    def send_matching_results_email(self, request, queryset):
+        """팀 매칭 결과 이메일 발송"""
+        for season in queryset:
+            try:
+                result = EmailService.send_matching_results(season.id)
+                self.message_user(
+                    request,
+                    f"📧 [{season.name}] 팀 매칭 결과 이메일 발송 완료: "
+                    f"{result['sent_count']}개 팀 / {result['failed_count']}개 실패",
+                    messages.SUCCESS,
+                )
+            except Exception as e:
+                self.message_user(
+                    request,
+                    f"❌ [{season.name}] 이메일 발송 오류: {str(e)}",
+                    messages.ERROR,
+                )
+    
+    def send_matching_start_email(self, request, queryset):
+        """팀 매칭 기간 시작 알림 이메일 발송"""
+        for season in queryset:
+            try:
+                result = EmailService.send_matching_start_notification(season.id)
+                self.message_user(
+                    request,
+                    f"📧 [{season.name}] 팀 매칭 시작 알림 이메일 발송 완료: "
+                    f"{result['sent_count']}명 / {result['failed_count']}명 실패",
+                    messages.SUCCESS,
+                )
+            except Exception as e:
+                self.message_user(
+                    request,
+                    f"❌ [{season.name}] 이메일 발송 오류: {str(e)}",
+                    messages.ERROR,
+                )
+    
     run_team_matching.short_description = "🤝 팀 매칭 알고리즘 실행"
+    send_matching_start_email.short_description = "📢 팀 매칭 시작 알림 이메일 발송"
+    send_matching_results_email.short_description = "📧 팀 매칭 결과 이메일 발송"
     
     activate_season.short_description = "✅ 선택된 시즌 활성화"
     deactivate_season.short_description = "❌ 선택된 시즌 비활성화"
