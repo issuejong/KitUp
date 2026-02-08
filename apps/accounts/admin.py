@@ -15,7 +15,7 @@ class UserRoleLevelInline(admin.TabularInline):
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ["id", "username", "nickname", "email", "passion_level", "team_ban_count", "is_staff", "created_at"]
+    list_display = ["id", "username", "nickname", "email", "passion_level", "team_ban_count", "email_notifications_enabled", "is_staff", "created_at"]
     list_filter = ["is_staff", "is_active", "created_at", "passion_level"]
     search_fields = ["username", "nickname", "email"]
     ordering = ["-created_at"]
@@ -24,6 +24,7 @@ class UserAdmin(BaseUserAdmin):
     
     fieldsets = BaseUserAdmin.fieldsets + (
         ("프로필 정보", {"fields": ("nickname", "profile_image", "bio", "tech_stacks")}),
+        ("알림 설정", {"fields": ("email_notifications_enabled",)}),
         ("관리 정보", {"fields": ("passion_level", "team_ban_count")}),
     )
     
