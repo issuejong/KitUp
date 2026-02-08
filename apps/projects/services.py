@@ -3,6 +3,9 @@
 """
 from django.db import transaction
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from apps.accounts.models import User, Role, UserRoleLevel
 from apps.projects.models import Season, Project
@@ -176,3 +179,197 @@ class TeamMatchingService:
         candidates.sort(key=lambda x: x['level'], reverse=True)
         
         return [c['user'] for c in candidates]
+
+
+class EmailService:
+    """이메일 발송 서비스"""
+    
+    @staticmethod
+    def send_matching_start_notification(season_id):
+        """
+        팀 매칭 기간 시작 알림 이메일 발송
+        - 모든 사용자에게 매칭 신청 유도 이메일 발송
+        
+        Args:
+            season_id: Season ID
+            
+        Returns:
+            dict: 발송 결과 통계
+        """
+        season = Season.objects.get(id=season_id)
+        
+        # 이메일 알림 활성화 사용자 조회
+        users = User.objects.filter(
+            email_notifications_enabled=True
+        ).exclude(email='')
+        
+        sent_count = 0
+        failed_count = 0
+        
+        for user in users:
+            try:
+                EmailService._send_matching_start_email(
+                    user=user,
+                    season=season
+                )
+                sent_count += 1
+            except Exception as e:
+                print(f"❌ 사용자 {user.id} ({user.email}) 이메일 발송 실패: {str(e)}")
+                failed_count += 1
+        
+        return {
+            'season_id': season_id,
+            'users_total': users.count(),
+            'sent_count': sent_count,
+            'failed_count': failed_count,
+        }
+    
+    @staticmethod
+    def _send_matching_start_email(user, season):
+        """
+        개별 사용자에게 팀 매칭 기간 시작 알림 발송
+        
+        Args:
+            user: 수신자
+            season: 현재 시즌
+        """
+        context = {
+            'user': user,
+            'season': season,
+            'matching_start': season.matching_start.strftime('%Y년 %m월 %d일'),
+            'matching_end': season.matching_end.strftime('%Y년 %m월 %d일'),
+        }
+        
+        # HTML 템플릿 렌더링
+        html_message = render_to_string(
+            'emails/matching_start.html',
+            context
+        )
+        
+        # 일반 텍스트 버전
+        text_message = render_to_string(
+            'emails/matching_start.txt',
+            context
+        )
+        
+        # 이메일 발송
+        send_mail(
+            subject=f'[KITUP] {season.name} 팀 매칭이 시작되었습니다',
+            message=text_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+    
+    @staticmethod
+    def send_matching_results(season_id):
+        """
+        팀 매칭 결과 이메일 발송
+        - 매칭된 팀의 멤버들에게만 발송
+        - 발송 완료 후 email_notifications_enabled = False로 변경
+        
+        Args:
+            season_id: Season ID
+            
+        Returns:
+            dict: 발송 결과 통계
+        """
+        season = Season.objects.get(id=season_id)
+        
+        # 현재 시즌의 모든 팀 조회
+        teams = Team.objects.filter(
+            project__season=season
+        ).prefetch_related(
+            'members__user',
+            'members__role',
+            'project'
+        ).distinct()
+        
+        sent_count = 0
+        failed_count = 0
+        notified_users = []
+        
+        for team in teams:
+            try:
+                # 각 팀의 모든 멤버에게 매칭 결과 이메일 발송
+                for member in team.members.all():
+                    if member.user.email_notifications_enabled:
+                        EmailService._send_team_matching_email(
+                            user=member.user,
+                            team=team,
+                            season=season
+                        )
+                        notified_users.append(member.user.id)
+                sent_count += 1
+            except Exception as e:
+                print(f"❌ 팀 {team.id} 이메일 발송 실패: {str(e)}")
+                failed_count += 1
+        
+        # 이메일을 받은 사용자들의 email_notifications_enabled를 False로 변경
+        if notified_users:
+            User.objects.filter(id__in=notified_users).update(email_notifications_enabled=False)
+        
+        return {
+            'season_id': season_id,
+            'teams_total': teams.count(),
+            'sent_count': sent_count,
+            'failed_count': failed_count,
+            'notified_users': len(notified_users),
+        }
+    
+    @staticmethod
+    def _send_team_matching_email(user, team, season):
+        """
+        개별 사용자에게 팀 매칭 결과 이메일 발송
+        
+        Args:
+            user: 수신자
+            team: 할당된 팀
+            season: 현재 시즌
+        """
+        # 팀원 정보 수집
+        team_members = []
+        for member in team.members.all():
+            role_level = UserRoleLevel.objects.filter(
+                user=member.user,
+                role=member.role
+            ).first()
+            
+            team_members.append({
+                'user': member.user,
+                'role': member.role,
+                'level': role_level.level if role_level else None,
+            })
+        
+        # 이메일 컨텍스트
+        context = {
+            'user': user,
+            'team': team,
+            'team_members': team_members,
+            'season': season,
+            'project_start': season.project_start.strftime('%Y년 %m월 %d일'),
+            'project_end': season.project_end.strftime('%Y년 %m월 %d일'),
+        }
+        
+        # HTML 템플릿 렌더링
+        html_message = render_to_string(
+            'emails/matching_result.html',
+            context
+        )
+        
+        # 일반 텍스트 버전
+        text_message = render_to_string(
+            'emails/matching_result.txt',
+            context
+        )
+        
+        # 이메일 발송
+        send_mail(
+            subject=f'[KITUP] {season.name} 팀 매칭 완료',
+            message=text_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            html_message=html_message,
+            fail_silently=False,
+        )

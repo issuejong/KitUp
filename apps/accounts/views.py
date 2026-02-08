@@ -8,8 +8,15 @@ from django.contrib import messages
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+
 from .forms import OnboardingForm, ProfileUpdateForm
-from .models import Role, User, UserRoleLevel
+from .models import Role, User, UserRoleLevel, Report
+from .serializers import ReportCreateRequestSerializer, ReportCreateResponseSerializer
 
 
 @require_GET
@@ -240,3 +247,45 @@ def withdraw(request):
         return redirect("/")
 
     return render(request, "account/withdraw.html")
+
+@extend_schema(
+    tags=["Accounts"],
+    summary="유저 신고 생성",
+    request=ReportCreateRequestSerializer,
+    responses={201: ReportCreateResponseSerializer, 400: None, 409: None},
+)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_report(request):
+    ser = ReportCreateRequestSerializer(data=request.data)
+    ser.is_valid(raise_exception=True)
+
+    reported_user_id = ser.validated_data["reported_user_id"]
+    reason = ser.validated_data["reason"]
+
+    if not reported_user_id:
+        return JsonResponse({"ok": False, "error": "reported_user_id is required"}, status=400)
+    if not reason:
+        return JsonResponse({"ok": False, "error": "reason is required"}, status=400)
+
+    reported_user = get_object_or_404(User, pk=reported_user_id)
+
+    # 자기 자신 신고 방지
+    if reported_user.id == request.user.id:
+        return JsonResponse({"ok": False, "error": "cannot report yourself"}, status=400)
+
+    # (선택) 동일 대상 중복 신고 방지: 대기중(PENDING) 하나만 허용 같은 정책
+    if Report.objects.filter(
+        reporter=request.user,
+        reported_user=reported_user,
+        status=Report.Status.PENDING,
+    ).exists():
+        return JsonResponse({"ok": False, "error": "already reported (pending)"}, status=409)
+
+    report = Report.objects.create(
+        reporter=request.user,
+        reported_user=reported_user,
+        reason=reason,
+    )
+
+    return JsonResponse({"ok": True, "report_id": report.id}, status=201)

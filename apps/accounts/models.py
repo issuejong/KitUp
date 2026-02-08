@@ -97,6 +97,11 @@ class User(AbstractUser):
         help_text="남은 팀플 참여 금지 횟수",
     )
 
+    email_notifications_enabled = models.BooleanField(
+        default=False,
+        help_text="이메일 알림 수신 여부",
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
