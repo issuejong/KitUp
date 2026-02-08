@@ -37,6 +37,8 @@ body {
 .signup-form {
     display: flex;
     flex-direction: column;
+    margin-left: -35px;
+    margin-right: -35px;
     gap: 16px;
 }
 
