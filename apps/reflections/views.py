@@ -89,26 +89,20 @@ def note_list(request):
         )
     
     # 스택 필터
-    role_codes  = request.GET.getlist("roles")
-    if role_codes :
-        get_personnal_retro = "none" in role_codes 
+    role = (request.GET.get("roles") or "").strip()
 
+    if role == "none":
+        qs = qs.filter(project__isnull=True)
+
+    elif role in ("PM", "FRONTEND", "BACKEND"):
         role_project_ids = (
             TeamMember.objects
-            .filter(user=request.user, role__code__in=role_codes )
+            .filter(user=request.user, role__code=role)
             .values_list("team__project_id", flat=True)
             .distinct()
         )
-
-        if get_personnal_retro and role_project_ids:
-            qs = qs.filter(
-                Q(project__isnull=True) | 
-                Q(project_id__in = role_project_ids)
-            )
-        elif get_personnal_retro:
-            qs = qs.filter(project__isnull=True)
-        elif role_project_ids:
-            qs = qs.filter(project_id__in = role_project_ids)
+        # ✅ 매칭 프로젝트가 없으면 결과 0개가 맞음
+        qs = qs.filter(project_id__in=role_project_ids)
 
     # 북마크 필터
     bookmarked = request.GET.get("bookmarked")
@@ -140,6 +134,7 @@ def note_list(request):
     context = {
         "notes" : qs,
         "my_projects": my_projects, # 내 프로젝트 조회 -> 필터에 보여주기
+        "role": role,
         "q" : q,
         "bookmarked": bookmarked,
         "sort": sort,
@@ -198,7 +193,6 @@ def note_create(request):
         note = Retrospective.objects.create(
             user= request.user,
             project=project,
-            role=role_code or None,
             template_key=tpl_key,
             title=title,
             answers_json=answers,
@@ -223,6 +217,7 @@ def note_create(request):
         "draft_key": draft_key,
         "my_projects": my_projects,
         "my_role_map": my_role_map,  
+        "note": None
     }
     return render(request, "reflections/note_create.html", context)
 
@@ -288,7 +283,6 @@ def note_update(request, note_id):
 
         note.title = title
         note.project = project
-        note.role = role_code or None
         note.answers_json = answers
         note.content_md = content_md
         note.save(update_fields=["title", "answers_json", "content_md", "updated_at"])
@@ -300,8 +294,8 @@ def note_update(request, note_id):
         "guide": guide,
         "tpl": tpl,
         "answers": existing_answers,
-        "my_projects": my_projects,
-        "my_role_map": my_role_map,
+        "my_projects": my_projects or {},
+        "my_role_map": my_role_map or [],
     }
     return render(request, "reflections/note_update.html", context)
 
