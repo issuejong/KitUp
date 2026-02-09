@@ -136,8 +136,10 @@ class ProfileUpdateForm(forms.ModelForm):
         return github_id or None
 
     def save(self, commit=True):
-        user = super().save(commit)
-        if commit:
-            if "tech_stacks" in self.cleaned_data:
-                user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
+        user = super().save(commit=False)
+        # Always save user record first (includes profile_image file upload)
+        user.save()
+        # Handle ManyToMany field separately
+        if "tech_stacks" in self.cleaned_data:
+            user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
         return user
