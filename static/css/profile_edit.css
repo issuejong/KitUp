@@ -138,8 +138,14 @@ body {
     gap: 8px;
 }
 
-.nickname-check-wrapper input {
-    width: 100%;
+.input-button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-button-group input {
+    flex: 1;
     padding: 14px 18px;
     border: none;
     background-color: #f0f2f7;
@@ -149,32 +155,33 @@ body {
     transition: all 0.3s ease;
 }
 
-.nickname-check-wrapper input:focus {
+.input-button-group input:focus {
     outline: none;
     background-color: #e8eaf0;
 }
 
-.nickname-check-wrapper input.valid {
+.input-button-group input.valid {
     background-color: #f0fdf4;
     border: 2px solid #22c55e;
 }
 
-.nickname-check-wrapper input.invalid {
+.input-button-group input.invalid {
     background-color: #fef2f2;
     border: 2px solid #ef4444;
 }
 
 .check-btn {
-    padding: 10px 20px;
+    padding: 14px 24px;
     background-color: #667eea;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 13px;
+    border-radius: 12px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s ease;
-    align-self: flex-start;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .check-btn:hover {
@@ -183,7 +190,6 @@ body {
 
 .check-status {
     font-size: 13px;
-    margin-top: 4px;
 }
 
 .check-status.success {
