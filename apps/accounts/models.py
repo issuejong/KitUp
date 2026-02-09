@@ -11,11 +11,9 @@ class TechStack(models.Model):
     """
 
     class Category(models.TextChoices):
-        LANGUAGE = "LANGUAGE", "프로그래밍 언어"
         FRONTEND = "FRONTEND", "프론트엔드"
         BACKEND = "BACKEND", "백엔드"
-        DATABASE = "DATABASE", "데이터베이스"
-        TOOL = "TOOL", "개발 도구"
+        PM = "PM", "기획"
 
     name = models.CharField(
         max_length=50,
