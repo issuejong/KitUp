@@ -7,8 +7,13 @@
 
 {% extends "base.html" %}
 {% load reflections_extras %}
+{% load static %}
 
 {% block title %}회고 상세{% endblock %}
+
+{% block header %}
+  <link rel="stylesheet" href="{% static 'css/reflections.css' %}">
+{% endblock %}
 
 {% block content %}
 <div style="max-width:900px; margin:0 auto; padding:20px 16px; display:flex; flex-direction:column; gap:16px;">
