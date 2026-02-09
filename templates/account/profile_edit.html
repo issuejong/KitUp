@@ -1,194 +1,352 @@
-{% extends 'base.html' %}
-{% load static %}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-{% block header %}
-<link rel="stylesheet" href="{% static 'css/profile_edit.css' %}">
-{% endblock %}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
 
-{% block content %}
-<div class="profile-edit-wrapper">
-    <div class="edit-card">
-        <aside class="user-info-side">
-            <div class="avatar-container">
-                <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}"
-                    alt="프로필 사진" class="profile-img" id="preview-image">
-                <label for="id_profile_image" class="edit-badge">
-                    <img src="{% static 'images/pencil_icon.png' %}" alt="수정">
-                </label>
-            </div>
+.profile-edit-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-            <div class="level-tag">Lv. 3</div>
+.edit-card {
+    background: white;
+    border-radius: 20px;
+    padding: 60px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 80px;
+}
 
-            <form method="post" enctype="multipart/form-data" class="edit-form">
-                {% csrf_token %}
+/* 왼쪽: 사용자 정보 */
+.user-info-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-                <!-- 프로필 이미지 입력 (숨김) -->
-                {{ form.profile_image }}
+/* 프로필 이미지 */
+.avatar-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 20px;
+}
 
-                <div class="info-table">
-                    <div class="info-row">
-                        <label class="label">닉네임</label>
-                        <div class="nickname-check-wrapper">
-                            {{ form.nickname }}
-                            <button type="button" class="check-btn" id="check-nickname-btn">중복확인</button>
-                            <span class="check-status" id="check-status"></span>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <label class="label">아이디</label>
-                        <input type="text" value="{{ user.username }}" class="input-field readonly" readonly>
-                    </div>
-                    <div class="info-row">
-                        <label class="label">Github</label>
-                        {{ form.github_id }}
-                    </div>
-                    <div class="info-row">
-                        <label class="label">이메일</label>
-                        <input type="text" value="{{ user.email }}" class="input-field readonly" readonly>
-                    </div>
-                </div>
+.profile-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
 
-                {% if form.errors %}
-                <div class="error-messages">
-                    {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                    <p class="error-text">{{ error }}</p>
-                    {% endfor %}
-                    {% endfor %}
-                </div>
-                {% endif %}
+.edit-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 44px;
+    height: 44px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
 
-                <button type="submit" class="save-button">수정 완료</button>
-            </form>
-        </aside>
+.edit-badge:hover {
+    transform: scale(1.1);
+}
 
-        <main class="content-side">
-            <section class="tech-stack-box">
-                <h3 class="side-title">기술 스택</h3>
-                <div class="tags">
-                    {% for tech in user.tech_stacks.all %}
-                    <div class="tag-item">
-                        # {{ tech.name }}
-                    </div>
-                    {% empty %}
-                    <p class="empty-msg">등록된 기술 스택이 없습니다.</p>
-                    {% endfor %}
-                </div>
-            </section>
-        </main>
-    </div>
-</div>
+.edit-badge img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+}
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const profileInput = document.getElementById('id_profile_image');
-    const previewImage = document.getElementById('preview-image');
-    const defaultImageUrl = "{% static 'images/default_profile.png' %}";
-    const nicknameInput = document.getElementById('id_nickname');
-    const checkNicknameBtn = document.getElementById('check-nickname-btn');
-    const checkStatus = document.getElementById('check-status');
-    
-    // 닉네임 검증
-    if (checkNicknameBtn && nicknameInput) {
-        // 중복확인 버튼 클릭
-        checkNicknameBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            checkNicknameDuplicate();
-        });
-        
-        // 닉네임 입력 중 실시간 검증
-        nicknameInput.addEventListener('input', function() {
-            checkStatus.textContent = '';
-            checkStatus.className = 'check-status';
-            nicknameInput.classList.remove('valid', 'invalid');
-        });
-        
-        // Enter 키로도 검증
-        nicknameInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                checkNicknameDuplicate();
-            }
-        });
+/* 레벨 태그 */
+.level-tag {
+    background: #667eea;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+/* 폼 */
+.edit-form {
+    width: 100%;
+}
+
+/* 정보 테이블 */
+.info-table {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    background-color: #f0f2f7;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    background-color: #e8eaf0;
+}
+
+.input-field.readonly {
+    background-color: #f0f2f7;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* 닉네임 중복확인 */
+.nickname-check-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nickname-check-wrapper input {
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    background-color: #f0f2f7;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.nickname-check-wrapper input:focus {
+    outline: none;
+    background-color: #e8eaf0;
+}
+
+.nickname-check-wrapper input.valid {
+    background-color: #f0fdf4;
+    border: 2px solid #22c55e;
+}
+
+.nickname-check-wrapper input.invalid {
+    background-color: #fef2f2;
+    border: 2px solid #ef4444;
+}
+
+.check-btn {
+    padding: 10px 20px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    align-self: flex-start;
+}
+
+.check-btn:hover {
+    background-color: #5568d3;
+}
+
+.check-status {
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.check-status.success {
+    color: #22c55e;
+}
+
+.check-status.error {
+    color: #ef4444;
+}
+
+/* 에러 메시지 */
+.error-messages {
+    margin-bottom: 20px;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+/* 수정 완료 버튼 */
+.save-button {
+    width: 100%;
+    padding: 16px;
+    background: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.save-button:hover {
+    background: #3367d6;
+}
+
+.save-button:active {
+    background: #2851a3;
+}
+
+/* 오른쪽: 기술 스택 */
+.content-side {
+    display: flex;
+    flex-direction: column;
+}
+
+.tech-stack-box {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
+    padding: 40px;
+    min-height: 400px;
+}
+
+.side-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tag-item {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tag-item:nth-child(3n+1) {
+    color: #06b6d4;
+    border-color: #06b6d4;
+}
+
+.tag-item:nth-child(3n+2) {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.tag-item:nth-child(3n+3) {
+    color: #10b981;
+    border-color: #10b981;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 40px 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .edit-card {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px;
     }
-    
-    function checkNicknameDuplicate() {
-        const nickname = nicknameInput.value.trim();
-        const userId = "{{ user.id }}";
-        
-        if (!nickname) {
-            checkStatus.textContent = '닉네임을 입력하세요.';
-            checkStatus.className = 'check-status error';
-            nicknameInput.classList.add('invalid');
-            return;
-        }
-        
-        // API 호출
-        fetch(`/api/accounts/check-nickname/?nickname=${encodeURIComponent(nickname)}&user_id=${userId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.available) {
-                    checkStatus.textContent = '✓ ' + data.message;
-                    checkStatus.className = 'check-status success';
-                    nicknameInput.classList.add('valid');
-                    nicknameInput.classList.remove('invalid');
-                } else {
-                    checkStatus.textContent = '✗ ' + data.message;
-                    checkStatus.className = 'check-status error';
-                    nicknameInput.classList.add('invalid');
-                    nicknameInput.classList.remove('valid');
-                }
-            })
-            .catch(error => {
-                console.error('오류:', error);
-                checkStatus.textContent = '검증 중 오류가 발생했습니다.';
-                checkStatus.className = 'check-status error';
-            });
+}
+
+@media (max-width: 768px) {
+    .edit-card {
+        padding: 30px 20px;
     }
-    
-    if (profileInput) {
-        // input 필드 숨기기
-        profileInput.style.display = 'none';
-        
-        // 파일 선택 시 미리보기
-        profileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            
-            if (file) {
-                // 이미지 파일인지 확인
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        previewImage.src = e.target.result;
-                    };
-                    
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('이미지 파일만 선택할 수 있습니다.');
-                    profileInput.value = '';
-                }
-            } else {
-                // 파일 선택 취소 시 기본 이미지로 복원
-                previewImage.src = defaultImageUrl;
-            }
-        });
+
+    .avatar-container {
+        width: 140px;
+        height: 140px;
     }
-    
-    // 이미지 로드 실패 시 기본 이미지 표시
-    if (previewImage) {
-        previewImage.addEventListener('error', function() {
-            this.src = defaultImageUrl;
-        });
+
+    .edit-badge {
+        width: 36px;
+        height: 36px;
     }
-    
-    // 모든 Django form input 필드에 input-field 클래스 추가
-    const formInputs = document.querySelectorAll('.info-row input[type="text"], .info-row input[type="email"], .info-row input[type="password"]');
-    formInputs.forEach(input => {
-        if (!input.classList.contains('readonly')) {
-            input.classList.add('input-field');
-        }
-    });
-});
-</script>
-{% endblock %}
+
+    .edit-badge img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .tech-stack-box {
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 20px 10px;
+    }
+
+    .edit-card {
+        padding: 20px 15px;
+    }
+
+    .avatar-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .level-tag {
+        font-size: 14px;
+        padding: 6px 20px;
+    }
+
+    .side-title {
+        font-size: 18px;
+    }
+
+    .tag-item {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
