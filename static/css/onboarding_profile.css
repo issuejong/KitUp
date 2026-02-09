@@ -305,6 +305,20 @@ form > div:last-of-type label:has(input[type="checkbox"]:checked)::before {
   font-weight: bold;
 }
 
+/* JS fallback class when :has is unsupported */
+form > div:last-of-type label.is-checked {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: var(--white);
+  font-weight: 600;
+}
+
+form > div:last-of-type label.is-checked::before {
+  content: '✓';
+  margin-right: 6px;
+  font-weight: bold;
+}
+
 /* Help text for tech stacks */
 form > div:last-of-type small {
   display: block;

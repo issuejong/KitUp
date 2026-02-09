@@ -62,5 +62,33 @@
       reader.readAsDataURL(f);
     });
   })();
+  
+    // Tech stack checkbox visual fallback (for browsers without :has)
+    (function() {
+      const container = document.querySelector('form > div:last-of-type');
+      if (!container) return;
+      // find all checkbox inputs related to tech_stacks
+      const inputs = container.querySelectorAll('input[type="checkbox"]');
+      if (!inputs || inputs.length === 0) return;
+
+      function updateLabelForInput(input) {
+        // find label by for= or closest wrapping label
+        let label = container.querySelector(`label[for="${input.id}"]`);
+        if (!label) label = input.closest('label');
+        if (!label) return;
+        if (input.checked) label.classList.add('is-checked');
+        else label.classList.remove('is-checked');
+      }
+
+      inputs.forEach((inp) => {
+        // initial sync
+        updateLabelForInput(inp);
+        // listen change
+        inp.addEventListener('change', () => updateLabelForInput(inp));
+        // also ensure clicking label toggles class if label used without wrapping
+        const labelRef = container.querySelector(`label[for="${inp.id}"]`);
+        if (labelRef) labelRef.addEventListener('click', () => setTimeout(() => updateLabelForInput(inp), 0));
+      });
+    })();
   </script>
   {% endblock %}
