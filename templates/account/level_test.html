@@ -380,6 +380,16 @@ window.addEventListener('DOMContentLoaded', function() {
     answers = new Array(10).fill(null);
     
     showQuestion(0);
+  // 옵션 컨테이너 클릭 위임: 카드 클릭 시 라디오 바로 선택되도록 함
+  const optionsContainer = document.getElementById('options-container');
+  if (optionsContainer) {
+    optionsContainer.addEventListener('click', function(e) {
+      const item = e.target.closest('.option-item');
+      if (!item) return;
+      const input = item.querySelector('input[type="radio"]');
+      if (input) input.checked = true;
+    });
+  }
 });
 
 // 문항 표시

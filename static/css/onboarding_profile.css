@@ -141,6 +141,8 @@ form > div:first-child.has-image::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  /* allow JS to set a custom profile image via CSS variable */
+  background-image: var(--profile-url, linear-gradient(135deg, var(--light-blue) 0%, #B3CDFC 100%));
 }
 
 /* Second div - Nickname field with button */
@@ -288,15 +290,16 @@ form > div:last-of-type label:hover {
 }
 
 /* Checked state */
-form > div:last-of-type input[type="checkbox"]:checked + label {
+/* Use :has to style the label when its contained input is checked (modern browsers) */
+form > div:last-of-type label:has(input[type="checkbox"]:checked) {
   background-color: var(--primary-blue);
   border-color: var(--primary-blue);
   color: var(--white);
   font-weight: 600;
 }
 
-/* Add checkmark icon to checked items */
-form > div:last-of-type input[type="checkbox"]:checked + label::before {
+/* Add checkmark icon to checked items (when input is checked) */
+form > div:last-of-type label:has(input[type="checkbox"]:checked)::before {
   content: '✓';
   margin-right: 6px;
   font-weight: bold;

@@ -35,4 +35,32 @@
     {% if user.nickname %}수정{% else %}저장{% endif %}
   </button>
 </form>
-{% endblock %}
+  <script>
+  // 온보딩: 프로필 이미지 영역 클릭으로 파일 선택 및 미리보기
+  (() => {
+    const profileDiv = document.querySelector('form > div:first-child');
+    if (!profileDiv) return;
+
+    const fileInput = profileDiv.querySelector('input[type="file"]');
+    if (!fileInput) return;
+
+    // 클릭 시 파일 선택
+    profileDiv.addEventListener('click', (e) => {
+      e.preventDefault();
+      fileInput.click();
+    });
+
+    // 선택 시 미리보기
+    fileInput.addEventListener('change', async (e) => {
+      const f = fileInput.files && fileInput.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        profileDiv.classList.add('has-image');
+        profileDiv.style.setProperty('--profile-url', `url(${ev.target.result})`);
+      };
+      reader.readAsDataURL(f);
+    });
+  })();
+  </script>
+  {% endblock %}
