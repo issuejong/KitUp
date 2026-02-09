@@ -117,6 +117,8 @@ class ReportAdmin(admin.ModelAdmin):
         for report in pending_reports:
             # 피신고자에게 팀 밴 2회 추가
             report.reported_user.team_ban_count += 2
+            # TODO 팀에서 피신고자 제거하기 
+            
             report.reported_user.save()
             
             # 신고 상태 업데이트

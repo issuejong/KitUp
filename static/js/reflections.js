@@ -1,0 +1,332 @@
+// static/js/reflections.js
+(() => {
+  /** ---------------------------
+   *  Helpers
+   * -------------------------- */
+  const qs = (sel, el = document) => el.querySelector(sel);
+  const qsa = (sel, el = document) => Array.from(el.querySelectorAll(sel));
+
+  const closeAllMenus = (exceptWrap = null) => {
+    qsa("[data-more-wrap]").forEach((wrap) => {
+      if (exceptWrap && wrap === exceptWrap) return;
+      const btn = qs("[data-more-btn]", wrap);
+      const menu = qs("[data-more-menu]", wrap);
+      if (!btn || !menu) return;
+      btn.setAttribute("aria-expanded", "false");
+      menu.hidden = true;
+    });
+  };
+
+  /** ---------------------------
+   *  1) Kebab menu (수정/삭제)
+   *     - 버튼 클릭: 해당 메뉴 토글
+   *     - 바깥 클릭: 모두 닫기
+   *     - ESC: 닫기
+   * -------------------------- */
+  const bindMenus = () => {
+    qsa("[data-more-wrap]").forEach((wrap) => {
+      const btn = qs("[data-more-btn]", wrap);
+      const menu = qs("[data-more-menu]", wrap);
+      if (!btn || !menu) return;
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isOpen = btn.getAttribute("aria-expanded") === "true";
+        closeAllMenus(wrap);
+
+        // 토글
+        btn.setAttribute("aria-expanded", String(!isOpen));
+        menu.hidden = isOpen;
+
+        // 열릴 때만 포커스 이동(접근성)
+        if (!isOpen) {
+          const firstItem = qs(".note-menuitem", menu);
+          if (firstItem) firstItem.focus?.();
+        }
+      });
+
+      // 메뉴 내부 클릭은 바깥 클릭 닫기 막기
+      menu.addEventListener("click", (e) => e.stopPropagation());
+    });
+
+    // 바깥 클릭하면 닫기
+    document.addEventListener("click", () => closeAllMenus(null));
+
+    // ESC 누르면 닫기
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeAllMenus(null);
+    });
+  };
+
+  /** ---------------------------
+   *  2) Bookmark toggle (AJAX 포함)
+   *     - 기본값 false로 시작 (서버값 무시)
+   *     - 클릭 시 UI만 토글
+   *     - aria-pressed, class 동기화
+   * -------------------------- */
+  const getCSRFToken = () =>
+  (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value ||
+  (document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/) || [])[1] ||
+  "";
+
+  const bindBookmarkAjax = () => {
+    document.querySelectorAll("[data-bookmark-btn]").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        console.log("bookmark btn clicked");
+        e.preventDefault();
+        e.stopPropagation();
+
+        // note id 추출 (A안/B안 모두 대응)
+        const noteId =
+          btn.dataset.noteId ||
+          btn.closest("[data-note-id]")?.dataset.noteId;
+
+        if (!noteId) {
+          console.error("noteId not found for bookmark button");
+          return;
+        }
+
+        // 현재 상태
+        const wasActive = btn.classList.contains("is-active");
+        const next = !wasActive;
+
+        // 옵티미스틱 UI
+        btn.classList.toggle("is-active", next);
+        btn.setAttribute("aria-pressed", next ? "true" : "false");
+        btn.disabled = true;
+
+        try {
+          const res = await fetch(`/api/reflections/retrospectives/${noteId}/`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken(),
+            },
+            body: JSON.stringify({ bookmarked: next }),
+          });
+
+          if (!res.ok) {
+            const t = await res.text().catch(() => "");
+            throw new Error(`PATCH failed: ${res.status} ${t}`);
+          }
+
+          // 응답이 bookmarked를 내려주면 동기화(선택)
+          const data = await res.json().catch(() => null);
+          if (data?.bookmarked !== undefined) {
+            btn.classList.toggle("is-active", !!data.bookmarked);
+            btn.setAttribute("aria-pressed", data.bookmarked ? "true" : "false");
+          }
+
+        } catch (err) {
+          console.error(err);
+
+          // 실패 시 롤백
+          btn.classList.toggle("is-active", wasActive);
+          btn.setAttribute("aria-pressed", wasActive ? "true" : "false");
+
+          alert("북마크 변경 실패");
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    });
+  };
+
+  
+
+  const bindProjectRoleAutofill = () => {
+    const projectSel = document.querySelector("[data-project-select]");
+    const roleSel = document.querySelector("[data-role-select]");
+    const roleMapEl = document.getElementById("roleMapJson");
+
+    if (!projectSel || !roleSel || !roleMapEl) return;
+
+    let roleMap = {};
+    try {
+      roleMap = JSON.parse(roleMapEl.textContent || "{}");
+    } catch {
+      roleMap = {};
+    }
+
+    projectSel.addEventListener("change", () => {
+      const pid = projectSel.value;
+      if (!pid) return;
+
+      const autoRole = roleMap[pid];
+      if (autoRole) {
+        roleSel.value = autoRole; // 사용자가 원하면 다시 바꿀 수 있음
+      }
+    });
+  };
+
+  const bindAssetUpload = () => {
+    const fileInput = document.getElementById("assetFileInput");
+    if (!fileInput) return;
+
+    const wrap = document.querySelector(".ref-form-wrap");
+    if (!wrap) return;
+
+    const NOTE_ID = (wrap.dataset.noteId || "").trim();
+    const DRAFT_KEY = (wrap.dataset.draftKey || "").trim();
+    let currentQid = null;
+
+    const csrfToken = (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "";
+
+    // ✅ URL name은 프로젝트에 맞춰야 함 (기존 _note_form.html에 있던 이름 그대로)
+    const uploadUrlWithNote = NOTE_ID ? wrap.dataset.uploadNoteUrl : "";
+    const uploadUrlTemp = wrap.dataset.uploadTempUrl;
+
+    // 위 2개를 템플릿에서 data로 주는 방식이 제일 안전함.
+    // (아래 "data-upload-..." 주는 방법 참고)
+
+    const insertAtCursor = (textarea, text) => {
+      const start = textarea.selectionStart ?? textarea.value.length;
+      const end = textarea.selectionEnd ?? textarea.value.length;
+      const before = textarea.value.slice(0, start);
+      const after = textarea.value.slice(end);
+      textarea.value = before + text + after;
+      const pos = start + text.length;
+      textarea.setSelectionRange(pos, pos);
+      textarea.focus();
+    };
+
+    document.querySelectorAll("[data-asset-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentQid = btn.dataset.qid;
+        fileInput.value = "";
+        fileInput.click();
+      });
+    });
+
+    fileInput.addEventListener("change", async () => {
+      if (!fileInput.files || !fileInput.files[0] || !currentQid) return;
+
+      if (!NOTE_ID && !DRAFT_KEY) {
+        alert("draft_key가 없어 업로드할 수 없습니다.");
+        return;
+      }
+
+      const url = NOTE_ID ? uploadUrlWithNote : uploadUrlTemp;
+      if (!url) {
+        alert("업로드 URL이 설정되지 않았습니다.");
+        return;
+      }
+
+      const fd = new FormData();
+      fd.append("image", fileInput.files[0]);
+      fd.append("alt_text", "image");
+      if (!NOTE_ID) fd.append("draft_key", DRAFT_KEY);
+
+      let res;
+      try {
+        res = await fetch(url, {
+          method: "POST",
+          headers: { "X-CSRFToken": csrfToken },
+          body: fd,
+        });
+      } catch (e) {
+        console.error(e);
+        alert("업로드 요청 실패(네트워크)");
+        return;
+      }
+
+      if (!res.ok) {
+        const t = await res.text().catch(() => "");
+        console.error("upload failed:", res.status, t);
+        alert("업로드 실패");
+        return;
+      }
+
+      const data = await res.json();
+      const md = data.md || `![image](${data.url})`;
+
+      const ta = document.getElementById(`ta__${currentQid}`);
+      if (!ta) return;
+
+      insertAtCursor(ta, (ta.value.endsWith("\n") || ta.value.length === 0) ? md : "\n" + md);
+    });
+  };
+
+  const bindAssetDelete = () => {
+    const wrap = document.querySelector(".ref-form-wrap");
+    if (!wrap) return;
+
+    const NOTE_ID = (wrap.dataset.noteId || "").trim();
+    if (!NOTE_ID) return;
+
+    const csrfToken = (document.querySelector("[name=csrfmiddlewaretoken]") || {}).value || "";
+
+    document.querySelectorAll("[data-asset-delete]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!confirm("이미지를 삭제할까요?")) return;
+
+        const assetId = btn.dataset.assetId;
+        const urlTpl = wrap.dataset.deleteAssetUrlTpl; // 예: "/retrospectives/12/assets/0/" 형태
+        if (!urlTpl) return;
+
+        const url = urlTpl.replace("/0/", `/${assetId}/`);
+
+        const res = await fetch(url, {
+          method: "DELETE",
+          headers: { "X-CSRFToken": csrfToken },
+        });
+
+        if (!res.ok) {
+          alert("삭제 실패");
+          return;
+        }
+
+        const row = document.querySelector(`[data-asset-row="${assetId}"]`);
+        if (row) row.remove();
+      });
+    });
+  };
+  const bindAutoSubmit = () => {
+    document.querySelectorAll("[data-auto-submit]").forEach((el) => {
+      el.addEventListener("change", () => {
+        el.form?.submit();
+      });
+    });
+  };
+
+  const bindBookmarkFilter = () => {
+    const btn = document.querySelector("[data-bookmark-filter]");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+      const url = new URL(window.location.href);
+      const isOn = url.searchParams.get("bookmarked");
+
+      if (isOn) {
+        url.searchParams.delete("bookmarked");
+      } else {
+        url.searchParams.set("bookmarked", "1");
+      }
+
+      window.location.href = url.toString();
+    });
+  };
+
+
+
+  /** ---------------------------
+   *  Init
+   * -------------------------- */
+  const init = () => {
+    bindMenus();
+    bindBookmarkAjax();
+    bindProjectRoleAutofill();
+    bindAssetUpload();
+    bindAssetDelete();
+    bindAutoSubmit();
+    bindBookmarkFilter();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
