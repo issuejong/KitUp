@@ -26,6 +26,17 @@ CSRF_TRUSTED_ORIGINS = [
     'https://kitup.duckdns.org',
 ]
 
+if os.getenv("ENV", "dev") == "prod":
+    DEBUG = False
+
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    USE_X_FORWARDED_HOST = True
+    ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
+    CSRF_TRUSTED_ORIGINS = [
+        "https://kitup.duckdns.org",
+    ]
+
 # Application definition
 
 INSTALLED_APPS = [
