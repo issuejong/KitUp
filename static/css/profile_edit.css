@@ -7,345 +7,352 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
     background-color: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
-    padding: 20px;
-    margin: 0;
+    padding: 40px 20px;
 }
 
-.container {
-    width: 100%;
-    max-width: 445px;
+.profile-edit-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.row {
-    width: 100%;
-}
-
-.col-lg-6,
-.col-md-8 {
-    width: 100%;
-}
-
-.justify-content-center {
-    display: flex;
-    justify-content: center;
-}
-
-/* 카드 스타일 */
-.auth-card {
+.edit-card {
     background: white;
-    border-radius: 16px;
-    padding: 48px 40px;
+    border-radius: 20px;
+    padding: 60px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 80px;
+}
+
+/* 왼쪽: 사용자 정보 */
+.user-info-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 프로필 이미지 */
+.avatar-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 20px;
+}
+
+.profile-img {
     width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* 헤더 */
-.auth-header {
-    text-align: center;
-    margin-bottom: 32px;
-}
-
-.auth-header h1 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 12px;
-}
-
-.auth-header p {
-    font-size: 14px;
-    color: #666;
-    line-height: 1.5;
-}
-
-/* 성공 카드 */
-.success-card {
-    text-align: center;
-}
-
-.success-icon {
-    width: 80px;
-    height: 80px;
-    background: #22c55e;
+.edit-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 44px;
+    height: 44px;
+    background: #333;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 24px;
-    font-size: 48px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.edit-badge:hover {
+    transform: scale(1.1);
+}
+
+.edit-badge img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+}
+
+/* 레벨 태그 */
+.level-tag {
+    background: #667eea;
     color: white;
-    font-weight: bold;
-}
-
-.success-card h1 {
-    font-size: 24px;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 16px;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 12px;
+    margin-bottom: 40px;
 }
 
-.success-card > p {
-    font-size: 14px;
-    color: #666;
+/* 폼 */
+.edit-form {
+    width: 100%;
+}
+
+/* 정보 테이블 */
+.info-table {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.info-row {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 24px;
 }
 
-/* 폼 그룹 */
-.form-group {
+.label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 18px;
+    border: none;
+    background-color: #f0f2f7;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    background-color: #e8eaf0;
+}
+
+.input-field.readonly {
+    background-color: #f0f2f7;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* 닉네임 중복확인 */
+.nickname-check-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-button-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-button-group input {
+    flex: 1;
+    padding: 14px 18px;
+    border: none;
+    background-color: #f0f2f7;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.input-button-group input:focus {
+    outline: none;
+    background-color: #e8eaf0;
+}
+
+.input-button-group input.valid {
+    background-color: #f0fdf4;
+    border: 2px solid #22c55e;
+}
+
+.input-button-group input.invalid {
+    background-color: #fef2f2;
+    border: 2px solid #ef4444;
+}
+
+.check-btn {
+    padding: 14px 24px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.check-btn:hover {
+    background-color: #5568d3;
+}
+
+.check-status {
+    font-size: 13px;
+}
+
+.check-status.success {
+    color: #22c55e;
+}
+
+.check-status.error {
+    color: #ef4444;
+}
+
+/* 에러 메시지 */
+.error-messages {
     margin-bottom: 20px;
 }
 
-.form-label {
-    display: block;
+.error-text {
+    color: #ef4444;
     font-size: 14px;
-    color: #666;
-    font-weight: 500;
     margin-bottom: 8px;
 }
 
-/* 입력 필드 */
-input[type="email"],
-input[type="password"],
-input[type="text"] {
+/* 수정 완료 버튼 */
+.save-button {
     width: 100%;
-    padding: 14px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    background-color: #fafafa;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="text"]:focus {
-    outline: none;
-    border-color: #4285f4;
-    background-color: white;
-}
-
-input[type="email"]::placeholder,
-input[type="password"]::placeholder,
-input[type="text"]::placeholder {
-    color: #999;
-}
-
-/* 버튼 */
-.btn {
-    width: 100%;
-    padding: 14px;
+    padding: 16px;
+    background: #4285f4;
+    color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s ease;
+    margin-top: 10px;
 }
 
-.btn-primary {
-    background: #4285f4;
-    color: white;
-}
-
-.btn-primary:hover {
+.save-button:hover {
     background: #3367d6;
 }
 
-.btn-primary:active {
+.save-button:active {
     background: #2851a3;
 }
 
-.btn-block {
-    width: 100%;
-    margin-top: 8px;
+/* 오른쪽: 기술 스택 */
+.content-side {
+    display: flex;
+    flex-direction: column;
 }
 
-.btn-back {
-    display: inline-block;
-    padding: 14px 32px;
-    background: #4285f4;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 24px;
-    transition: background 0.3s ease;
+.tech-stack-box {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
+    padding: 40px;
+    min-height: 400px;
 }
 
-.btn-back:hover {
-    background: #3367d6;
-}
-
-/* 정보 박스 */
-.info-box {
-    background: #e3f2fd;
-    border-left: 4px solid #4285f4;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 24px 0;
-    text-align: left;
-}
-
-.info-box h3 {
-    font-size: 16px;
-    font-weight: 600;
+.side-title {
+    font-size: 20px;
+    font-weight: 700;
     color: #333;
-    margin-bottom: 12px;
-}
-
-.info-box p {
-    font-size: 14px;
-    color: #555;
-    margin: 0;
-}
-
-.info-box ol {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.info-box ol li {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-    line-height: 1.5;
-}
-
-/* 경고 박스 */
-.warning-box {
-    background: #fffbeb;
-    border-left: 4px solid #f59e0b;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 24px 0;
-    text-align: left;
-}
-
-.warning-box strong {
-    font-size: 14px;
-    color: #333;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.warning-box ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.warning-box ul li {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 6px;
-    line-height: 1.5;
-}
-
-.warning-box a {
-    color: #4285f4;
-    text-decoration: none;
-}
-
-.warning-box a:hover {
-    text-decoration: underline;
-}
-
-/* 비밀번호 힌트 */
-.password-hint {
-    background: #e3f2fd;
-    border-left: 4px solid #4285f4;
-    padding: 16px;
-    border-radius: 8px;
-    margin-top: 12px;
-}
-
-.password-hint strong {
-    font-size: 14px;
-    color: #333;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.password-hint ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.password-hint ul li {
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 4px;
-}
-
-/* 에러 메시지 */
-.error-message {
-    color: #ef4444;
-    font-size: 13px;
-    margin-top: 6px;
-}
-
-.alert {
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-}
-
-.alert-danger {
-    background: #fef2f2;
-    color: #ef4444;
-    border: 1px solid #fecaca;
-}
-
-/* 푸터 */
-.auth-footer {
     text-align: center;
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid #e0e0e0;
+    margin-bottom: 30px;
 }
 
-.auth-footer p {
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tag-item {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tag-item:nth-child(3n+1) {
+    color: #06b6d4;
+    border-color: #06b6d4;
+}
+
+.tag-item:nth-child(3n+2) {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.tag-item:nth-child(3n+3) {
+    color: #10b981;
+    border-color: #10b981;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #999;
     font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.auth-footer a {
-    color: #4285f4;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.auth-footer a:hover {
-    color: #3367d6;
-    text-decoration: underline;
+    padding: 40px 0;
 }
 
 /* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .edit-card {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .edit-card {
+        padding: 30px 20px;
+    }
+
+    .avatar-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .edit-badge {
+        width: 36px;
+        height: 36px;
+    }
+
+    .edit-badge img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .tech-stack-box {
+        padding: 30px 20px;
+    }
+}
+
 @media (max-width: 480px) {
-    .auth-card {
-        padding: 32px 24px;
+    body {
+        padding: 20px 10px;
     }
 
-    .auth-header h1,
-    .success-card h1 {
-        font-size: 20px;
+    .edit-card {
+        padding: 20px 15px;
     }
 
-    .success-icon {
-        width: 64px;
-        height: 64px;
-        font-size: 36px;
+    .avatar-container {
+        width: 120px;
+        height: 120px;
     }
 
-    .info-box,
-    .warning-box,
-    .password-hint {
-        padding: 16px;
+    .level-tag {
+        font-size: 14px;
+        padding: 6px 20px;
+    }
+
+    .side-title {
+        font-size: 18px;
+    }
+
+    .tag-item {
+        font-size: 14px;
+        padding: 8px 16px;
     }
 }
