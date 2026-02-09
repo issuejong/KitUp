@@ -65,7 +65,8 @@ class OnboardingForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit)
         if commit:
-            user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
+            if "tech_stacks" in self.cleaned_data:
+                user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
         return user
 
 
@@ -136,5 +137,6 @@ class ProfileUpdateForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit)
         if commit:
-            user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
+            if "tech_stacks" in self.cleaned_data:
+                user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
         return user

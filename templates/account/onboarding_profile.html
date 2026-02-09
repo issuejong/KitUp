@@ -37,23 +37,31 @@
 </form>
   <script>
   // 온보딩: 프로필 이미지 영역 클릭으로 파일 선택 및 미리보기
-  (() => {
-    const profileDiv = document.querySelector('form > div:first-child');
-    if (!profileDiv) return;
+  (function() {
+    // robustly find the file input for profile_image inside the form
+    const form = document.querySelector('form[enctype="multipart/form-data"]') || document.querySelector('form');
+    if (!form) return;
 
-    const fileInput = profileDiv.querySelector('input[type="file"]');
+    let fileInput = form.querySelector('input[type="file"][name$="profile_image"]');
+    if (!fileInput) fileInput = form.querySelector('input[type="file"]');
     if (!fileInput) return;
+
+    const profileDiv = fileInput.closest('div') || fileInput.parentElement;
+    if (!profileDiv) return;
 
     // 클릭 시 파일 선택
     profileDiv.addEventListener('click', (e) => {
+      // allow regular interactions (e.g., clicking on other controls inside the div)
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'A')) return;
       e.preventDefault();
       fileInput.click();
     });
 
     // 선택 시 미리보기
-    fileInput.addEventListener('change', async (e) => {
+    fileInput.addEventListener('change', (e) => {
       const f = fileInput.files && fileInput.files[0];
       if (!f) return;
+      if (!f.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = function(ev) {
         profileDiv.classList.add('has-image');
@@ -62,33 +70,39 @@
       reader.readAsDataURL(f);
     });
   })();
-  
-    // Tech stack checkbox visual fallback (for browsers without :has)
-    (function() {
-      const container = document.querySelector('form > div:last-of-type');
-      if (!container) return;
-      // find all checkbox inputs related to tech_stacks
-      const inputs = container.querySelectorAll('input[type="checkbox"]');
-      if (!inputs || inputs.length === 0) return;
 
-      function updateLabelForInput(input) {
-        // find label by for= or closest wrapping label
-        let label = container.querySelector(`label[for="${input.id}"]`);
-        if (!label) label = input.closest('label');
-        if (!label) return;
-        if (input.checked) label.classList.add('is-checked');
-        else label.classList.remove('is-checked');
+  // Tech stack checkbox visual fallback (for browsers without :has)
+  (function() {
+    const form = document.querySelector('form');
+    if (!form) return;
+    // find the div that contains checkbox inputs
+    const divs = Array.from(form.querySelectorAll('div'));
+    let container = null;
+    for (const d of divs) {
+      if (d.querySelector && d.querySelector('input[type="checkbox"]')) {
+        container = d;
+        break;
       }
+    }
+    if (!container) return;
 
-      inputs.forEach((inp) => {
-        // initial sync
-        updateLabelForInput(inp);
-        // listen change
-        inp.addEventListener('change', () => updateLabelForInput(inp));
-        // also ensure clicking label toggles class if label used without wrapping
-        const labelRef = container.querySelector(`label[for="${inp.id}"]`);
-        if (labelRef) labelRef.addEventListener('click', () => setTimeout(() => updateLabelForInput(inp), 0));
-      });
-    })();
+    const inputs = container.querySelectorAll('input[type="checkbox"]');
+    if (!inputs || inputs.length === 0) return;
+
+    function updateLabelForInput(input) {
+      let label = container.querySelector(`label[for="${input.id}"]`);
+      if (!label) label = input.closest('label');
+      if (!label) return;
+      if (input.checked) label.classList.add('is-checked');
+      else label.classList.remove('is-checked');
+    }
+
+    inputs.forEach((inp) => {
+      updateLabelForInput(inp);
+      inp.addEventListener('change', () => updateLabelForInput(inp));
+      const labelRef = container.querySelector(`label[for="${inp.id}"]`);
+      if (labelRef) labelRef.addEventListener('click', () => setTimeout(() => updateLabelForInput(inp), 0));
+    });
+  })();
   </script>
   {% endblock %}

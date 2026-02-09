@@ -50,6 +50,15 @@
                     </div>
                 </div>
 
+                <div class="info-row">
+                    {{ form.tech_stacks.errors }}
+                    <label class="label">{{ form.tech_stacks.label }}</label>
+                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                        {{ form.tech_stacks }}
+                    </div>
+                    <small>{{ form.tech_stacks.help_text }}</small>
+                </div>
+
                 {% if form.errors %}
                 <div class="error-messages">
                     {% for field, errors in form.errors.items %}
