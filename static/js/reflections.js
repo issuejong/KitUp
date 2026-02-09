@@ -291,6 +291,50 @@
     });
   };
 
+  const insertTableAtCursor = (textarea, rows = 2, cols = 2) => {
+    console.log("insertTableAtCursor", { rows, cols });
+    const headerCells = Array.from({ length: cols }, (_, i) => `헤더${i + 1}`);
+    const dividerCells = Array.from({ length: cols }, () => "---");
+    const bodyRows = Array.from({ length: rows }, () =>
+      Array.from({ length: cols }, () => "내용")
+    );
+
+    const lines = [
+      `| ${headerCells.join(" | ")} |`,
+      `| ${dividerCells.join(" | ")} |`,
+      ...bodyRows.map((row) => `| ${row.join(" | ")} |`),
+      "", // 마지막 줄바꿈
+    ];
+
+    const table = `\n${lines.join("\n")}`;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const value = textarea.value;
+
+    textarea.value = value.slice(0, start) + table + value.slice(end);
+
+    const newPos = start + table.length;
+    textarea.selectionStart = textarea.selectionEnd = newPos;
+    textarea.focus();
+  };
+
+  const bindInsertTable = () => {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-table-btn]");
+      if (!btn) return;
+
+      const qid = btn.dataset.qid;
+      if (!qid) return;
+
+      const textarea = document.getElementById(`ta__${qid}`);
+      if (!textarea) return;
+
+      insertTableAtCursor(textarea, 2, 2);
+    });
+  };
+
+
   const bindBookmarkFilter = () => {
     const btn = document.querySelector("[data-bookmark-filter]");
     if (!btn) return;
@@ -322,6 +366,7 @@
     bindAssetDelete();
     bindAutoSubmit();
     bindBookmarkFilter();
+    bindInsertTable()
   };
 
   if (document.readyState === "loading") {

@@ -708,3 +708,76 @@ body {
   .ref-meta { grid-template-columns: 1fr; }
   .ref-assets-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* =========================
+   Markdown-like Table (Notion/GitHub-ish)
+   ========================= */
+
+/* ===== table ===== */
+.md-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:fixed;
+  font-size:14px;
+  line-height:1.6;
+  color:#111827;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  overflow:hidden;
+  display:block;           /* 좁은 화면에서 스크롤 */
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+.md-thead{ background:#f9fafb; }
+.md-th,.md-td{
+  padding:10px 12px;
+  border-right:1px solid #e5e7eb;
+  border-bottom:1px solid #e5e7eb;
+  vertical-align:top;
+  word-break:break-word;
+}
+.md-th{ font-weight:600; }
+.md-tr:last-child .md-td{ border-bottom:0; }
+.md-tr .md-th:last-child,
+.md-tr .md-td:last-child{ border-right:0; }
+
+.md-tbody .md-tr:nth-child(even){ background:#fcfcfd; }
+.md-tbody .md-tr:hover{ background:#f3f4f6; }
+
+/* ===== image ===== */
+.md-img{
+  display:block;
+  max-width:100%;
+  height:auto;
+  max-height:420px;     /* 여기로 “일정 크기 이하” 제한 */
+  object-fit:contain;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#fff;
+}
+
+/* (선택) markdown 기본 요소도 깔끔하게 */
+.md-pre{
+  padding:12px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  overflow:auto;
+  background:#0b1020;
+}
+.md-code{
+  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size:13px;
+}
+.md-quote{
+  margin:10px 0;
+  padding:10px 12px;
+  border-left:4px solid #e5e7eb;
+  background:#f9fafb;
+  border-radius:10px;
+}
+.md-p{ margin:8px 0; }
+.md-ul,.md-ol{ padding-left:20px; margin:8px 0; }
+.md-li{ margin:4px 0; }
