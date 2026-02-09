@@ -294,6 +294,61 @@ body {
     padding: 40px 0;
 }
 
+/* Tech stack form field styling */
+.info-row div[style*="max-height"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.info-row div[style*="max-height"] fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: contents;
+}
+
+.info-row div[style*="max-height"] input[type="checkbox"] {
+    display: none;
+}
+
+.info-row div[style*="max-height"] label {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f0f2f7;
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 0;
+    user-select: none;
+}
+
+.info-row div[style*="max-height"] label:hover {
+    background-color: #e8eaf0;
+    border-color: #667eea;
+    transform: translateY(-1px);
+}
+
+.info-row div[style*="max-height"] label.is-checked {
+    background-color: #667eea;
+    border-color: #667eea;
+    color: white;
+    font-weight: 600;
+}
+
+.info-row div[style*="max-height"] label.is-checked::before {
+    content: '✓';
+    margin-right: 6px;
+    font-weight: bold;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
     .edit-card {

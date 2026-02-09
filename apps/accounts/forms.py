@@ -63,10 +63,11 @@ class OnboardingForm(forms.ModelForm):
         return github_id or None
 
     def save(self, commit=True):
-        user = super().save(commit)
-        if commit:
-            if "tech_stacks" in self.cleaned_data:
-                user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
+        user = super().save(commit=False)
+        # Always save user record first (with profile_image)
+        user.save()
+        if "tech_stacks" in self.cleaned_data:
+            user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
         return user
 
 

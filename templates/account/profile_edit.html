@@ -200,6 +200,27 @@ document.addEventListener('DOMContentLoaded', function() {
             input.classList.add('input-field');
         }
     });
+
+    // Tech stack checkbox visual handler (for profile edit)
+    (function() {
+        const form = document.querySelector('.edit-form');
+        if (!form) return;
+        const inputs = form.querySelectorAll('input[type="checkbox"]');
+        if (!inputs || inputs.length === 0) return;
+
+        function updateLabelForInput(input) {
+            let label = form.querySelector(`label[for="${input.id}"]`);
+            if (!label) label = input.closest('label');
+            if (!label) return;
+            if (input.checked) label.classList.add('is-checked');
+            else label.classList.remove('is-checked');
+        }
+
+        inputs.forEach((inp) => {
+            updateLabelForInput(inp);
+            inp.addEventListener('change', () => updateLabelForInput(inp));
+        });
+    })();
 });
 </script>
 {% endblock %}
