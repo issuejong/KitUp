@@ -29,8 +29,10 @@
                     <div class="info-row">
                         <label class="label">닉네임</label>
                         <div class="nickname-check-wrapper">
-                            {{ form.nickname }}
-                            <button type="button" class="check-btn" id="check-nickname-btn">중복확인</button>
+                            <div class="input-button-group">
+                                {{ form.nickname }}
+                                <button type="button" class="check-btn" id="check-nickname-btn">중복확인</button>
+                            </div>
                             <span class="check-status" id="check-status"></span>
                         </div>
                     </div>
