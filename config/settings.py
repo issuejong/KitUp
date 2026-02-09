@@ -21,8 +21,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['kitup.duckdns.org', '3.37.88.175', 'localhost', '127.0.0.1',]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://kitup.duckdns.org',
-    'http://kitup.duckdns.org:8000',
     'https://kitup.duckdns.org',
 ]
 
