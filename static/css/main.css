@@ -59,22 +59,30 @@ body {
 	border-radius: 20px;
 }
 
-.main-note .main-note-content .login_content {
+.reflection_list {   
+	display: flex;
+	flex-direction: column;
+	gap: 15px;     
+    overflow-x: auto; 
+    padding-bottom: 10px;
+}
+
+.login_content {
 	display: flex;
 	align-items: center;
 	gap: 20px;
 }
 
-.main-note .main-note-content .login_content .m_title {
+.login_content .m_title {
 	width: 20%;
 	font-weight: 600;
 }
 
-.main-note .main-note-content .login_content .m_content {
+.login_content .m_content {
 	width: 70%;
 }
 
-.main-note .main-note-content .login_content .m_date {
+.login_content .m_date {
 	width: 10%;
 	font-size: 16px;
 	color: #999999;
