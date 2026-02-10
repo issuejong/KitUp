@@ -176,9 +176,35 @@
 
   {# 하단 버튼 #}
   <div class="ref-form-actions">
-    <a class="ref-btn ref-btn-ghost" href="{% url 'reflections:note_list' %}">내보내기</a>
+    {% if note and note.id %}
+    <a class="ref-btn ref-btn-ghost" href="{% url 'reflections:note_detail' note.id %}">돌아가기</a>
+    {% else %}
+      <a class="ref-btn ref-btn-ghost" href="{% url 'reflections:note_list' %}">돌아가기</a>
+    {% endif %}
     <button class="ref-btn ref-btn-primary" type="submit">저장하기</button>
   </div>
+
+  <!-- 표 삽입용 modal -->
+  <div class="ref-table-picker-backdrop" hidden>
+    <div class="ref-table-picker-modal">
+      <div class="ref-table-picker-title">표 크기 선택</div>
+      <div class="ref-table-picker-grid">
+        {% for r in "12345" %}
+          {% for c in "12345" %}
+            <div class="ref-table-cell"
+                data-rows="{{ forloop.parentloop.counter }}"
+                data-cols="{{ forloop.counter }}">
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+      <div class="ref-table-picker-footer">
+        <span class="ref-table-picker-size">0 × 0</span>
+        <button type="button" class="ref-table-picker-cancel">취소</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 {# role_map JSON 전달 (Django json_script) #}
