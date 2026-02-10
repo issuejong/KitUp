@@ -81,6 +81,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
 }
 
 .kitup-card-title {
@@ -101,6 +102,20 @@
   text-align: center;
   color: #9ca3af;
   font-size: 15px;
+}
+
+/* 카드 하단 좋아요 영역 */
+.kitup-card-like {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.kitup-like-count {
+  font-size: 14px;
+  color: #6b7280;
 }
 
 /* =========================
@@ -144,11 +159,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 14px;
-  right: 14px;
   z-index: 9999;
   pointer-events: auto;
+  cursor: pointer;
+}
+
+.kitup-detail-like .kitup-heart-icon {
+  width: 28px;
+  height: 28px;
 }
 
 /* 제목/설명 */

@@ -20,12 +20,13 @@
           <img class="kitup-detail-img" src="{% static 'images/service_default.png' %}" alt="{{ project.title }}">
         {% endif %}
 
-        {# 하트: UI만 (나중에 AJAX 연결) #}
+        {# 하트 #}
         <button
           type="button"
           class="kitup-like-btn kitup-detail-like"
-          aria-pressed="false"
-          data-like-btn
+          data-project-id="{{ project.id }}"
+          data-liked="{% if request.user in project.likes.all %}true{% else %}false{% endif %}"
+          aria-pressed="{% if request.user in project.likes.all %}true{% else %}false{% endif %}"
         >  
           <!-- outline -->
           <svg class="kitup-heart-icon is-outline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true">
@@ -37,6 +38,7 @@
           </svg>
           <span class="sr-only">좋아요</span>
         </button>
+        <span class="kitup-like-count">{{ project.get_like_count }}</span>
       </div>
     </div>
 
@@ -111,6 +113,78 @@
     </div>
   </div>
 </div>
-<script src="{% static 'js/kitup.js' %}"></script>
+<script>
+(function() {
+  function getCookie(name) {
+    var v = null;
+    if (document.cookie && document.cookie !== '') {
+      document.cookie.split(';').forEach(function(c) {
+        c = c.trim();
+        if (c.substring(0, name.length + 1) === (name + '=')) {
+          v = decodeURIComponent(c.substring(name.length + 1));
+        }
+      });
+    }
+    return v;
+  }
+
+  // 페이지 로드 시 localStorage에서 최신 상태 적용
+  document.querySelectorAll('.kitup-like-btn').forEach(function(btn) {
+    var projectId = btn.getAttribute('data-project-id');
+    var storedState = localStorage.getItem('like-' + projectId);
+    
+    if (storedState !== null) {
+      // localStorage에 저장된 값이 있으면 그것을 사용
+      btn.setAttribute('aria-pressed', storedState);
+      btn.setAttribute('data-liked', storedState);
+    } else {
+      // 없으면 서버가 렌더링한 값 사용
+      var liked = btn.getAttribute('data-liked') === 'true';
+      btn.setAttribute('aria-pressed', String(liked));
+    }
+  });
+
+  // 클릭 이벤트 핸들러
+  document.querySelectorAll('.kitup-like-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var projectId = btn.getAttribute('data-project-id');
+
+      fetch('/projects/all/' + projectId + '/like/', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('API error: ' + res.status);
+        return res.json();
+      })
+      .then(function(data) {
+        var isLiked = String(data.is_liked);
+        btn.setAttribute('data-liked', isLiked);
+        btn.setAttribute('aria-pressed', isLiked);
+        
+        // localStorage에 저장
+        localStorage.setItem('like-' + projectId, isLiked);
+        
+        // 좋아요 수 업데이트
+        var countEl = btn.parentElement.querySelector('.kitup-like-count');
+        if (!countEl) {
+          countEl = btn.nextElementSibling;
+        }
+        if (countEl && countEl.classList && countEl.classList.contains('kitup-like-count')) {
+          countEl.textContent = data.like_count;
+        }
+      })
+      .catch(function(err) {
+        console.error('좋아요 오류:', err);
+      });
+    });
+  });
+})();
+</script>
 {% endblock %}
 
