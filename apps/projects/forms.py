@@ -16,7 +16,6 @@ class ProjectDashboardEditForm(forms.ModelForm):
             "project_image",  # 프로젝트 프로필 사진
             "team_rules",  # 팀 규칙
             "related_links",  # 관련 링크
-            "is_favorite",  # 즐겨찾기
         ]
         widgets = {
             "title": forms.TextInput(attrs={
@@ -40,11 +39,8 @@ class ProjectDashboardEditForm(forms.ModelForm):
             }),
             "related_links": forms.Textarea(attrs={
                 "class": "form-control",
-                "placeholder": "관련 링크를 마크다운 형식으로 작성해주세요\n\n예:\n[Notion](https://notion.so/...)\n[Figma](https://figma.com/...)\n[GitHub](https://github.com/...)",
+                "placeholder": "관련 링크를 줄바꿈으로 구분하여 입력해주세요\n\n예:\nhttps://notion.so/...\nhttps://figma.com/...\nhttps://github.com/...",
                 "rows": 6,
-            }),
-            "is_favorite": forms.CheckboxInput(attrs={
-                "class": "form-check-input",
             }),
         }
 
