@@ -176,7 +176,11 @@
 
   {# 하단 버튼 #}
   <div class="ref-form-actions">
-    <a class="ref-btn ref-btn-ghost" href="{% url 'reflections:note_list' %}">돌아가기</a>
+    {% if note and note.id %}
+    <a class="ref-btn ref-btn-ghost" href="{% url 'reflections:note_detail' note.id %}">돌아가기</a>
+    {% else %}
+      <a class="ref-btn ref-btn-ghost" href="{% url 'reflections:note_list' %}">돌아가기</a>
+    {% endif %}
     <button class="ref-btn ref-btn-primary" type="submit">저장하기</button>
   </div>
 
