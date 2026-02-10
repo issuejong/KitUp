@@ -10,15 +10,12 @@
     <div class="profile-card">
         <aside class="user-info-side">
             <div class="avatar-container">
-                <img
-                    src="{% if user_obj.profile_image %}
-                            {{ user_obj.profile_image.url }}
+                <img src="{% if user.profile_image %}{{ user.profile_image.url }}
                          {% else %}
-                            {% static 'images/default_img.png' %}
+                            {% static 'images/default_profile.png' %}
                          {% endif %}"
                     alt="프로필 사진"
-                    class="profile-img"
-                >
+                    class="profile-img">
                 <a href="{% url 'accounts:profile_edit' %}" class="edit-badge">
                     <img src="{% static 'images/pencil_icon.png' %}" alt="수정">
                 </a>
