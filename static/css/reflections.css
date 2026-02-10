@@ -40,7 +40,7 @@ button {
   cursor: pointer;
 }
 /* =========================
-   Page
+   Note List Page
 ========================= */
 .ref-page {
   background: var(--blue-0);
@@ -412,9 +412,9 @@ button {
     padding: 10px 14px;
   }
 
-  .ref-selectbox {
+  /* .ref-selectbox {
     min-width: 140px;
-  }
+  } */
 
   .note-title {
     font-size: 18px;
@@ -424,6 +424,95 @@ button {
     font-size: 15px;
   }
 }
+
+/* =========================
+   Mobile Responsive
+========================= */
+@media (max-width: 640px) {
+
+  .note-card {
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+  }
+
+  /* 상단 액션 고정 */
+  .bookmark-btn {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+  }
+
+  .note-morewrap {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  /* 본문 영역 여백 확보 */
+  .note-main {
+    padding-top: 32px;
+  }
+
+  /* 제목 / 태그 세로 정렬 */
+  .note-topline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .note-title {
+    font-size: 17px;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .note-tag {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .note-preview {
+    font-size: 14px;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+  }
+
+  .note-date {
+    font-size: 13px;
+  }
+
+  .ref-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+  }
+
+  /* ===== 위 줄: 정렬 / 역할 ===== */
+  .ref-select-container {
+    flex: 0 0 calc(50% - 6px);
+    min-width: 0;
+  }
+
+  .ref-selectbox {
+    width: 100%;
+    min-width: 0;          /* ← 핵심 */
+    padding-right: 44px;   /* 화살표 공간 */
+  }
+
+  .ref-selectchev {
+    right: 14px;
+  }
+
+  /* ===== 아래 줄: 북마크 / 글쓰기 ===== */
+  .bookmark-filter-btn,
+  .ref-writebtn {
+    flex: 0 0 calc(50% - 6px);
+    justify-content: center;
+    text-align: center;
+  }
+}
+
 
 /* =========================
    Note Form (create/update)
