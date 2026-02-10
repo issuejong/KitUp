@@ -135,6 +135,16 @@ class ProfileUpdateForm(forms.ModelForm):
             raise forms.ValidationError("이미 등록된 GitHub 아이디입니다.")
         return github_id or None
 
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        if commit:
+            user.save()
+            if "tech_stacks" in self.cleaned_data:
+                user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
+        return user
+
+
 def save(self, commit=True):
     user = super().save(commit=False)
 
@@ -143,4 +153,3 @@ def save(self, commit=True):
         if "tech_stacks" in self.cleaned_data:
             user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
     return user
-
