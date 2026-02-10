@@ -687,7 +687,21 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px;
+  line-height: 1;
 }
+
+button.ref-btn{
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  font: inherit;
+  font-weight: 900;
+  /* color: inherit; */
+  background: transparent;
+}
+
+
 
 .ref-btn-ghost {
   border: 1px solid var(--blue-20);
@@ -695,7 +709,7 @@ body {
   color: var(--gray-900);
 }
 
-.ref-btn-primary {
+.ref-btn.ref-btn-primary {
   border: 0;
   background: var(--blue-40);
   color: #fff;
@@ -707,6 +721,66 @@ body {
   .ref-title { font-size: 26px; }
   .ref-meta { grid-template-columns: 1fr; }
   .ref-assets-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* 테이블 삽입 modal */
+.ref-table-picker-backdrop{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 1000;
+}
+
+/* hidden 아닐 때만 표시 */
+.ref-table-picker-backdrop:not([hidden]){
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.ref-table-picker-modal{
+  background:#fff;
+  border-radius:16px;
+  padding:18px;
+  width:230px;
+}
+
+.ref-table-picker-title{
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.ref-table-picker-grid{
+  aspect-ratio: 1 / 1; 
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:4px;
+  margin-bottom:12px;
+}
+
+.ref-table-cell{
+  width:36px; height:36px;
+  border:1px solid #d1d5db;
+  border-radius: 8px;
+  cursor:pointer;
+}
+
+.ref-table-cell.active{
+  background:#2563eb;
+}
+
+.ref-table-picker-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.ref-table-picker-cancel{
+  border:0;
+  background:transparent;
+  color:var(--gray-600);
+  font-weight:700;
+  cursor:pointer;
 }
 
 /* =========================
@@ -782,22 +856,7 @@ body {
 .md-ul,.md-ol{ padding-left:20px; margin:8px 0; }
 .md-li{ margin:4px 0; }
 
-/* =========================
-   Page
-========================= */
-.ref-page {
-  background: var(--blue-0);
-  padding: 32px 0 96px;
-}
 
-.ref-controls,
-.ref-list {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-/* ... (기존 CSS 내용 생략) ... */
 
 /* =========================
    Note Detail

@@ -320,20 +320,83 @@
   };
 
   const bindInsertTable = () => {
+    const backdrop = document.querySelector(".ref-table-picker-backdrop");
+    if (!backdrop) return;
+
+    const sizeText = backdrop.querySelector(".ref-table-picker-size");
+    const cancelBtn = backdrop.querySelector(".ref-table-picker-cancel");
+    const cells = Array.from(backdrop.querySelectorAll(".ref-table-cell"));
+
+    if (!sizeText || !cancelBtn || cells.length === 0) return;
+
+    let targetTextarea = null;
+    let hoverRows = 0, hoverCols = 0;
+
+    const reset = () => {
+      hoverRows = 0; hoverCols = 0;
+      sizeText.textContent = "0 × 0";
+      cells.forEach(c => c.classList.remove("active"));
+    };
+
+    const close = () => {
+      backdrop.hidden = true;
+      reset();
+      targetTextarea = null;
+    };
+
+    // 표 버튼 클릭 -> 모달 오픈
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-table-btn]");
       if (!btn) return;
 
       const qid = btn.dataset.qid;
-      if (!qid) return;
+      const ta = document.getElementById(`ta__${qid}`);
+      if (!ta) return;
 
-      const textarea = document.getElementById(`ta__${qid}`);
-      if (!textarea) return;
+      targetTextarea = ta;
+      reset();
+      backdrop.hidden = false;
+    });
 
-      insertTableAtCursor(textarea, 2, 2);
+    // hover -> 미리보기(하이라이트)
+    cells.forEach((cell) => {
+      cell.addEventListener("mouseenter", () => {
+        hoverRows = +cell.dataset.rows;
+        hoverCols = +cell.dataset.cols;
+
+        cells.forEach((c) => {
+          c.classList.toggle(
+            "active",
+            +c.dataset.rows <= hoverRows && +c.dataset.cols <= hoverCols
+          );
+        });
+
+        sizeText.textContent = `${hoverRows} × ${hoverCols}`;
+      });
+
+      // ✅ click -> 즉시 삽입
+      cell.addEventListener("click", () => {
+        const r = +cell.dataset.rows;
+        const c = +cell.dataset.cols;
+        if (!targetTextarea || !r || !c) return;
+
+        insertTableAtCursor(targetTextarea, r, c);
+        close();
+      });
+    });
+
+    // 취소/바깥/ESC 닫기
+    cancelBtn.addEventListener("click", close);
+
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (!backdrop.hidden && e.key === "Escape") close();
     });
   };
-
+  
 
   const bindBookmarkFilter = () => {
     const btn = document.querySelector("[data-bookmark-filter]");

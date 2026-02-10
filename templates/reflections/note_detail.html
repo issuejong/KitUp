@@ -80,7 +80,7 @@
             <span class="ref-detail-qa-title">{{ q.title }}</span>
           </div>
           <div class="ref-detail-qa-body">
-            {{ answers|get_item:q.id|render_markdown }}
+            {{ answers|get_item:q.id|md }}
           </div>
         </section>
       {% endfor %}
