@@ -193,13 +193,7 @@
     border: 2px solid;
 }
 
-/* 역할별 색상 */
-.tag-pm {
-    color: #6B8AFF;
-    border-color: #6B8AFF;
-    background-color: transparent;
-}
-
+/* 기술 스택 카테고리별 색상 */
 .tag-frontend {
     color: #FFC107;
     border-color: #FFC107;
@@ -207,24 +201,29 @@
 }
 
 .tag-backend {
+    color: #FF3E88;
+    border-color: #FF3E88;
+    background-color: transparent;
+}
+
+.tag-pm {
     color: #06D6A0;
     border-color: #06D6A0;
     background-color: transparent;
 }
 
-/* 기술 스택별 색상 */
-.tag-javascript {
-    color: #06D6A0;
-    border-color: #06D6A0;
-    background-color: transparent;
-}
-
-.tag-react-native,
-.tag-react,
-.tag-reactnative {
+/* 역할별 색상 */
+.tag-frontend {
     color: #FFC107;
     border-color: #FFC107;
     background-color: transparent;
+}
+
+.tag-backend {
+    color: #FF3E88;
+    border-color: #FF3E88;
+    background-color: transparent;
+}
 }
 
 .tag-html {
