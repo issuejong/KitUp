@@ -189,6 +189,23 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    def get_like_count(self) -> int:
+        """좋아요 개수 반환"""
+        return self.likes.count()
+    
+    def is_liked_by(self, user) -> bool:
+        """특정 사용자가 좋아요를 눌렀는지 확인"""
+        if not user or user.is_anonymous:
+            return False
+        return self.likes.filter(user=user).exists()
+    
+    def toggle_like(self, user):
+        """사용자의 좋아요 상태 토글"""
+        like_obj, created = self.likes.get_or_create(user=user)
+        if not created:
+            like_obj.delete()
+        return created  # True: 좋아요 추가, False: 좋아요 제거
 
 
 class ProjectApplication(models.Model):
@@ -257,3 +274,37 @@ class ProjectApplication(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user} → {self.project} ({self.role.code})"
+
+
+class ProjectLike(models.Model):
+    """
+    프로젝트 좋아요
+    - 사용자가 프로젝트에 좋아요를 누를 수 있음
+    - 중복 좋아요 방지 (User + Project 유니크)
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="project_likes",
+        help_text="좋아요 누른 사용자",
+    )
+    
+    project = models.ForeignKey(
+        'Project',
+        on_delete=models.CASCADE,
+        related_name="likes",
+        help_text="좋아요 받은 프로젝트",
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = "project_likes"
+        unique_together = ("user", "project")
+        indexes = [
+            models.Index(fields=["project"]),
+            models.Index(fields=["user"]),
+        ]
+    
+    def __str__(self) -> str:
+        return f"{self.user} ❤️ {self.project}"
