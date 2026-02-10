@@ -55,7 +55,7 @@
             <div class="t_content">
                 <p><span class="t_role">PM</span>
                     {% for member in members %}
-                        {% if member.role.name == "기획자" %}
+                        {% if member.role.code == "PM" %}
                             {{ member.user.username }}
                         {% endif %}
                     {% endfor %}

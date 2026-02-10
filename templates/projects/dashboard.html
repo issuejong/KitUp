@@ -150,7 +150,11 @@
             <div class="p_real"></div>
         </div>
     </div>
-    <button type="button" >수정하기</button>
+    {% if is_team_member %}
+    <a href="{% url 'projects:dashboard_edit' project.id %}" class="edit_button">
+        <button>수정하기</button>
+    </a>
+    {% endif %}
     {% endif %}
 </div>
 <div id="reportModal" class="modal-overlay">
