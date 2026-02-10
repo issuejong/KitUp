@@ -135,11 +135,12 @@ class ProfileUpdateForm(forms.ModelForm):
             raise forms.ValidationError("이미 등록된 GitHub 아이디입니다.")
         return github_id or None
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        # Always save user record first (includes profile_image file upload)
+def save(self, commit=True):
+    user = super().save(commit=False)
+
+    if commit:
         user.save()
-        # Handle ManyToMany field separately
         if "tech_stacks" in self.cleaned_data:
             user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
-        return user
+    return user
+
