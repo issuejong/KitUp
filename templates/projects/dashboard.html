@@ -1,5 +1,6 @@
 {% extends 'base.html' %} 
 {% load static %}
+{% load markdown_tags %}
 {% block header %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
 {% endblock %} 
@@ -40,7 +41,7 @@
             <h3>관련 링크</h3>
         </div>
         <div class="l_content">
-            <p>{{ project.related_links|urlize|linebreaksbr }}</p>
+            <p>{{ project.related_links|markdown|safe }}</p>
         </div>
     </div>
     <hr>
@@ -119,7 +120,7 @@
         </div>
         <div class="r_content">
             {% if project.team_rules %}
-                {{ project.team_rules|linebreaks }}
+                {{ project.team_rules|markdown|safe }}
             {% else %}
                 <p>팀 규칙이 없습니다.</p>
             {% endif %}
