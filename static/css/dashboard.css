@@ -210,8 +210,8 @@ hr {
 
 /* 팀원 카드 컨테이너 - 가로 스크롤 */
 .t_member {
-    width: 100%;
-    margin-top: 20px;
+    width: 90%;
+    margin: 20px auto 0;
     padding: 20px 0;
     display: flex;
     gap: 15px;
