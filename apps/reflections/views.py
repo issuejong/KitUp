@@ -151,7 +151,7 @@ def note_create(request):
       :tpl: 선택할 질문 템플릿 (현재는 default 하나만)
       
     """
-    tpl_key = request.GET.get("tpl") or "default"
+    tpl_key = request.GET.get("tpl") or "compact"
     guide = load_guide(tpl_key)
 
     # ✅ draft_key 발급/유지
@@ -240,7 +240,7 @@ def note_update(request, note_id):
     """회고 수정 - note_create와 동일하게 guide 기반으로 렌더/저장"""
     note = get_object_or_404(Retrospective, id=note_id, user=request.user)
 
-    tpl = note.template_key or "default"
+    tpl = note.template_key or "compact"
     guide = load_guide(tpl)
 
     # 기존 답변(answers_json)로 textarea 기본값 채우기
