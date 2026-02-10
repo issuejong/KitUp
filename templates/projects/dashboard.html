@@ -1,5 +1,6 @@
 {% extends 'base.html' %} 
 {% load static %}
+{% load markdown_tags %}
 {% block header %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
 {% endblock %} 
@@ -40,7 +41,7 @@
             <h3>관련 링크</h3>
         </div>
         <div class="l_content">
-            <p>{{ project.related_links|urlize|linebreaksbr }}</p>
+            <p>{{ project.related_links|markdown|safe }}</p>
         </div>
     </div>
     <hr>
@@ -119,20 +120,26 @@
         </div>
         <div class="r_content">
             {% if project.team_rules %}
-                {{ project.team_rules|linebreaks }}
+                {{ project.team_rules|markdown|safe }}
             {% else %}
                 <p>팀 규칙이 없습니다.</p>
             {% endif %}
         </div>
     </div>
+    <!-- 진척도 (수정 불가 - 표시만) -->
     <div class="d_progress">
         <div class="p_title">
             <img src="{% static 'images/progress.png' %}" alt="progress">
-            <h3>진척도</h3>
+            <div>
+                <h3>{{ project.title }}의 진척도</h3>
+            </div>
         </div>
-        <div class="p_content">
-            <div class="p_bar"></div>
-            <div class="p_real"></div>
+        <div class="role_progress_bar">
+            <h3>전체</h3>
+            <div class="progress_bar_container">
+                <div class="progress_bar_fill" style="width: {% if guide_progress %}{{ guide_progress.progress_percent }}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="progress_percent">{% if guide_progress %}{{ guide_progress.progress_percent }}{% else %}0{% endif %}%</span>
         </div>
     </div>
     {% if is_team_member %}

@@ -130,15 +130,16 @@
         <div class="d_progress">
             <div class="p_title">
                 <img src="{% static 'images/progress.png' %}" alt="progress">
-                <h3>진척도</h3>
+                <div>
+                    <h3>{{ project.title }}의 진척도</h3>
+                </div>
             </div>
-            <div class="p_content">
-                <div class="p_bar"></div>
-                {% if guide_progress %}
-                    <div class="p_real" style="width: {{ guide_progress.progress_percent }}%;"></div>
-                {% else %}
-                    <div class="p_real" style="width: 0%;"></div>
-                {% endif %}
+            <div class="role_progress_bar">
+                <h3>전체</h3>
+                <div class="progress_bar_container">
+                    <div class="progress_bar_fill" style="width: {% if guide_progress %}{{ guide_progress.progress_percent }}{% else %}0{% endif %}%;"></div>
+                </div>
+                <span class="progress_percent">{% if guide_progress %}{{ guide_progress.progress_percent }}{% else %}0{% endif %}%</span>
             </div>
         </div>
         
