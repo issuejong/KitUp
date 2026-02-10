@@ -53,7 +53,7 @@
                 <h3 class="side-title">기술 스택</h3>
                 <div class="tags">
                     {% for tech in user_obj.tech_stacks.all %}
-                        <span class="tag-item"># {{ tech.name }}</span>
+                        <span class="tag-item tag-{{ tech.category|lower }}">{{ tech.name }}</span>
                     {% empty %}
                         <p class="empty-msg">등록된 스택이 없습니다.</p>
                     {% endfor %}
