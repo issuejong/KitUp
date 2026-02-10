@@ -28,9 +28,9 @@ header a {
 }
 
 header a h3 {
-    background: #EAF0FF; color: #4272EF;
+    color: #4272EF;
     font-size: 32px;
-    font-weight: bolder;
+    font-weight: 800;
 }
 
 header .header_menu {
