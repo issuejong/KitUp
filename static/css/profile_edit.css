@@ -33,19 +33,24 @@ body {
     align-items: center;
 }
 
-/* 프로필 이미지 */
 .avatar-container {
-    position: relative;
+    position: absolute;
+    top: -100px;
     width: 180px;
-    height: 180px;
-    margin-bottom: 20px;
+    height: 180px;            /* 또는 aspect-ratio: 1 / 1; */
+    border-radius: 50%;
+    background-color: #d1d5db;
+
+    border: 5px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .profile-img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
+    display: block;         
+    object-fit: cover;        
+    object-position: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
