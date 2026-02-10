@@ -272,19 +272,20 @@ body {
     transition: all 0.3s ease;
 }
 
-.tag-item:nth-child(3n+1) {
-    color: #06b6d4;
-    border-color: #06b6d4;
+/* 기술 스택 카테고리별 색상 */
+.tag-frontend {
+    color: #FFC107;
+    border-color: #FFC107;
 }
 
-.tag-item:nth-child(3n+2) {
-    color: #f59e0b;
-    border-color: #f59e0b;
+.tag-backend {
+    color: #FF3E88;
+    border-color: #FF3E88;
 }
 
-.tag-item:nth-child(3n+3) {
-    color: #10b981;
-    border-color: #10b981;
+.tag-pm {
+    color: #06D6A0;
+    border-color: #06D6A0;
 }
 
 .empty-msg {
