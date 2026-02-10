@@ -71,19 +71,19 @@
     width: 180px;
     height: 180px;            /* 또는 aspect-ratio: 1 / 1; */
     border-radius: 50%;
+    overflow: hidden;         /* 핵심: 원 밖으로 잘라내기 */
     background-color: #d1d5db;
 
-    border: 5px solid #fff;
+    border: 6px solid #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .profile-img {
     width: 100%;
     height: 100%;
-    display: block;         
-    object-fit: cover;        
+    display: block;           /* img 아래 여백/라인박스 문제 제거 */
+    object-fit: cover;        /* 핵심 */
     object-position: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 
