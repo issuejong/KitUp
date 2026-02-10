@@ -9,9 +9,9 @@
 		지금은 팀 매칭 기간이 아니예요. <br />
 		팀 매칭 기간이 되면 메일로 알려드릴게요.
 	</h3>
-	<form action="submit">
-		<input type="text" placeholder="이메일을 입력해주세요" />
-		<button>알림받기</button>
+	<form method="post" action="{% url 'teams:enable_notifications' %}" class="noti">
+		{% csrf_token %}
+		<button class="noti_button" type="submit">알림받기</button>
 	</form>
 </div>
 
