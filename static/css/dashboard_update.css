@@ -85,18 +85,35 @@
     width: 100%;
 }
 
-.d_service > h3 {
-    margin-top: 20px;
-    font-size: 35px; font-weight: 600;
-}
-
-.d_service > p {
-    margin-top: 15px;
-    font-size: 24px; 
-}
-
 .project_image {
     border-radius: 25px;
+}
+
+.d_service > input {
+    display: block;
+    margin: 0 auto;
+    width: 30%; height: 40px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px; font-weight: 600;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.d_service > input:focus {
+    border: none;
+    outline: 1px solid #1F4CC0;
+}
+
+.d_service > textarea {
+    width: 60%; height: 80px;
+    margin-top: 15px;
+    font-size: 16px; 
+}
+
+.d_service > textarea:focus {
+    border: none;
+    outline: 1px solid #4272EF;
 }
 
 /* 진행기간 & 즐겨찾기 */
@@ -346,9 +363,16 @@ hr {
     margin-top: 5px;
 }
 
-.r_content > p {
-    font-size: 18px;
+.r_content > textarea {
+    width: 60%; height: 120px;
+    font-size: 14px;
     line-height: 22px;
+    border: 1px solid #ccc;
+}
+
+.r_content > textarea:focus {
+    border: none;
+    outline: 1px solid #4272EF;
 }
 
 .d_link {
@@ -377,20 +401,20 @@ hr {
 .l_content {
     margin-left: 47px;
     margin-top: 5px;
-    font-size: 18px;
 }
 
-.l_content > p > a {
-    text-decoration: none;
-    color: #000;
-    font-size: 18px;
+.l_content > textarea {
+    width: 60%; height: 120px;
+    font-size: 14px;
     line-height: 22px;
+    border: 1px solid #ccc;
 }
 
-.l_content > p > a:hover {
-    color: #4272EF;
-    transition: 0.3s ease;
+.l_content > textarea:focus {
+    border: none;
+    outline: 1px solid #4272EF;
 }
+
 
 .d_progress {
     margin-top: 30px;

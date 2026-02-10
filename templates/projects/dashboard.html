@@ -135,9 +135,7 @@
             <h3>관련 링크</h3>
         </div>
         <div class="l_content">
-            <p>Notion : {{ project.related_links.notion }}</p>
-            <p>Figma : {{ project.related_links.figma }}</p>
-            <p>Github : {{ project.related_links.github }}</p>
+            <p>{{ project.related_links|urlize|linebreaksbr }}</p>
         </div>
     </div>
     <div class="d_progress">
