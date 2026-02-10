@@ -34,17 +34,13 @@
             {% endif %}
         </p>
     </div>
-    <div class="d_bookmark">
-        <div class="b_title">
-            <img src="{% static 'images/bookmark.png' %}" alt="북마크이미지">
-            <p>즐겨찾기</p>
+    <div class="d_link">
+        <div class="l_title">
+            <img src="{% static 'images/link.png' %}" alt="link">
+            <h3>관련 링크</h3>
         </div>
-        <div class="b_content">
-            {% if project.is_favorite %}
-                <p>⭐ 즐겨찾기에 등록됨</p>
-            {% else %}
-                <p>즐겨찾기가 없습니다.</p>
-            {% endif %}
+        <div class="l_content">
+            <p>{{ project.related_links|urlize|linebreaksbr }}</p>
         </div>
     </div>
     <hr>
@@ -127,15 +123,6 @@
             {% else %}
                 <p>팀 규칙이 없습니다.</p>
             {% endif %}
-        </div>
-    </div>
-    <div class="d_link">
-        <div class="l_title">
-            <img src="{% static 'images/link.png' %}" alt="link">
-            <h3>관련 링크</h3>
-        </div>
-        <div class="l_content">
-            <p>{{ project.related_links|urlize|linebreaksbr }}</p>
         </div>
     </div>
     <div class="d_progress">
