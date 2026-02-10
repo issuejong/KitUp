@@ -391,52 +391,71 @@ hr {
     color: #4272EF;
     transition: 0.3s ease;
 }
-
 .d_progress {
     margin-top: 30px;
     text-align: start;
+    margin-bottom: 40px;
 }
 
 .p_title {
     display: flex;
     align-items: center;
     position: relative;
+    margin-bottom: 10px;
 }
 
 .p_title > img {
     width: 50px;
     height: 50px;
+    margin-right: 10px;
 }
 
-.p_title > h3 {
+.p_title > div > h3 {
     font-weight: 600;
     font-size: 22px;
-    margin-top: 2px;
+    margin: 0;
 }
 
-.p_content {
+.role_progress_bar {
+    margin: 10px 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.role_progress_bar > h3 {
+    width: 40px;
+    font-size: 18px;
+    font-weight: 550;
+    margin: 0;
+}
+
+.progress_bar_container {
     position: relative;
-    margin: 5px 0 100px 47px;
-}
-
-.p_bar {
-    width: 100%;
-    height: 20px;
-    background: #ccc;
+    flex: 1;
+    height: 15px;
+    background: #DDDDDD;
     border-radius: 20px;
-    position: relative;
     overflow: hidden;
 }
 
-.p_real {
+.progress_bar_fill {
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     background: #5A88FF;
     border-radius: 20px;
-    transition: width 0.3s ease;
+    transition: width 0.5s ease;
 }
+
+.progress_percent {
+    min-width: 45px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4272EF;
+}
+
 
 button {
     width: 200px;
