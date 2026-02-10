@@ -781,3 +781,226 @@ body {
 .md-p{ margin:8px 0; }
 .md-ul,.md-ol{ padding-left:20px; margin:8px 0; }
 .md-li{ margin:4px 0; }
+
+/* =========================
+   Page
+========================= */
+.ref-page {
+  background: var(--blue-0);
+  padding: 32px 0 96px;
+}
+
+.ref-controls,
+.ref-list {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ... (기존 CSS 내용 생략) ... */
+
+/* =========================
+   Note Detail
+========================= */
+.ref-detail-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 상단 바 */
+.ref-detail-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ref-detail-title-section {
+  flex: 1;
+}
+
+.ref-detail-title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.ref-detail-meta-text {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--gray-600);
+}
+
+.ref-detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* 메타 카드 */
+.ref-detail-meta-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ref-detail-meta-tags {
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ref-meta-tag {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+}
+
+.ref-meta-tag-project {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.ref-meta-tag-personal {
+  background: #ecfeff;
+  color: #155e75;
+}
+
+/* 질문 리스트 */
+.ref-detail-qa-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ref-detail-qa-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ref-detail-qa-header {
+  background: #eef2ff;
+  padding: 12px 14px;
+  font-weight: 700;
+  color: var(--gray-900);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ref-detail-qa-title {
+  flex: 1;
+}
+
+.ref-detail-qa-body {
+  padding: 14px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--gray-700);
+}
+
+/* 마크다운 내보내기 */
+.ref-detail-export {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.ref-detail-export-summary {
+  cursor: pointer;
+  padding: 12px 14px;
+  font-weight: 700;
+  background: #f3f4f6;
+  color: var(--gray-900);
+  user-select: none;
+}
+
+.ref-detail-export-summary:hover {
+  background: #e5e7eb;
+}
+
+.ref-detail-export-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ref-detail-export-textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 12px;
+  outline: none;
+  background: #f9fafb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gray-900);
+}
+
+.ref-detail-export-textarea:focus {
+  border-color: var(--blue-40);
+  background: #fff;
+}
+
+/* 반응형 - Detail */
+@media (max-width: 768px) {
+  .ref-detail-topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ref-detail-actions {
+    justify-content: flex-start;
+  }
+
+  .ref-detail-title {
+    font-size: 18px;
+  }
+
+  .ref-detail-meta-text {
+    font-size: 12px;
+  }
+
+  .ref-detail-qa-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .ref-detail-wrap {
+    padding: 16px 12px;
+  }
+
+  .ref-detail-title {
+    font-size: 16px;
+  }
+
+  .ref-detail-qa-body {
+    font-size: 15px;
+  }
+
+  .ref-meta-tag {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+}
