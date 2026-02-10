@@ -216,15 +216,24 @@ def project_detail(request, project_id):
 def kitup_list(request):
     """모든 KITUP 프로젝트 리스트 (완료된 보관 프로젝트)"""
     # 보관된 프로젝트만 조회 (ARCHIVED 상태)
-    # TODO 정렬 기능을 위한 GET 설정
-
     projects = Project.objects.filter(
         status=Project.Status.ARCHIVED
-    ).select_related('team').order_by('-created_at')
+    ).select_related('team')
+    
+    # 정렬 처리
+    sort = request.GET.get('sort', 'popular')
+    if sort == 'latest':
+        projects = projects.order_by('-created_at')
+    elif sort == 'oldest':
+        projects = projects.order_by('created_at')
+    else:  # popular (기본값)
+        # annotate로 좋아요 개수 추가하여 정렬
+        from django.db.models import Count
+        projects = projects.annotate(like_count=Count('likes')).order_by('-like_count', '-created_at')
     
     context = {
         "projects": projects,
-        # TODO 팀 멤버 조회하게 넘겨주기
+        "sort": sort,
     }
     return render(request, "projects/kitup_list.html", context)
 
@@ -239,7 +248,27 @@ def kitup_detail(request, project_id):
     
     return render(request, "projects/kitup_detail.html", context)
 
-# TODO 즐겨찾기 토글을 위한 POST 뷰 추가
+
+@login_required
+@require_POST
+@login_required
+@require_POST
+def toggle_project_like(request, project_id):
+    """프로젝트 좋아요 토글 API"""
+    from django.http import JsonResponse
+    
+    project = get_object_or_404(Project, id=project_id)
+    
+    # 좋아요 토글
+    is_liked = project.toggle_like(request.user)
+    like_count = project.get_like_count()
+    
+    return JsonResponse({
+        'success': True,
+        'is_liked': is_liked,
+        'like_count': like_count,
+    })
+
 
 # ================================
 # 팀 매칭 관리 API
