@@ -35,6 +35,7 @@
 }
 body {
   font-family: inherit; /* 이미 있으면 생략 */
+  background: #F6F8FF;
 }
 button {
   cursor: pointer;
@@ -201,7 +202,7 @@ button {
   background: #fff;
   border-radius: 22px;
   padding: 22px 22px;
-  box-shadow: 0 0 0 1px var(--blue-5);
+  box-shadow: 0 0 0 1px var(--blue-20);
   display: flex;
   align-items: flex-start;
   gap: 14px;
@@ -984,6 +985,7 @@ button.ref-btn{
 
 .ref-detail-title-section {
   flex: 1;
+  min-width: 0; /* 텍스트 overflow 방지 */
 }
 
 .ref-detail-title {
@@ -1005,7 +1007,11 @@ button.ref-btn{
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  flex-shrink: 0; 
 }
+
 
 /* ensure absolute dropdowns (note-menu) position relative to this actions container */
 .ref-detail-actions {
@@ -1130,7 +1136,70 @@ button.ref-btn{
 }
 
 /* 반응형 - Detail */
-@media (max-width: 768px) {
+
+/* =========================
+   Mobile Responsive (640px 이하) - 수정
+========================= */
+@media (max-width: 770px) {
+
+  /* ===== note-card (리스트) ===== */
+  .note-card {
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    position: relative;
+  }
+
+  /* 북마크는 왼쪽 상단 고정 */
+  .note-card .bookmark-btn {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 1;
+  }
+
+  /* 더보기는 오른쪽 상단 고정 */
+  .note-card .note-morewrap {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+  }
+
+  /* 본문 영역 여백 확보 */
+  .note-main {
+    padding-top: 32px;
+  }
+
+  /* 제목 / 태그 세로 정렬 */
+  .note-topline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .note-title {
+    font-size: 17px;
+    white-space: normal;
+    line-height: 1.3;
+  }
+
+  .note-tag {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .note-preview {
+    font-size: 14px;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+  }
+
+  .note-date {
+    font-size: 13px;
+  }
+
+  /* ===== Detail 페이지 ===== */
   .ref-detail-topbar {
     flex-direction: column;
     align-items: stretch;
@@ -1138,6 +1207,16 @@ button.ref-btn{
 
   .ref-detail-actions {
     justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    position: relative; /* more-menu 기준점 */
+  }
+
+  /* Detail 페이지 북마크 버튼 - absolute 해제 */
+  .ref-detail-actions .bookmark-btn {
+    position: static;
+    flex-shrink: 0;
   }
 
   .ref-detail-title {
@@ -1148,27 +1227,75 @@ button.ref-btn{
     font-size: 12px;
   }
 
+  /* 질문 카드 헤더 */
   .ref-detail-qa-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row; /* 가로 유지 */
+    align-items: center;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .ref-detail-qa-title {
+    flex: 1;
+    min-width: 0;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .ref-q-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+  }
+
+  /* ===== 필터 영역 ===== */
+  .ref-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+  }
+
+  /* 위 줄: 정렬 / 역할 */
+  .ref-select-container {
+    flex: 0 0 calc(50% - 6px);
+    min-width: 0;
+  }
+
+  .ref-selectbox {
+    width: 100%;
+    min-width: 0;
+    padding-right: 44px;
+  }
+
+  .ref-selectchev {
+    right: 14px;
+  }
+
+  /* 아래 줄: 북마크 / 글쓰기 */
+  .bookmark-filter-btn,
+  .ref-writebtn {
+    flex: 0 0 calc(50% - 6px);
+    justify-content: center;
+    text-align: center;
   }
 }
 
-@media (max-width: 480px) {
-  .ref-detail-wrap {
-    padding: 16px 12px;
+/* ===== 추가: 아주 작은 화면 (400px 이하) ===== */
+@media (max-width: 400px) {
+  .ref-detail-qa-title {
+    font-size: 13px;
   }
 
-  .ref-detail-title {
-    font-size: 16px;
+  .note-card .bookmark-btn {
+    top: 12px;
+    left: 12px;
   }
 
-  .ref-detail-qa-body {
-    font-size: 15px;
-  }
-
-  .ref-meta-tag {
-    font-size: 11px;
-    padding: 5px 8px;
+  .note-card .note-morewrap {
+    top: 8px;
+    right: 8px;
   }
 }
