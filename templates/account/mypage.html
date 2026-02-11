@@ -49,13 +49,13 @@
                         {% if fe_level %}
                         <span class="level-badge level-{{ fe_level }}">Lv {{ fe_level }}</span>
                         <button type="button" class="retest-btn"
-                            onclick="location.href='{% url 'account:level_test' %}?role=FRONTEND'">
+                            onclick="location.href='{% url 'accounts:level_test' %}?role=FRONTEND'">
                             재진단
                         </button>
                         {% else %}
                         <span class="level-badge undiagnosed">미진단</span>
                         <button type="button" class="retest-btn"
-                            onclick="location.href='{% url 'account:level_test' %}?role=FRONTEND'">
+                            onclick="location.href='{% url 'accounts:level_test' %}?role=FRONTEND'">
                             레벨 진단하기
                         </button>
                         {% endif %}
@@ -70,7 +70,7 @@
                         {% if be_level %}
                         <span class="level-badge level-{{ be_level }}">Lv {{ be_level }}</span>
                         <button type="button" class="retest-btn"
-                            onclick="location.href='{% url 'account:level_test' %}?role=BACKEND'">
+                            onclick="location.href='{% url 'accounts:level_test' %}?role=BACKEND'">
                             재진단
                         </button>
                         {% else %}
