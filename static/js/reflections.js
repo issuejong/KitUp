@@ -150,16 +150,28 @@
       roleMap = {};
     }
 
+    const setRole = (val) => {
+      roleSel.value = val || ""; // 개인 회고면 빈값
+    };
+
+    // 초기 상태(수정 페이지 대응): 프로젝트가 없으면 role 비우기
+    if (!projectSel.value) setRole("");
+
     projectSel.addEventListener("change", () => {
       const pid = projectSel.value;
-      if (!pid) return;
 
-      const autoRole = roleMap[pid];
-      if (autoRole) {
-        roleSel.value = autoRole; // 사용자가 원하면 다시 바꿀 수 있음
+      // ✅ "선택 안 함(개인용)"이면 개인 회고로 리셋
+      if (!pid) {
+        setRole("");
+        return;
       }
+
+      // ✅ 프로젝트 선택하면 roleMap 기반으로 자동 세팅
+      const autoRole = roleMap[pid];
+      setRole(autoRole || "");
     });
   };
+
 
   const bindAssetUpload = () => {
     const fileInput = document.getElementById("assetFileInput");
