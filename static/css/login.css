@@ -161,7 +161,7 @@ body {
 /* 태블릿 (768px 이하) */
 @media (max-width: 768px) {
     .login-container {
-        max-width: 400px;
+        width: 400px;
     }
     
     .login-box {
@@ -227,7 +227,7 @@ body {
     }
     
     .login-container {
-        max-width: 100%;
+        width: 350px;
     }
     
     .login-box {
@@ -309,7 +309,12 @@ body {
 
 /* 극소형 모바일 (360px 이하) */
 @media (max-width: 360px) {
+    .login-container {
+        width: 320px;
+    }
+
     .login-box {
+        width: 100%;
         padding: 28px 20px;
     }
     
