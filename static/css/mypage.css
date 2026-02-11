@@ -279,63 +279,6 @@
     font-size: 15px;
 }
 
-/* 반응형 */
-@media (max-width: 1024px) {
-    .user-info-side,
-    .content-side {
-        flex: 0 0 50%;
-        padding: 40px 30px;
-    }
-    
-    .info-table {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .profile-card {
-        flex-direction: column;
-        padding-top: 140px;
-    }
-    
-    .profile-card::before {
-        height: 140px;
-    }
-
-    .user-info-side {
-        flex: none;
-        width: 100%;
-        padding: 80px 30px 40px;
-    }
-    
-    .avatar-container {
-        top: -80px;
-        width: 140px;
-        height: 140px;
-    }
-    
-    .level-tag {
-        margin-top: 80px;
-    }
-
-    .content-side {
-        flex: none;
-        width: 100%;
-        padding: 20px 30px 40px;
-    }
-
-    .project-list-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .info-row .label {
-        font-size: 16px;
-    }
-    
-    .info-row .value {
-        font-size: 15px;
-    }
-}
 
 /* 나의 레벨 섹션 */
 .my-levels-section {
@@ -441,4 +384,147 @@
 
 .retest-btn:hover {
     background-color: #5570E8;
+}
+
+/* 반응형 개선 버전 (768px 이하 모바일) */
+@media (max-width: 768px) {
+    .profile-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 2. 각 영역의 순서를 지정*/
+    .user-info-side {
+        display: flex;
+        flex-direction: column;
+        order: 1; /* 제일 먼저 */
+    }
+
+    .content-side {
+        order: 2; /* 기술스택, 프로젝트*/
+    }
+
+    .edit-button {
+        order: 3; /* 버튼을 맨 아래 */
+        margin: 20px auto 40px; 
+        max-width: 90%; 
+    }
+    
+    
+    .my-levels-section {
+        order: 2; /* 정보 테이블 다음으로 */
+    }
+    .info-table {
+        order: 1;
+    }
+    .mypage-wrapper {
+        padding: 20px 10px;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        padding-top: 120px; /* 배너 높이 조절 */
+    }
+    
+    .profile-card::before {
+        height: 120px;
+    }
+
+    /* 왼쪽 프로필 영역 */
+    .user-info-side {
+        flex: none;
+        width: 100%;
+        padding: 60px 20px 30px; /* 패딩 최적화 */
+    }
+    
+    .avatar-container {
+        top: -70px;
+        width: 130px;
+        height: 130px;
+    }
+
+    .info-table {
+        margin-top: 30px;
+        gap: 15px;
+    }
+
+    .info-row .label {
+        min-width: 70px;
+        font-size: 15px;
+    }
+    
+    .info-row .value {
+        font-size: 14px;
+        margin-left: 20px;
+    }
+
+    /* 기술 스택 2줄 정렬 핵심 */
+    .tags {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 무조건 2열로 정렬 */
+        gap: 10px;
+    }
+
+    .tag-item {
+        padding: 10px 5px;
+        font-size: 14px;
+        text-align: center; /* 텍스트 중앙 정렬 */
+        display: block;
+        white-space: nowrap; /* 글자 줄바꿈 방지 */
+        overflow: hidden;
+        text-overflow: ellipsis; /* 너무 길면 ... 처리 */
+    }
+
+    /* 나의 레벨 섹션 깨짐 방지 */
+    .my-levels-section {
+        margin-top: 40px;
+        padding: 15px;
+    }
+
+    .level-item {
+        display: grid; /* flex에서 grid로 변경하여 영역 확보 */
+        grid-template-columns: 80px 1fr 90px; /* 이름 / 배지 / 버튼 순서 고정 */
+        align-items: center;
+        gap: 5px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .level-item:last-child {
+        border-bottom: none;
+    }
+
+    .role-name {
+        font-size: 13px;
+        min-width: auto;
+    }
+
+    .level-badge {
+        margin: 0; /* 자동 마진 제거 */
+        padding: 4px 8px;
+        font-size: 12px;
+        width: fit-content;
+        justify-self: start; /* 왼쪽 정렬 */
+    }
+
+    .retest-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+        width: 100%; 
+        text-align: center;
+    }
+
+    .content-side {
+        flex: none;
+        width: 100%;
+        padding: 10px 20px 40px;
+    }
+
+    .tech-stack-box {
+        padding: 20px;
+    }
+
+    .project-list-grid {
+        grid-template-columns: 1fr; 
+    }
 }
