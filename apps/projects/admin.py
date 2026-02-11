@@ -37,7 +37,7 @@ class SeasonAdmin(admin.ModelAdmin):
                     request,
                     f"✅ [{season.name}] 팀 매칭 완료: "
                     f"{result['teams_created']}팀 생성, "
-                    f"{result['total_matched']}명 매칭",
+                    f"{result['total_users_matched']}명 매칭",
                     messages.SUCCESS,
                 )
             except ValidationError as e:
