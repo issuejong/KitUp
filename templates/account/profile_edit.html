@@ -10,7 +10,7 @@
     <div class="edit-card">
         <aside class="user-info-side">
             <div class="avatar-container">
-                <img src="{% if user.profile_image %}{{ user.profile_image.url }}
+                <img id="preview-image" src="{% if user.profile_image %}{{ user.profile_image.url }}
                         {% else %}
                             {% static 'images/default_profile.png' %}
                         {% endif %}"
@@ -97,7 +97,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const profileInput = document.getElementById('id_profile_image');
-    const previewImage = document.getElementById('preview-image');
+    const previewImage = document.getElementById('preview-image') || document.querySelector('.profile-img');
     const defaultImageUrl = "{% static 'images/default_profile.png' %}";
     const nicknameInput = document.getElementById('id_nickname');
     const checkNicknameBtn = document.getElementById('check-nickname-btn');
