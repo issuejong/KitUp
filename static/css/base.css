@@ -190,6 +190,16 @@ main {
     .header_menu {
         display: flex !important;
     }
+
+    .dropdown > a:hover {
+        background: #4272EF;
+        color: #fff;
+        transition: 0.5s ease;
+    }
+
+    .dropdown-content {
+        display: none !important;
+    }
 }
 
 /* 태블릿 & 모바일 (768px 이하) */
