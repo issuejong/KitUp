@@ -66,11 +66,14 @@
       <label class="ref-label">프로젝트</label>
       <div class="ref-selectwrap">
         <select name="project_id" class="ref-select" data-project-select>
-          <option value="">선택 안 함 (개인용)</option>
+          <option value="">선택 안 함 (개인 회고)</option>
           {% if my_projects %}
             {% for p in my_projects %}
               <option value="{{ p.id }}" {% if note and note.project_id == p.id %}selected{% endif %}>
                 {{ p.title }}
+                {% with my_role_map|get_item:p.id as r %}
+                  {% if r %} ({{ r }}){% else %} (역할 미지정){% endif %}
+                {% endwith %}
               </option>
             {% endfor %}
           {% endif %}
@@ -86,8 +89,8 @@
     <div class="ref-meta-row">
       <label class="ref-label">역할</label>
       <div class="ref-selectwrap">
-        <select name="role" class="ref-select" data-role-select>
-          <option value="">선택 안 함</option>
+        <select name="role" class="ref-select" data-role-select disabled>
+          <option value="">개인 회고</option>
           <option value="PM" {% if note.role == "PM" %}selected{% endif %}>WEB 기획</option>
           <option value="FRONTEND" {% if note.role == "FRONTEND" %}selected{% endif %}>WEB 프론트엔드</option>
           <option value="BACKEND" {% if note.role == "BACKEND" %}selected{% endif %}>WEB 백엔드</option>
