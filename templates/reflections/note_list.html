@@ -14,6 +14,7 @@
   {# 상단 컨트롤 영역 #}
   <section class="ref-controls">
     <form class="ref-search" method="get" action="">
+      
       <div class="ref-searchbar">
         <span class="ref-searchicon" aria-hidden="true">
           <!-- 돋보기 아이콘 -->
@@ -30,50 +31,62 @@
       </div>
 
       <div class="ref-filters">
-        <div class="ref-select-container">
-          <select name="sort" class="ref-selectbox" data-auto-submit>
-            <option value="new"   {% if sort == "new" %}selected{% endif %}>최신순</option>
-            <option value="old"   {% if sort == "old" %}selected{% endif %}>오래된순</option>
-            <option value="title" {% if sort == "title" %}selected{% endif %}>제목순</option>
-          </select>
-          <span class="ref-selectchev" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
+        <!-- 정렬 -->
+        <div class="ref-filters-selects">
+          <div class="ref-select-container">
+            <select name="sort" class="ref-selectbox" data-auto-submit>
+              <option value="new"   {% if sort == "new" %}selected{% endif %}>최신순</option>
+              <option value="old"   {% if sort == "old" %}selected{% endif %}>오래된순</option>
+              <option value="title" {% if sort == "title" %}selected{% endif %}>제목순</option>
+            </select>
+            <span class="ref-selectchev" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <!-- 스택 필터 -->
+          <div class="ref-select-container">
+            <select name="roles" class="ref-selectbox" data-auto-submit>
+              <option value="" {% if not role %}selected{% endif %}>전체</option>
+              <option value="PM" {% if "PM" == role %}selected{% endif %}>기획</option>
+              <option value="FRONTEND" {% if "FRONTEND" == role %}selected{% endif %}>프론트엔드</option>
+              <option value="BACKEND" {% if "BACKEND" == role %}selected{% endif %}>백엔드</option>
+              <option value="none" {% if "none" == role %}selected{% endif %}>개인 회고</option>
+            </select>
+            <span class="ref-selectchev" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
         </div>
-
-        <div class="ref-select-container">
-          <select name="roles" class="ref-selectbox" data-auto-submit>
-            <option value="" {% if not role %}selected{% endif %}>전체</option>
-            <option value="PM" {% if "PM" == role %}selected{% endif %}>기획</option>
-            <option value="FRONTEND" {% if "FRONTEND" == role %}selected{% endif %}>프론트엔드</option>
-            <option value="BACKEND" {% if "BACKEND" == role %}selected{% endif %}>백엔드</option>
-            <option value="none" {% if "none" == role %}selected{% endif %}>개인 회고</option>
-          </select>
-          <span class="ref-selectchev" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <div class="ref-filters-actions">
+          <!-- 북마크 필터 버튼 -->
+          <button
+            type="button"
+            class="bookmark-filter-btn {% if bookmarked %}is-active{% endif %}"
+            data-bookmark-filter
+            aria-pressed="{% if bookmarked %}true{% else %}false{% endif %}"
+          >
+            <!-- 채워진 북마크 -->
+            <svg class="ref-action-icon bookmark-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                aria-hidden="true">
+              <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
             </svg>
-          </span>
+            <span class="ref-action-txt">북마크</span>
+          </button>
+          
+          <!-- 글쓰기 버튼 -->
+          <a href="{% url 'reflections:note_create' %}" class="ref-writebtn">
+              <img src="{% static 'images/pencil_icon.png' %}"
+                class="ref-action-icon"
+                alt="">
+            <span class="ref-action-txt">글쓰기</span>
+          </a>
         </div>
-        <button
-          type="button"
-          class="bookmark-filter-btn {% if bookmarked %}is-active{% endif %}"
-          data-bookmark-filter
-          aria-pressed="{% if bookmarked %}true{% else %}false{% endif %}"
-        >
-          <!-- 채워진 북마크 -->
-          <svg class="bookmark-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              aria-hidden="true">
-            <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
-          </svg>
-          <span>북마크</span>
-        </button>
-
-        <a href="{% url 'reflections:note_create' %}" class="ref-writebtn">글쓰기</a>
       </div>
     </form>
   </section>
