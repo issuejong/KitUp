@@ -9,20 +9,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="ref-page" style="background: #F9F9F9;">
+<div class="ref-page">
   <div class="ref-detail-wrap">
     
     {# 상단 바 #}
     <div class="ref-detail-topbar">
       <div class="ref-detail-title-section">
         <h1 class="ref-detail-title">{{ note.title }}</h1>
-        <div class="ref-detail-meta-text">
-          템플릿: {{ note.template_key }} ·
-          생성: {{ note.created_at|date:"Y-m-d H:i" }} ·
-          수정: {{ note.updated_at|date:"Y-m-d H:i" }}
-        </div>
       </div>
-
       <div class="ref-detail-actions">
         <a href="{% url 'reflections:note_list' %}" class="ref-btn ref-btn-ghost">목록</a>
         <a href="{% url 'reflections:note_update' note.id %}" class="ref-btn ref-btn-primary">수정하기</a>
@@ -65,31 +59,11 @@
           </div>
       </div>
     </div>
-
-    {# 메타 카드 #}
-    <section class="ref-detail-meta-card">
-      <div class="ref-detail-meta-tags">
-        <span class="ref-meta-tag">
-          bookmarked: {{ note.bookmarked|yesno:"true,false" }}
-        </span>
-
-        {% if note.project %}
-          <span class="ref-meta-tag ref-meta-tag-project">
-            project: {{ note.project.title }}
-          </span>
-        {% else %}
-          <span class="ref-meta-tag ref-meta-tag-personal">
-            개인 회고
-          </span>
-        {% endif %}
-
-        {% if note.role %}
-          <span class="note-tag tag-{{ note.role|lower }}">
-            {{ note.role }}
-          </span>
-        {% endif %}
-      </div>
-    </section>
+    <div class="ref-detail-meta-text">
+      작성일: {{ note.created_at|date:"Y-m-d H:i" }} ·
+      최종수정일: {{ note.updated_at|date:"Y-m-d H:i" }}
+    </div>
+    <br>
 
     {# 질문 리스트(보기 전용) #}
     <div class="ref-detail-qa-list">

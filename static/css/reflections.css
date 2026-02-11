@@ -9,6 +9,7 @@
   /* Blue scale */
   --blue-0: #F6F8FF;
   --blue-5: #EAF0FF;
+  --blue-10: #CAD9FF;
   --blue-20: #A4BDFD;
   --blue-40: #4272EF;
   --blue-50: #1F4CC0;
@@ -33,10 +34,12 @@
   --gray-500: #8B95A1; /* 날짜/보조 */
   --gray-300: #D7DDE8; /* 경계 */
 }
+
 body {
   font-family: inherit; /* 이미 있으면 생략 */
-  background: #F6F8FF;
+  background: #F9F9F9;
 }
+
 button {
   cursor: pointer;
 }
@@ -44,13 +47,13 @@ button {
    Note List Page
 ========================= */
 .ref-page {
-  background: var(--blue-0);
+  background: #F9F9F9;
   padding: 32px 0 96px;
 }
 
 .ref-controls,
 .ref-list {
-  max-width: 960px;
+  max-width: 80%;
   margin: 0 auto;
   padding: 0 16px;
 }
@@ -74,14 +77,21 @@ button {
   gap: 10px;
   background: #fff;
   border-radius: 999px;
-  padding: 14px 16px;
+  padding: 5px 10px 5px 15px;
   box-shadow: 0 0 0 1px var(--blue-5);
 }
 
+.ref-searchbar:focus-within {
+  outline: 1px solid var(--blue-40);
+}
+
 .ref-searchicon {
-  color: var(--blue-40);
-  display: inline-flex;
+  width: 30px; height: 30px;
   align-items: center;
+}
+
+.ref-searchicon > img {
+  width: 100%;
 }
 
 .ref-searchinput {
@@ -102,9 +112,14 @@ button {
   border-radius: 999px;
   padding: 10px 18px;
   font-size: 14px;
-  font-weight: 600;
-  background: var(--blue-70); /* 피그마처럼 진한 버튼 */
+  font-weight: 500;
+  background: var(--blue-70); 
   color: #fff;
+}
+
+.ref-searchbtn:hover {
+  background: var(--blue-50);
+  transition: 0.5s ease;
 }
 
 /* =========================
@@ -125,15 +140,20 @@ button {
 
 .ref-selectbox {
   appearance: none;
-  border: 1px solid var(--blue-20);
+  border: 1px solid var(--blue-10);
   background: #fff;
   border-radius: 999px;
-  padding: 12px 44px 12px 18px;
+  padding: 10px 45px 10px 18px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-900);
   min-width: 0px;
   width: 100%;
+}
+
+.ref-selectbox:focus-within {
+  outline: none;
+  border: 1px solid var(--blue-40);
 }
 
 .ref-selectchev {
@@ -148,30 +168,33 @@ button {
 .ref-writebtn {
   margin-left: auto;
   text-decoration: none;
+  text-align: center;
   border-radius: 999px;
-  padding: 12px 22px;
+  width: 15%;
+  padding: 10px 30px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   background: var(--blue-40);
   color: #fff;
+}
+
+.ref-writebtn:hover {
+  background: var(--blue-50);
+  transition: 0.5s ease-in-out;
 }
 
 .bookmark-filter-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
-  padding: 8px 14px;
+  padding: 10px 45px 10px 18px;
   border-radius: 999px;
-
-  background: #ffffff;          /* OFF: 흰 배경 */
-  color: var(--gray-800);        /* OFF: 어두운 글씨 */
-
-  border: 1px solid var(--blue-20);
+  background: #ffffff;          
+  color: var(--gray-800);      
+  border: 1px solid var(--blue-10);
   cursor: pointer;
-
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .bookmark-filter-btn .bookmark-icon {
@@ -182,11 +205,11 @@ button {
 
 /* ON 상태 */
 .bookmark-filter-btn.is-active {
-  background: var(--blue-70);    /* ON: 어두운 배경 */
-  color: #ffffff;                /* ON: 밝은 글씨 */
-  border-color: var(--blue-70);
+  border: 1.5px solid  var(--blue-40);
 }
 
+.bookmark-filter-btn.is-active .bookmark-icon { color:  var(--blue-40);
+}
 
 /* =========================
    List / Card (피그마처럼 넓고 둥글고, 테두리+은은한 그림자)
@@ -202,7 +225,7 @@ button {
   background: #fff;
   border-radius: 22px;
   padding: 22px 22px;
-  box-shadow: 0 0 0 1px var(--blue-20);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: flex-start;
   gap: 14px;
@@ -260,7 +283,7 @@ button {
 
 .note-title {
   font-size: 20px;         /* 피그마처럼 큼 */
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: 0;
   white-space: nowrap;
@@ -300,7 +323,8 @@ button {
 /* 본문 프리뷰 */
 .note-preview {
   margin: 10px 0 0;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 400;
   line-height: 1.4;
   color: var(--gray-600);
   display: -webkit-box;
@@ -318,7 +342,7 @@ button {
   display: inline-block;
   margin-top: 10px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--gray-500);
 }
 
@@ -339,16 +363,11 @@ button {
   color: var(--blue-70);
 }
 
-.note-morebtn:hover {
-  background: var(--blue-5);
-}
-
 .note-menu {
   position: absolute;
   right: 0;
   top: 38px;
-  width: 220px;                 /* 피그마처럼 넓게 */
-  padding: 6px 0;
+  width: 120px;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 10px 24px rgba(29, 41, 75, 0.12);
@@ -358,10 +377,10 @@ button {
 
 .note-menuitem {
   display: block;
-  width: 100%;
-  padding: 7px 14px;
-  font-size: 14px;              /* 피그마 스샷처럼 크게 보이게 */
-  font-weight: 800;
+  width: 100%; height: 50%;
+  padding: 10px 14px;
+  font-size: 14px;  
+  font-weight: 400;
   letter-spacing: -0.02em;      /* 한글 크게 보이는 느낌 보정 */
   color: var(--blue-40); /* 피그마처럼 수정은 블루 계열 */
   text-decoration: none;
@@ -393,7 +412,8 @@ button {
 
 .ref-empty-title {
   color: var(--gray-700);
-  font-weight: 800;
+  font-weight: 600;
+  font-size: 30px;
   margin: 0 0 14px;
 }
 
@@ -401,121 +421,16 @@ button {
   display: inline-block;
   text-decoration: none;
   border-radius: 999px;
-  padding: 12px 20px;
+  padding: 10px 25px;
   background: var(--blue-40);
   color: #fff;
-  font-weight: 800;
+  font-weight: 500;
 }
 
-/* =========================
-   Responsive (너무 찌그러지지 않게)
-========================= */
-@media (max-width: 720px) {
-  .ref-searchbtn {
-    padding: 10px 14px;
-  }
-
-  /* .ref-selectbox {
-    min-width: 140px;
-  } */
-
-  .note-title {
-    font-size: 18px;
-  }
-
-  .note-preview {
-    font-size: 15px;
-  }
+.ref-empty-cta:hover {
+  background: var(--blue-50);
+  transition: 0.5s ease;
 }
-
-/* =========================
-   Mobile Responsive
-========================= */
-@media (max-width: 640px) {
-
-  .note-card {
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px;
-  }
-
-  /* 상단 액션 고정 */
-  .bookmark-btn {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-  }
-
-  .note-morewrap {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-
-  /* 본문 영역 여백 확보 */
-  .note-main {
-    padding-top: 32px;
-  }
-
-  /* 제목 / 태그 세로 정렬 */
-  .note-topline {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .note-title {
-    font-size: 17px;
-    white-space: normal;
-    line-height: 1.3;
-  }
-
-  .note-tag {
-    font-size: 11px;
-    padding: 5px 10px;
-  }
-
-  .note-preview {
-    font-size: 14px;
-    line-clamp: 3;
-    -webkit-line-clamp: 3;
-  }
-
-  .note-date {
-    font-size: 13px;
-  }
-
-  .ref-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 12px;
-  }
-
-  /* ===== 위 줄: 정렬 / 역할 ===== */
-  .ref-select-container {
-    flex: 0 0 calc(50% - 6px);
-    min-width: 0;
-  }
-
-  .ref-selectbox {
-    width: 100%;
-    min-width: 0;          /* ← 핵심 */
-    padding-right: 44px;   /* 화살표 공간 */
-  }
-
-  .ref-selectchev {
-    right: 14px;
-  }
-
-  /* ===== 아래 줄: 북마크 / 글쓰기 ===== */
-  .bookmark-filter-btn,
-  .ref-writebtn {
-    flex: 0 0 calc(50% - 6px);
-    justify-content: center;
-    text-align: center;
-  }
-}
-
 
 /* =========================
    Note Form (create/update)
@@ -785,14 +700,14 @@ button {
 }
 
 .ref-btn {
-  border-radius: 999px;
-  padding: 12px 18px;
-  font-weight: 900;
+  border-radius: 30px;
+  padding: 10px 18px;
+  font-weight: 500;
+  font-size: 14px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
   line-height: 1;
 }
 
@@ -815,17 +730,11 @@ button.ref-btn{
 }
 
 .ref-btn.ref-btn-primary {
+  font-weight: 500;
+  font-size: 14px;
   border: 0;
   background: var(--blue-40);
   color: #fff;
-}
-
-/* responsive */
-@media (max-width: 900px) {
-  .ref-form-wrap { padding: 28px 18px; }
-  .ref-title { font-size: 26px; }
-  .ref-meta { grid-template-columns: 1fr; }
-  .ref-assets-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* 테이블 삽입 modal */
@@ -967,12 +876,12 @@ button.ref-btn{
    Note Detail
 ========================= */
 .ref-detail-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  max-width: 1020px;
+  margin: 32px auto 120px;
+  padding: 44px 44px 34px;
+  background: #fff;
+  border-radius: 26px;
+  box-shadow: 0 10px 30px rgba(29, 41, 75, 0.08);
 }
 
 /* 상단 바 */
@@ -989,16 +898,16 @@ button.ref-btn{
 }
 
 .ref-detail-title {
-  font-size: 20px;
-  font-weight: 800;
+  font-size: 40px;
+  font-weight: 700;
   line-height: 1.2;
   color: var(--gray-900);
-  margin: 0;
+  margin-bottom: 30px;
 }
 
 .ref-detail-meta-text {
-  margin-top: 6px;
-  font-size: 13px;
+  margin: 20px 5px;
+  font-size: 12px;
   color: var(--gray-600);
 }
 
@@ -1094,6 +1003,7 @@ button.ref-btn{
   border-radius: 18px;
   background: #fff;
   overflow: hidden;
+  margin-top: 50px;
 }
 
 .ref-detail-export-summary {
@@ -1135,22 +1045,294 @@ button.ref-btn{
   background: #fff;
 }
 
-/* 반응형 - Detail */
+/* 반응형 */
 
-/* =========================
-   Mobile Responsive (640px 이하) - 수정
-========================= */
-@media (max-width: 770px) {
-
-  /* ===== note-card (리스트) ===== */
-  .note-card {
-    flex-direction: column;
-    gap: 12px;
-    padding: 18px;
-    position: relative;
+/* note_detail 반응형 */
+/* ===== 노트북 (1024px ~ 1200px) ===== */
+@media (max-width: 1200px) {
+  .ref-detail-wrap {
+    max-width: 90%;
+    padding: 40px 36px 30px;
   }
 
-  /* 북마크는 왼쪽 상단 고정 */
+  .ref-detail-title {
+    font-size: 36px;
+    margin-bottom: 24px;
+  }
+}
+
+/* ===== 태블릿 (768px ~ 1023px) ===== */
+@media (max-width: 1023px) {
+  .ref-detail-wrap {
+    max-width: 95%;
+    padding: 36px 32px 28px;
+  }
+
+  .ref-detail-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .ref-detail-actions {
+    flex-wrap: nowrap; /* 한 줄 유지 */
+    gap: 6px;
+  }
+
+  .ref-detail-qa-body {
+    font-size: 15px;
+  }
+}
+
+/* ===== 모바일 (480px ~ 767px) ===== */
+@media (max-width: 767px) {
+  .ref-detail-wrap {
+    max-width: 100%;
+    padding: 28px 20px 24px;
+    border-radius: 20px;
+    margin: 20px auto 80px;
+  }
+
+  .ref-detail-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .ref-detail-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .ref-detail-meta-text {
+    font-size: 11px;
+    margin: 12px 10px;
+    text-align: right;
+  }
+
+  .ref-detail-actions {
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* 질문 카드 */
+  .ref-detail-qa-header {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ref-detail-qa-title {
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  .ref-detail-qa-body {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  /* 마크다운 내보내기 */
+  .ref-detail-export {
+    margin-top: 40px;
+  }
+
+  .ref-detail-export-summary {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .ref-detail-export-textarea {
+    font-size: 12px;
+  }
+}
+
+/* ===== 소형 모바일 (480px 이하) ===== */
+@media (max-width: 480px) {
+  .ref-detail-wrap {
+    padding: 24px 16px 20px;
+    border-radius: 16px;
+  }
+
+  .ref-detail-title {
+    font-size: 20px;
+  }
+
+  .ref-detail-meta-text {
+    font-size: 10px;
+  }
+
+  .ref-detail-actions {
+    gap: 6px;
+  }
+
+  .ref-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .ref-detail-qa-header {
+    padding: 10px 12px;
+  }
+
+  .ref-detail-qa-title {
+    font-size: 13px;
+  }
+
+  .ref-detail-qa-body {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .ref-q-num {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+/* note_list 반응형 */
+/* ===== 노트북 (1024px ~ 1200px) ===== */
+@media (max-width: 1200px) {
+  .ref-controls,
+  .ref-list {
+    max-width: 85%;
+  }
+
+  .ref-writebtn {
+    width: 18%;
+  }
+}
+
+/* ===== 태블릿 (768px ~ 1023px) ===== */
+@media (max-width: 1023px) {
+  .ref-controls,
+  .ref-list {
+    max-width: 90%;
+  }
+
+  .ref-searchbar {
+    padding: 5px 8px 5px 12px;
+  }
+
+  .ref-searchicon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .ref-searchinput {
+    font-size: 15px;
+  }
+
+  .ref-searchbtn {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+
+  .ref-selectbox {
+    font-size: 13px;
+    padding: 9px 40px 9px 16px;
+  }
+
+  .bookmark-filter-btn {
+    padding: 9px 40px 9px 16px;
+    font-size: 13px;
+  }
+
+  .ref-writebtn {
+    width: 20%;
+    padding: 9px 20px;
+    font-size: 13px;
+  }
+
+  .note-title {
+    font-size: 18px;
+  }
+
+  .note-preview {
+    font-size: 14px;
+  }
+}
+
+/* ===== 모바일 (480px ~ 767px) ===== */
+@media (max-width: 767px) {
+  .ref-controls,
+  .ref-list {
+    max-width: 95%;
+    padding: 0 12px;
+  }
+
+  .ref-searchbar {
+    padding: 4px 6px 4px 10px;
+  }
+
+  .ref-searchicon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ref-searchinput {
+    font-size: 14px;
+  }
+
+  .ref-searchbtn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* 필터 영역 2줄 배치 */
+  .ref-filters {
+    flex-wrap: wrap;
+    gap: 10px 8px;
+  }
+
+  /* 위 줄: 정렬 / 역할 */
+  .ref-select-container {
+    flex: 0 0 calc(50% - 4px);
+    min-width: 0;
+  }
+
+  .ref-selectbox {
+    width: 100%;
+    min-width: 0;
+    font-size: 12px;
+    padding: 9px 36px 9px 14px;
+  }
+
+  .ref-selectchev {
+    right: 10px;
+  }
+
+  /* 아래 줄: 북마크 / 글쓰기 */
+  .bookmark-filter-btn {
+    flex: 0 0 calc(50% - 4px);
+    justify-content: center;
+    padding: 9px 14px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .bookmark-filter-btn .bookmark-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .ref-writebtn {
+    flex: 0 0 calc(50% - 4px);
+    width: auto;
+    padding: 9px 14px;
+    font-size: 12px;
+  }
+
+  /* 카드 레이아웃 */
+  .note-card {
+    flex-direction: column;
+    padding: 18px;
+    gap: 12px;
+  }
+
+  /* 북마크 왼쪽 상단 고정 */
   .note-card .bookmark-btn {
     position: absolute;
     top: 14px;
@@ -1158,7 +1340,7 @@ button.ref-btn{
     z-index: 1;
   }
 
-  /* 더보기는 오른쪽 상단 고정 */
+  /* 케밥 오른쪽 상단 고정 */
   .note-card .note-morewrap {
     position: absolute;
     top: 10px;
@@ -1166,14 +1348,14 @@ button.ref-btn{
     z-index: 1;
   }
 
-  /* 본문 영역 여백 확보 */
+  /* 본문 여백 확보 */
   .note-main {
     padding-top: 32px;
   }
 
-  /* 제목 / 태그 세로 정렬 */
+  /* 제목/태그 세로 배치 */
   .note-topline {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     gap: 6px;
   }
@@ -1199,94 +1381,61 @@ button.ref-btn{
     font-size: 13px;
   }
 
-  /* ===== Detail 페이지 ===== */
-  .ref-detail-topbar {
-    flex-direction: column;
-    align-items: stretch;
+  /* Empty 상태 */
+  .ref-empty-title {
+    font-size: 24px;
   }
 
-  .ref-detail-actions {
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    position: relative; /* more-menu 기준점 */
-  }
-
-  /* Detail 페이지 북마크 버튼 - absolute 해제 */
-  .ref-detail-actions .bookmark-btn {
-    position: static;
-    flex-shrink: 0;
-  }
-
-  .ref-detail-title {
-    font-size: 18px;
-  }
-
-  .ref-detail-meta-text {
-    font-size: 12px;
-  }
-
-  /* 질문 카드 헤더 */
-  .ref-detail-qa-header {
-    flex-direction: row; /* 가로 유지 */
-    align-items: center;
-    padding: 12px 14px;
-    gap: 10px;
-  }
-
-  .ref-detail-qa-title {
-    flex: 1;
-    min-width: 0;
-    word-break: keep-all;
-    overflow-wrap: break-word;
+  .ref-empty-cta {
+    padding: 9px 20px;
     font-size: 14px;
-    line-height: 1.4;
-  }
-
-  .ref-q-num {
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-    font-size: 12px;
-  }
-
-  /* ===== 필터 영역 ===== */
-  .ref-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 12px;
-  }
-
-  /* 위 줄: 정렬 / 역할 */
-  .ref-select-container {
-    flex: 0 0 calc(50% - 6px);
-    min-width: 0;
-  }
-
-  .ref-selectbox {
-    width: 100%;
-    min-width: 0;
-    padding-right: 44px;
-  }
-
-  .ref-selectchev {
-    right: 14px;
-  }
-
-  /* 아래 줄: 북마크 / 글쓰기 */
-  .bookmark-filter-btn,
-  .ref-writebtn {
-    flex: 0 0 calc(50% - 6px);
-    justify-content: center;
-    text-align: center;
   }
 }
 
-/* ===== 추가: 아주 작은 화면 (400px 이하) ===== */
-@media (max-width: 400px) {
-  .ref-detail-qa-title {
+/* ===== 소형 모바일 (480px 이하) ===== */
+@media (max-width: 480px) {
+  .ref-controls,
+  .ref-list {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  .ref-searchbar {
+    padding: 3px 5px 3px 8px;
+  }
+
+  .ref-searchicon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .ref-searchinput {
     font-size: 13px;
+  }
+
+  .ref-searchbtn {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+
+  .ref-selectbox {
+    font-size: 11px;
+    padding: 8px 32px 8px 12px;
+  }
+
+  .bookmark-filter-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .ref-writebtn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .note-card {
+    padding: 16px;
+    border-radius: 18px;
   }
 
   .note-card .bookmark-btn {
@@ -1297,5 +1446,44 @@ button.ref-btn{
   .note-card .note-morewrap {
     top: 8px;
     right: 8px;
+  }
+
+  .note-main {
+    padding-top: 28px;
+  }
+
+  .note-title {
+    font-size: 16px;
+  }
+
+  .note-tag {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .note-preview {
+    font-size: 13px;
+  }
+
+  .note-date {
+    font-size: 12px;
+  }
+
+  .note-menu {
+    width: 100px;
+  }
+
+  .note-menuitem {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .ref-empty-title {
+    font-size: 20px;
+  }
+
+  .ref-empty-cta {
+    padding: 8px 16px;
+    font-size: 13px;
   }
 }
