@@ -46,24 +46,6 @@
     z-index: 1;
 }
 
-/* 프로필 이미지 - 배너와 카드 사이에 걸침
-.avatar-container {
-    position: absolute;
-    top: -100px;
-    width: 180px;
-    height: 180px;
-    margin-bottom: 20px;
-}
-
-.profile-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    background-color: #d1d5db;
-    border: 6px solid #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-} */
 
 .avatar-container {
     position: absolute;
@@ -113,20 +95,9 @@
     filter: brightness(0) invert(1);
 }
 
-/* 레벨 태그 */
-.level-tag {
-    background-color: #6B8AFF;
-    color: white;
-    padding: 10px 35px;
-    border-radius: 25px;
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 100px;
-    margin-bottom: 30px;
-}
-
 /* 정보 테이블 */
 .info-table {
+    margin-top: 50px;
     width: 100%;
     max-width: 450px;
     display: flex;
@@ -154,7 +125,7 @@
 
 /* 프로필 수정 버튼 */
 .edit-button {
-    margin-top: 175px;
+    margin-top: 70px;
     width: 100%;
     max-width: 240px;
     padding: 14px 0;
@@ -362,4 +333,110 @@
     .info-row .value {
         font-size: 15px;
     }
+}
+
+/* 나의 레벨 섹션 */
+.my-levels-section {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 60px;
+    background-color: rgba(255, 255, 255, 0.849);
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgb(223, 223, 223);
+    border-image: initial;
+    border-radius: 16px;
+    padding: 20px 25px;
+}
+
+
+.levels-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 16px 0;
+}
+
+.level-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.level-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
+.role-name {
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 85px;
+}
+
+.role-name.frontend {
+    color: #FFC107;
+}
+
+.role-name.backend {
+    color: #FF3E88;
+}
+
+.role-name.pm {
+    color: #06D6A0;
+}
+
+.level-badge {
+    padding: 5px 15px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 auto 0 8px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.level-badge.level-1 {
+    background-color: #93C5FD;
+    color: #1E40AF;
+}
+
+.level-badge.level-2 {
+    background-color: #A78BFA;
+    color: #5B21B6;
+}
+
+.level-badge.level-3 {
+    background-color: #F472B6;
+    color: #BE185D;
+}
+
+.level-badge.level-4 {
+    background-color: #FBBF24;
+    color: #92400E;
+}
+
+.level-badge.undiagnosed {
+    background-color: #E5E7EB;
+    color: #6B7280;
+}
+
+.retest-btn {
+    padding: 7px 14px;
+    background-color: #6B8AFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+}
+
+.retest-btn:hover {
+    background-color: #5570E8;
 }
