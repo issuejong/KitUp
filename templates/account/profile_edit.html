@@ -10,15 +10,16 @@
     <div class="edit-card">
         <aside class="user-info-side">
             <div class="avatar-container">
-                <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}"
-                    alt="프로필 사진" class="profile-img" id="preview-image">
+                <img id="preview-image" src="{% if user.profile_image %}{{ user.profile_image.url }}
+                        {% else %}
+                            {% static 'images/default_profile.png' %}
+                        {% endif %}"
+                    alt="프로필 사진" 
+                    class="profile-img">
                 <label for="id_profile_image" class="edit-badge">
                     <img src="{% static 'images/pencil_icon.png' %}" alt="수정">
                 </label>
             </div>
-
-            <div class="level-tag">Lv. 3</div>
-
             <form method="post" enctype="multipart/form-data" class="edit-form">
                 {% csrf_token %}
 
@@ -78,9 +79,9 @@
                 <h3 class="side-title">기술 스택</h3>
                 <div class="tags">
                     {% for tech in user.tech_stacks.all %}
-                    <div class="tag-item">
+                    <span class="tag-item tag-{{ tech.category|lower }}">
                         # {{ tech.name }}
-                    </div>
+                    </span>
                     {% empty %}
                     <p class="empty-msg">등록된 기술 스택이 없습니다.</p>
                     {% endfor %}
@@ -93,7 +94,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const profileInput = document.getElementById('id_profile_image');
-    const previewImage = document.getElementById('preview-image');
+    const previewImage = document.getElementById('preview-image') || document.querySelector('.profile-img');
     const defaultImageUrl = "{% static 'images/default_profile.png' %}";
     const nicknameInput = document.getElementById('id_nickname');
     const checkNicknameBtn = document.getElementById('check-nickname-btn');

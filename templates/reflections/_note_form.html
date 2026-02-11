@@ -88,9 +88,9 @@
       <div class="ref-selectwrap">
         <select name="role" class="ref-select" data-role-select>
           <option value="">선택 안 함</option>
-          <option value="PM" {% if note and note.role == "PM" %}selected{% endif %}>WEB 기획</option>
-          <option value="FRONTEND" {% if note and note.role == "FRONTEND" %}selected{% endif %}>WEB 프론트엔드</option>
-          <option value="BACKEND" {% if note and note.role == "BACKEND" %}selected{% endif %}>WEB 백엔드</option>
+          <option value="PM" {% if note.role == "PM" %}selected{% endif %}>WEB 기획</option>
+          <option value="FRONTEND" {% if note.role == "FRONTEND" %}selected{% endif %}>WEB 프론트엔드</option>
+          <option value="BACKEND" {% if note.role == "BACKEND" %}selected{% endif %}>WEB 백엔드</option>
         </select>
         <span class="ref-form-selectchev" aria-hidden="true">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

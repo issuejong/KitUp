@@ -16,13 +16,7 @@
     <div class="ref-detail-topbar">
       <div class="ref-detail-title-section">
         <h1 class="ref-detail-title">{{ note.title }}</h1>
-        <div class="ref-detail-meta-text">
-          템플릿: {{ note.template_key }} ·
-          생성: {{ note.created_at|date:"Y-m-d H:i" }} ·
-          수정: {{ note.updated_at|date:"Y-m-d H:i" }}
-        </div>
       </div>
-
       <div class="ref-detail-actions">
         <a href="{% url 'reflections:note_list' %}" class="ref-btn ref-btn-ghost">목록</a>
         <a href="{% url 'reflections:note_update' note.id %}" class="ref-btn ref-btn-primary">수정하기</a>
@@ -43,33 +37,33 @@
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
+        
+          <div class="note-morewrap" data-more-wrap>
+            <button type="button" class="note-morebtn" data-more-btn aria-haspopup="true" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM12 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM12 20.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/>
+              </svg>
+            </button>
+
+            <div class="note-menu" role="menu" data-more-menu hidden>
+              {% if note %}
+                <a class="note-menuitem" role="menuitem" href="{% url 'reflections:note_update' note.id %}">수정하기</a>
+                <form method="post" action="{% url 'reflections:note_delete' note.id %}" class="note-menuform">
+                  {% csrf_token %}
+                  <button type="submit" class="note-menuitem danger" role="menuitem">삭제하기</button>
+                </form>
+              {% else %}
+                <span class="note-menuitem" role="menuitem">작성 중…</span>
+              {% endif %}
+            </div>
+          </div>
       </div>
     </div>
-
-    {# 메타 카드 #}
-    <section class="ref-detail-meta-card">
-      <div class="ref-detail-meta-tags">
-        <span class="ref-meta-tag">
-          bookmarked: {{ note.bookmarked|yesno:"true,false" }}
-        </span>
-
-        {% if note.project %}
-          <span class="ref-meta-tag ref-meta-tag-project">
-            project: {{ note.project.title }}
-          </span>
-        {% else %}
-          <span class="ref-meta-tag ref-meta-tag-personal">
-            개인 회고
-          </span>
-        {% endif %}
-
-        {% if note.role %}
-          <span class="note-tag tag-{{ note.role|lower }}">
-            {{ note.role }}
-          </span>
-        {% endif %}
-      </div>
-    </section>
+    <div class="ref-detail-meta-text">
+      작성일: {{ note.created_at|date:"Y-m-d H:i" }} ·
+      최종수정일: {{ note.updated_at|date:"Y-m-d H:i" }}
+    </div>
+    <br>
 
     {# 질문 리스트(보기 전용) #}
     <div class="ref-detail-qa-list">
@@ -89,7 +83,7 @@
     {# 마크다운 내보내기(접기) #}
     <details class="ref-detail-export">
       <summary class="ref-detail-export-summary">
-        content_md 보기(내보내기용)
+        마크다운 내보내기
       </summary>
       <div class="ref-detail-export-body">
         <textarea

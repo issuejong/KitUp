@@ -84,6 +84,13 @@
 {% endfor %}
 
 {% endif %}
+{% if not project %}
+    <div></div>
+{% else %}
+<div class="m_footer">
+    🎉  <span>{{ project.title }}</span> 의 KITUP 프로젝트 완주를 축하드립니다!  🎉
+</div>
+{% endif %}
 
 <script>
 const PROJECT_ID = {{ project.id|default:'null' }};

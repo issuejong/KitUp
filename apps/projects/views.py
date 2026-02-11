@@ -40,34 +40,50 @@ def _get_project_context(project, user):
         if active_season.project_start <= project.created_at <= active_season.project_end:
             season = active_season
     
-    # 가이드 진척도 계산
+    # 가이드 진척도 계산 (전체 미션 합산)
     guide_progress = None
-    if hasattr(project, 'current_stage') and project.current_stage:
-        try:
-            from apps.guides.models import GuideTask, GuideTaskProgress
+    try:
+        from apps.guides.models import GuideCard, GuideTaskProgress
+        from apps.accounts.models import Role
+        
+        # 프로젝트의 모든 팀원 역할 가져오기
+        team_members_data = team.members.filter(is_active=True).values('role').distinct()
+        team_role_ids = [member['role'] for member in team_members_data]
+        team_roles = Role.objects.filter(id__in=team_role_ids)
+        
+        total_tasks = 0
+        completed_tasks = 0
+        
+        # 각 역할별 모든 미션 카드의 태스크를 합산
+        for team_role in team_roles:
+            cards = GuideCard.objects.filter(
+                role=team_role,
+                is_active=True
+            ).prefetch_related('tasks')
             
-            total_tasks = GuideTask.objects.filter(
-                card__stage=project.current_stage
-            ).count()
-            
-            completed_tasks = GuideTaskProgress.objects.filter(
-                task__card__stage=project.current_stage,
-                project=project,
-                user=user,
-                is_completed=True
-            ).count()
-            
-            progress_percent = int((completed_tasks / total_tasks * 100) if total_tasks > 0 else 0)
-            
-            guide_progress = {
-                'stage': project.current_stage,
-                'total_tasks': total_tasks,
-                'completed_tasks': completed_tasks,
-                'progress_percent': progress_percent,
-            }
-        except:
-            # GuideTask 모델이 없거나 데이터가 없으면 None으로 처리
-            guide_progress = None
+            for card in cards:
+                for task in card.tasks.all():
+                    total_tasks += 1
+                    # 이 태스크가 프로젝트에서 완료되었는지 확인
+                    is_completed = GuideTaskProgress.objects.filter(
+                        task=task,
+                        project=project,
+                        is_completed=True
+                    ).exists()
+                    
+                    if is_completed:
+                        completed_tasks += 1
+        
+        progress_percent = int((completed_tasks / total_tasks * 100) if total_tasks > 0 else 0)
+        
+        guide_progress = {
+            'total_tasks': total_tasks,
+            'completed_tasks': completed_tasks,
+            'progress_percent': progress_percent,
+        }
+    except:
+        # GuideCard 모델이 없거나 데이터가 없으면 None으로 처리
+        guide_progress = None
     
     return {
         "project": project,
@@ -129,6 +145,9 @@ def dashboard_detail(request, project_id):
 @login_required
 @require_http_methods(["GET", "POST"])
 def dashboard_update(request, project_id):
+    """프로젝트 대시보드 조회 (진행 중인 프로젝트)"""
+    project = get_object_or_404(Project, id=project_id)
+
     """
     프로젝트 대시보드 수정 (팀원만)
     
@@ -140,8 +159,7 @@ def dashboard_update(request, project_id):
     - 관련 링크 (related_links)
     - 즐겨찾기 (is_favorite)
     """
-    project = get_object_or_404(Project, id=project_id)
-    
+
     # 팀원 권한 확인
     is_team_member = TeamMember.objects.filter(
         team__project=project,
@@ -162,14 +180,14 @@ def dashboard_update(request, project_id):
             messages.success(request, "✅ 프로젝트 정보가 수정되었습니다.")
             return redirect("projects:dashboard_detail", project_id=project_id)
         else:
+            print("❌ Form 에러:", form.errors) 
             messages.error(request, "❌ 입력 오류가 있습니다. 다시 확인해주세요.")
     else:
         form = ProjectDashboardEditForm(instance=project)
     
-    context = {
-        "project": project,
-        "form": form,
-    }
+    context = _get_project_context(project, request.user)
+    context["form"] = form
+    context["is_team_member"] = is_team_member
     
     return render(request, "projects/dashboard_update.html", context)
 

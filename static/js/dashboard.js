@@ -81,3 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const links = document.querySelectorAll('.l_content a');
+    links.forEach(link => {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer'); // 보안 강화
+    });
+});

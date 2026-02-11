@@ -37,7 +37,7 @@ class TechStack(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.get_category_display()})"
+        return self.name
 
 
 class User(AbstractUser):

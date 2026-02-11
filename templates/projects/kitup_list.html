@@ -17,6 +17,8 @@
         <a class="{% if sort == 'latest' %}is-active{% endif %}" href="?sort=latest">최신순</a>
         <span class="kitup-sort-sep">|</span>
         <a class="{% if sort == 'oldest' %}is-active{% endif %}" href="?sort=oldest">오래된순</a>
+        <span class="kitup-sort-sep">|</span>
+        <a class="{% if sort == 'my_projects' %}is-active{% endif %}" href="?sort=my_projects">내 프로젝트</a>
       </div>
     {% endwith %}
 

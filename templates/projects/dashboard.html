@@ -1,5 +1,6 @@
 {% extends 'base.html' %} 
 {% load static %}
+{% load markdown_tags %}
 {% block header %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
 {% endblock %} 
@@ -34,17 +35,13 @@
             {% endif %}
         </p>
     </div>
-    <div class="d_bookmark">
-        <div class="b_title">
-            <img src="{% static 'images/bookmark.png' %}" alt="북마크이미지">
-            <p>즐겨찾기</p>
+    <div class="d_link">
+        <div class="l_title">
+            <img src="{% static 'images/link.png' %}" alt="link">
+            <h3>관련 링크</h3>
         </div>
-        <div class="b_content">
-            {% if project.is_favorite %}
-                <p>⭐ 즐겨찾기에 등록됨</p>
-            {% else %}
-                <p>즐겨찾기가 없습니다.</p>
-            {% endif %}
+        <div class="l_content">
+            <p>{{ project.related_links|markdown|safe }}</p>
         </div>
     </div>
     <hr>
@@ -123,34 +120,33 @@
         </div>
         <div class="r_content">
             {% if project.team_rules %}
-                {{ project.team_rules|linebreaks }}
+                {{ project.team_rules|markdown|safe }}
             {% else %}
                 <p>팀 규칙이 없습니다.</p>
             {% endif %}
         </div>
     </div>
-    <div class="d_link">
-        <div class="l_title">
-            <img src="{% static 'images/link.png' %}" alt="link">
-            <h3>관련 링크</h3>
-        </div>
-        <div class="l_content">
-            <p>Notion : {{ project.related_links.notion }}</p>
-            <p>Figma : {{ project.related_links.figma }}</p>
-            <p>Github : {{ project.related_links.github }}</p>
-        </div>
-    </div>
+    <!-- 진척도 (수정 불가 - 표시만) -->
     <div class="d_progress">
         <div class="p_title">
             <img src="{% static 'images/progress.png' %}" alt="progress">
-            <h3>진척도</h3>
+            <div>
+                <h3>{{ project.title }}의 진척도</h3>
+            </div>
         </div>
-        <div class="p_content">
-            <div class="p_bar"></div>
-            <div class="p_real"></div>
+        <div class="role_progress_bar">
+            <h3>전체</h3>
+            <div class="progress_bar_container">
+                <div class="progress_bar_fill" style="width: {% if guide_progress %}{{ guide_progress.progress_percent }}{% else %}0{% endif %}%;"></div>
+            </div>
+            <span class="progress_percent">{% if guide_progress %}{{ guide_progress.progress_percent }}{% else %}0{% endif %}%</span>
         </div>
     </div>
-    <button type="button" >수정하기</button>
+    {% if is_team_member %}
+    <a href="{% url 'projects:dashboard_edit' project.id %}" class="edit_button">
+        <button>수정하기</button>
+    </a>
+    {% endif %}
     {% endif %}
 </div>
 <div id="reportModal" class="modal-overlay">
