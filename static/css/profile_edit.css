@@ -259,7 +259,7 @@ body {
 .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
 }
 
 .tag-item {
@@ -297,22 +297,24 @@ body {
 
 /* Tech stack form field styling */
 .info-row div[style*="max-height"] {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;}
+
+.info-row div[style*="max-height"] > ul,
+.info-row div[style*="max-height"] > fieldset {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    align-items: flex-start;
-    align-content: flex-start;
-}
-
-.info-row div[style*="max-height"] fieldset {
-    border: none;
+    gap: 16px;  /* 원하는 간격 */
+    list-style: none;
     padding: 0;
     margin: 0;
-    display: contents;
 }
 
 .info-row div[style*="max-height"] input[type="checkbox"] {
     display: none;
+    gap: 5px;
 }
 
 .info-row div[style*="max-height"] label {
@@ -327,7 +329,7 @@ body {
     color: #333;
     cursor: pointer;
     transition: all 0.2s;
-    margin: 0;
+    margin: 5px;
     user-select: none;
 }
 
@@ -335,6 +337,7 @@ body {
     background-color: #e8eaf0;
     border-color: #667eea;
     transform: translateY(-1px);
+    gap: 5px;
 }
 
 .info-row div[style*="max-height"] label.is-checked {
@@ -342,12 +345,14 @@ body {
     border-color: #667eea;
     color: white;
     font-weight: 600;
+    gap: 5px;
 }
 
 .info-row div[style*="max-height"] label.is-checked::before {
     content: '✓';
     margin-right: 6px;
     font-weight: bold;
+    gap: 5px;
 }
 
 /* 반응형 디자인 */
