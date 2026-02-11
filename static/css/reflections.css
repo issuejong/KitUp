@@ -1526,8 +1526,15 @@ button.ref-btn{
   }
 
   .ref-textarea {
-    font-size: 14px;
-    min-height: 120px;
+    width: 100%;
+    border: 0;
+    outline: 0;
+    resize: none;            /* 수동 리사이즈 제거 */
+    overflow: hidden;        /* 스크롤 제거 */
+    min-height: 120px;       /* 기본 높이 */
+    font-size: 14.5px;
+    line-height: 1.55;
+    /* color: var(--gray-700); */
   }
 
   .ref-assets-grid {
