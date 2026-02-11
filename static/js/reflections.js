@@ -416,6 +416,23 @@
     });
   };
 
+  const bindMDCopyBtn = () => {
+    document.querySelectorAll("[data-md-copy]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const ta = document.getElementById(btn.dataset.targetId);
+        if (!ta) return;
+
+        try {
+          await navigator.clipboard.writeText(ta.value);
+          alert("마크다운 복사됨");
+        } catch (e) {
+          console.error(e);
+          alert("복사 실패");
+        }
+      });
+    });
+  };
+  
 
 
   /** ---------------------------
@@ -429,7 +446,8 @@
     bindAssetDelete();
     bindAutoSubmit();
     bindBookmarkFilter();
-    bindInsertTable()
+    bindInsertTable();
+    bindMDCopyBtn();
   };
 
   if (document.readyState === "loading") {
