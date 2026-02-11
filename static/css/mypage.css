@@ -58,6 +58,7 @@
 
     border: 6px solid #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1;
 }
 
 .profile-img {
@@ -66,6 +67,7 @@
     display: block;           /* img 아래 여백/라인박스 문제 제거 */
     object-fit: cover;        /* 핵심 */
     object-position: center;
+    z-index: 1;
 }
 
 
@@ -83,6 +85,7 @@
     cursor: pointer;
     border: 3px solid #fff;
     transition: background-color 0.2s;
+    z-index: 2;
 }
 
 .edit-badge:hover {
@@ -217,7 +220,7 @@
     border-color: #FF3E88;
     background-color: transparent;
 }
-}
+
 
 .tag-html {
     color: #00B4D8;
@@ -399,27 +402,27 @@
 }
 
 .level-badge.level-1 {
-    background-color: #93C5FD;
+    border-color: #93C5FD;
     color: #1E40AF;
 }
 
 .level-badge.level-2 {
-    background-color: #A78BFA;
+    border-color: #A78BFA;
     color: #5B21B6;
 }
 
 .level-badge.level-3 {
-    background-color: #F472B6;
+    border-color: #F472B6;
     color: #BE185D;
 }
 
 .level-badge.level-4 {
-    background-color: #FBBF24;
+    border-color: #FBBF24;
     color: #92400E;
 }
 
 .level-badge.undiagnosed {
-    background-color: #E5E7EB;
+    border-color: #E5E7EB;
     color: #6B7280;
 }
 
