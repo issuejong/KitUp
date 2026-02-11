@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 메뉴 내부 클릭은 전파 막기 (메뉴가 닫히지 않도록)
+    // 메뉴 내부 클릭은 전파 막기
     if (headerMenu) {
         headerMenu.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -60,15 +60,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    // 다른 드롭다운 닫기
+                    const isCurrentlyActive = dropdown.classList.contains('active');
+                    
+                    // 모든 드롭다운 닫기
                     dropdowns.forEach(d => {
-                        if (d !== dropdown) {
-                            d.classList.remove('active');
-                        }
+                        d.classList.remove('active');
                     });
                     
-                    // 현재 드롭다운 토글
-                    dropdown.classList.toggle('active');
+                    // 현재 드롭다운이 닫혀있었으면 열기
+                    if (!isCurrentlyActive) {
+                        dropdown.classList.add('active');
+                    }
                 }
             });
         }
