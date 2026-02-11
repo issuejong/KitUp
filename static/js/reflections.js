@@ -433,6 +433,20 @@
     });
   };
   
+  const bindAutoResizeTextarea = () => {
+    const resize = (ta) => {
+      ta.style.height = "auto";
+      ta.style.height = ta.scrollHeight + "px";
+    };
+
+    document.querySelectorAll(".ref-textarea").forEach((ta) => {
+      // 초기 값 반영 (수정 페이지 대응)
+      resize(ta);
+
+      ta.addEventListener("input", () => resize(ta));
+    });
+  };
+
 
 
   /** ---------------------------
@@ -448,6 +462,7 @@
     bindBookmarkFilter();
     bindInsertTable();
     bindMDCopyBtn();
+    bindAutoResizeTextarea();
   };
 
   if (document.readyState === "loading") {
