@@ -289,3 +289,24 @@ def create_report(request):
     )
 
     return JsonResponse({"ok": True, "report_id": report.id}, status=201)
+
+
+
+@login_required   
+def mypage(request):
+    user = request.user
+
+    qs = user.role_levels.select_related("role").all()
+    role_levels = {x.role.code.upper(): x.level for x in qs}  # {"FRONTEND": 3, ...}
+
+    memberships = (
+        user.team_memberships
+        .select_related("team__project", "role")
+        .order_by("-joined_at")
+    )
+
+    return render(request, "account/mypage.html", {
+        "user_obj": user,
+        "role_levels": role_levels,
+        "memberships": memberships,
+    })

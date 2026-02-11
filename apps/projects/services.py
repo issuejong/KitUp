@@ -70,9 +70,63 @@ class TeamMatchingService:
                 f"현재: PM {len(pm_candidates)}명, FE {len(fe_candidates)}명, BE {len(be_candidates)}명"
             )
         
+        # 4️⃣ 더 나은 분배 알고리즘
+        # 각 역할별로 열정 그룹을 만들되, 팀별로 라운드로빈 방식 적용
+        def distribute_round_robin(candidates, num_teams, role_code):
+            """
+            각 역할별 지원자를 팀별로 라운드로빈으로 배정
+            같은 팀 내에서 여러 직군의 사람이 들어가면서도,
+            각 역할의 배정은 균등하게 이루어짐
+            """
+            # 열정별로 그룹화한 후 레벨순 정렬
+            passion_groups = {}
+            for user in candidates:
+                passion = user.passion_level or 0
+                if passion not in passion_groups:
+                    passion_groups[passion] = []
+                passion_groups[passion].append(user)
+            
+            # 각 열정 그룹을 역할별 레벨로 정렬 (높은 순)
+            for passion in passion_groups:
+                passion_groups[passion].sort(
+                    key=lambda u: (
+                        -(UserRoleLevel.objects.filter(
+                            user=u, 
+                            role__code=role_code
+                        ).first().level if UserRoleLevel.objects.filter(
+                            user=u, 
+                            role__code=role_code
+                        ).exists() else 0)
+                    )
+                )
+            
+            # 열정별로 순회하면서 팀별로 라운드로빈 배정
+            result = [[] for _ in range(num_teams)]
+            team_member_counts = [0] * num_teams
+            
+            for passion_level in sorted(passion_groups.keys(), reverse=True):
+                users_in_passion = passion_groups[passion_level]
+                for idx, user in enumerate(users_in_passion):
+                    # 가장 적은 멤버를 가진 팀부터 배정
+                    min_team = min(range(num_teams), key=lambda i: team_member_counts[i])
+                    result[min_team].append(user)
+                    team_member_counts[min_team] += 1
+            
+            # 결과를 평탄화
+            flattened = []
+            for team_members in result:
+                flattened.extend(team_members)
+            return flattened
+        
         # 4️⃣ 트랜잭션 내에서 팀 생성 및 멤버 배정
         with transaction.atomic():
             teams_created = []
+            
+            # 각 역할의 지원자를 라운드-로빈 분배 (열정 + 레벨 + 균형 고려)
+            pm_distributed = distribute_round_robin(pm_candidates, num_teams, 'PM')
+            fe_distributed = distribute_round_robin(fe_candidates, num_teams, 'FRONTEND')
+            be_distributed = distribute_round_robin(be_candidates, num_teams, 'BACKEND')
+            
             pm_idx = 0
             fe_idx = 0
             be_idx = 0
@@ -93,8 +147,8 @@ class TeamMatchingService:
                 
                 # PM 배정
                 for _ in range(TeamMatchingService.PM_COUNT_PER_TEAM):
-                    if pm_idx < len(pm_candidates):
-                        pm_user = pm_candidates[pm_idx]
+                    if pm_idx < len(pm_distributed):
+                        pm_user = pm_distributed[pm_idx]
                         TeamMember.objects.create(
                             team=team,
                             user=pm_user,
@@ -104,8 +158,8 @@ class TeamMatchingService:
                 
                 # FE 배정
                 for _ in range(TeamMatchingService.FE_COUNT_PER_TEAM):
-                    if fe_idx < len(fe_candidates):
-                        fe_user = fe_candidates[fe_idx]
+                    if fe_idx < len(fe_distributed):
+                        fe_user = fe_distributed[fe_idx]
                         TeamMember.objects.create(
                             team=team,
                             user=fe_user,
@@ -115,8 +169,8 @@ class TeamMatchingService:
                 
                 # BE 배정
                 for _ in range(TeamMatchingService.BE_COUNT_PER_TEAM):
-                    if be_idx < len(be_candidates):
-                        be_user = be_candidates[be_idx]
+                    if be_idx < len(be_distributed):
+                        be_user = be_distributed[be_idx]
                         TeamMember.objects.create(
                             team=team,
                             user=be_user,
@@ -150,14 +204,18 @@ class TeamMatchingService:
     @staticmethod
     def _get_role_candidates(applicants, role_code):
         """
-        특정 역할의 지원자를 역할 레벨 기준으로 정렬
+        특정 역할의 지원자를 역할 레벨 + 열정 레벨 기반으로 정렬
+        
+        정렬 기준:
+        1. 열정 레벨 내림차순 (높은 열정부터)
+        2. 같은 열정이면 역할 레벨 내림차순 (스킬 좋은 사람)
         
         Args:
             applicants: User QuerySet
             role_code: 'PM' | 'FRONTEND' | 'BACKEND'
             
         Returns:
-            list: 정렬된 User 객체 리스트 (역할 레벨 내림차순)
+            list: 정렬된 User 객체 리스트 (열정 우선, 그 다음 역할 레벨)
         """
         role = Role.objects.get(code=role_code)
         
@@ -173,10 +231,11 @@ class TeamMatchingService:
                 candidates.append({
                     'user': user,
                     'level': role_level.level,
+                    'passion': user.passion_level or 0,
                 })
         
-        # 역할 레벨 내림차순 정렬 (좋은 사람 우선)
-        candidates.sort(key=lambda x: x['level'], reverse=True)
+        # 정렬: 열정 내림차순, 같으면 레벨 내림차순
+        candidates.sort(key=lambda x: (-x['passion'], -x['level']))
         
         return [c['user'] for c in candidates]
 
