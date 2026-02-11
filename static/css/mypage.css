@@ -46,7 +46,7 @@
     z-index: 1;
 }
 
-/* 프로필 이미지 - 배너와 카드 사이에 걸침 */
+/* 프로필 이미지 - 배너와 카드 사이에 걸침
 .avatar-container {
     position: absolute;
     top: -100px;
@@ -63,7 +63,29 @@
     background-color: #d1d5db;
     border: 6px solid #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+} */
+
+.avatar-container {
+    position: absolute;
+    top: -100px;
+    width: 180px;
+    height: 180px;            /* 또는 aspect-ratio: 1 / 1; */
+    border-radius: 50%;
+    overflow: hidden;         /* 핵심: 원 밖으로 잘라내기 */
+    background-color: #d1d5db;
+
+    border: 6px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    display: block;           /* img 아래 여백/라인박스 문제 제거 */
+    object-fit: cover;        /* 핵심 */
+    object-position: center;
+}
+
 
 .edit-badge {
     position: absolute;
@@ -193,13 +215,7 @@
     border: 2px solid;
 }
 
-/* 역할별 색상 */
-.tag-pm {
-    color: #6B8AFF;
-    border-color: #6B8AFF;
-    background-color: transparent;
-}
-
+/* 기술 스택 카테고리별 색상 */
 .tag-frontend {
     color: #FFC107;
     border-color: #FFC107;
@@ -207,24 +223,29 @@
 }
 
 .tag-backend {
+    color: #FF3E88;
+    border-color: #FF3E88;
+    background-color: transparent;
+}
+
+.tag-pm {
     color: #06D6A0;
     border-color: #06D6A0;
     background-color: transparent;
 }
 
-/* 기술 스택별 색상 */
-.tag-javascript {
-    color: #06D6A0;
-    border-color: #06D6A0;
-    background-color: transparent;
-}
-
-.tag-react-native,
-.tag-react,
-.tag-reactnative {
+/* 역할별 색상 */
+.tag-frontend {
     color: #FFC107;
     border-color: #FFC107;
     background-color: transparent;
+}
+
+.tag-backend {
+    color: #FF3E88;
+    border-color: #FF3E88;
+    background-color: transparent;
+}
 }
 
 .tag-html {
