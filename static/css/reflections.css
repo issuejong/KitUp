@@ -807,28 +807,32 @@ button.ref-btn{
    ========================= */
 
 /* ===== table ===== */
-.md-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  table-layout:fixed;
-  font-size:14px;
-  line-height:1.6;
-  color:#111827;
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  overflow:hidden;
-  display:block;           /* 좁은 화면에서 스크롤 */
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
+
+.md-table-wrap{
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
+
+/* 표는 그대로 border 유지 */
+.md-table{
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: auto;      /* fixed 제거 */
+  font-size: 14px;
+  line-height: 1.6;
+  color: #111827;
+  background: #fff;
+
+  width: max-content;      /* 내용만큼 */
+  border: 1px solid #e5e7eb;
+}
+
 
 .md-thead{ background:#f9fafb; }
 .md-th,.md-td{
-  padding:10px 12px;
-  border-right:1px solid #e5e7eb;
-  border-bottom:1px solid #e5e7eb;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
   vertical-align:top;
   word-break:break-word;
 }

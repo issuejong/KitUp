@@ -64,6 +64,15 @@ def _add_classes(html: str) -> str:
 
     return html
 
+def _wrap_tables(html: str) -> str:
+    # table을 md-table-wrap로 감쌈 (이미 감싸져 있으면 중복 방지 정도는 추가 가능)
+    return re.sub(
+        r'(<table\b[^>]*>.*?</table>)',
+        r'<div class="md-table-wrap">\1</div>',
+        html,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+
 @register.filter(name="get_item")
 def get_item(d, key):
     if not d:
@@ -109,4 +118,5 @@ def md(value):
     )
     cleaned = bleach.linkify(cleaned)
     cleaned = _add_classes(cleaned)
+    cleaned = _wrap_tables(cleaned)
     return mark_safe(cleaned)
