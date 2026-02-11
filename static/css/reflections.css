@@ -463,8 +463,8 @@ button {
   flex: 1;
   border: 0;
   outline: 0;
-  font-size: 34px;
-  font-weight: 900;
+  font-size: 40px;
+  font-weight: 700;
   color: var(--gray-900);
   padding: 8px 0;
 }
@@ -498,9 +498,10 @@ button {
 }
 
 .ref-label {
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 550;
   color: var(--gray-700);
+  margin-left: 5px;
 }
 
 .ref-select {
@@ -511,9 +512,13 @@ button {
   border-radius: 14px;
   padding: 12px 14px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 500;
   color: var(--gray-900);
+}
 
+.ref-select:focus-within {
+  outline: none;
+  border: 1px solid var(--blue-40);
 }
 
 .ref-selectwrap{
@@ -547,18 +552,19 @@ button {
 .ref-meta-hint {
   font-size: 12px;
   color: var(--gray-500);
-  font-weight: 700;
+  font-weight: 500;
+  margin-left: 10px;
 }
 
 /* questions */
 .ref-q-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .ref-q-card {
-  border: 1px solid var(--blue-20);
+  border: 1px solid var(--blue-5);
   border-radius: 18px;
   overflow: hidden;
   background: #fff;
@@ -569,7 +575,7 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 8px 16px;
   background: color-mix(in srgb, var(--blue-5) 80%, #fff);
 }
 
@@ -577,7 +583,7 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 900;
+  font-weight: 650;
   color: var(--gray-900);
 }
 
@@ -601,8 +607,7 @@ button {
 
   /* 숫자 안정화 */
   font-size: 12px;
-  font-weight: 900;
-  line-height: 1;
+  font-weight: 650;
 }
 
 .ref-q-actions {
@@ -617,7 +622,7 @@ button {
   cursor: pointer;
   padding: 6px;
   border-radius: 12px;
-  color: var(--blue-50);
+  color: var(--gray-500);
 }
 
 .ref-iconbtn:hover {
@@ -639,7 +644,7 @@ button {
   outline: 0;
   resize: vertical;
   min-height: 140px;
-  font-size: 16px;
+  font-size: 14.5px;
   line-height: 1.55;
   color: var(--gray-700);
 }
@@ -1485,5 +1490,271 @@ button.ref-btn{
   .ref-empty-cta {
     padding: 8px 16px;
     font-size: 13px;
+  }
+}
+
+/* note_form 반응형 */
+/* ===== 노트북 (1024px ~ 1200px) ===== */
+@media (max-width: 1200px) {
+  .ref-form-wrap {
+    max-width: 90%;
+    padding: 40px 36px 30px;
+  }
+
+  .ref-title {
+    font-size: 36px;
+  }
+}
+
+/* ===== 태블릿 (768px ~ 1023px) ===== */
+@media (max-width: 1023px) {
+  .ref-form-wrap {
+    max-width: 95%;
+    padding: 36px 32px 28px;
+  }
+
+  .ref-title {
+    font-size: 32px;
+  }
+
+  .ref-meta {
+    grid-template-columns: 1fr; /* 세로 1줄 */
+  }
+
+  .ref-textarea {
+    font-size: 14px;
+    min-height: 120px;
+  }
+
+  .ref-assets-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* 4개 → 3개 */
+  }
+}
+
+/* ===== 모바일 (480px ~ 767px) ===== */
+@media (max-width: 767px) {
+  .ref-form-wrap {
+    max-width: 100%;
+    padding: 28px 20px 24px;
+    border-radius: 20px;
+    margin: 20px auto 80px;
+  }
+
+  .ref-form-head {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .ref-title {
+    font-size: 24px;
+    padding: 6px 0;
+  }
+
+  .ref-head-right {
+    justify-content: flex-end;
+  }
+
+  .ref-divider {
+    margin: 14px 0 20px;
+  }
+
+  .ref-meta {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .ref-label {
+    font-size: 14px;
+    margin-left: 3px;
+  }
+
+  .ref-select {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .ref-meta-hint {
+    font-size: 11px;
+    margin-left: 5px;
+  }
+
+  .ref-q-list {
+    gap: 16px;
+  }
+
+  .ref-q-head {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+  }
+
+  .ref-q-title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .ref-q-num {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .ref-q-actions {
+    gap: 8px;
+  }
+
+  .ref-iconbtn {
+    padding: 5px;
+  }
+
+  .ref-iconbtn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ref-q-body {
+    padding: 12px;
+  }
+
+  .ref-textarea {
+    font-size: 13.5px;
+    min-height: 120px;
+  }
+
+  .ref-assets-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 3개 → 2개 */
+  }
+
+  .ref-asset-img {
+    height: 120px;
+  }
+
+  .ref-form-actions {
+    margin-top: 18px;
+    gap: 10px;
+  }
+
+  .ref-btn {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+}
+
+/* ===== 소형 모바일 (480px 이하) ===== */
+@media (max-width: 480px) {
+  .ref-form-wrap {
+    padding: 24px 16px 20px;
+    border-radius: 16px;
+  }
+
+  .ref-title {
+    font-size: 20px;
+    padding: 4px 0;
+  }
+
+  .ref-divider {
+    margin: 12px 0 16px;
+  }
+
+  .ref-meta {
+    gap: 12px;
+  }
+
+  .ref-label {
+    font-size: 13px;
+  }
+
+  .ref-select {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .ref-form-selectchev {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ref-form-selectchev svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ref-meta-hint {
+    font-size: 10px;
+  }
+
+  .ref-q-list {
+    gap: 14px;
+  }
+
+  .ref-q-head {
+    padding: 8px 12px;
+  }
+
+  .ref-q-title {
+    font-size: 13px;
+  }
+
+  .ref-q-num {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
+  .ref-q-actions {
+    gap: 6px;
+  }
+
+  .ref-iconbtn {
+    padding: 4px;
+  }
+
+  .ref-iconbtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .ref-q-body {
+    padding: 10px;
+  }
+
+  .ref-textarea {
+    font-size: 13px;
+    min-height: 100px;
+  }
+
+  .ref-assets-grid {
+    grid-template-columns: 1fr; /* 2개 → 1개 */
+    gap: 10px;
+  }
+
+  .ref-asset-img {
+    height: 100px;
+  }
+
+  .ref-asset-del {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .ref-form-actions {
+    margin-top: 16px;
+    gap: 8px;
+  }
+
+  .ref-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* 케밥 메뉴 */
+  .note-menu {
+    width: 100px;
+  }
+
+  .note-menuitem {
+    padding: 8px 10px;
+    font-size: 12px;
   }
 }
