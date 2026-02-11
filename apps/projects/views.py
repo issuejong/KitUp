@@ -226,6 +226,12 @@ def kitup_list(request):
         projects = projects.order_by('-created_at')
     elif sort == 'oldest':
         projects = projects.order_by('created_at')
+    # 내 프로젝트 필터링 옵션
+    elif sort == 'my_projects':
+        projects = projects.filter(
+            team__members__user=request.user
+        ).distinct().order_by('-created_at')
+
     else:  # popular (기본값)
         # annotate로 좋아요 개수 추가하여 정렬
         from django.db.models import Count
