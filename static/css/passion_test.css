@@ -6,38 +6,27 @@
 }
 
 /* 열정 레벨 테스트 헤더 */
-.passion-header {
-    text-align: center;
-    margin-bottom: 40px;
-    padding: 32px 24px;
-    background: linear-gradient(135deg, #f8f9ff, #eef2ff);
-    border-radius: 16px;
-}
 
 .passion-title {
     font-size: 28px;
     font-weight: 700;
     color: #1a1a1a;
-    margin-bottom: 16px;
 }
 
 .passion-description {
     font-size: 15px;
     color: #666;
     line-height: 1.8;
-    margin: 0;
 }
 
 /* 반응형 */
 @media (max-width: 768px) {
     .passion-header {
-        padding: 24px 20px;
         margin-bottom: 32px;
     }
 
     .passion-title {
-        font-size: 22px;
-        margin-bottom: 12px;
+        font-size: 26px;
     }
 
     .passion-description {
@@ -47,12 +36,8 @@
 }
 
 @media (max-width: 480px) {
-    .passion-header {
-        padding: 20px 16px;
-    }
-
     .passion-title {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     .passion-description {
