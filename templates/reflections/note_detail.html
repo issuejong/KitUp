@@ -43,6 +43,26 @@
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
           </svg>
         </button>
+        
+          <div class="note-morewrap" data-more-wrap>
+            <button type="button" class="note-morebtn" data-more-btn aria-haspopup="true" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM12 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM12 20.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" fill="currentColor"/>
+              </svg>
+            </button>
+
+            <div class="note-menu" role="menu" data-more-menu hidden>
+              {% if note %}
+                <a class="note-menuitem" role="menuitem" href="{% url 'reflections:note_update' note.id %}">수정하기</a>
+                <form method="post" action="{% url 'reflections:note_delete' note.id %}" class="note-menuform">
+                  {% csrf_token %}
+                  <button type="submit" class="note-menuitem danger" role="menuitem">삭제하기</button>
+                </form>
+              {% else %}
+                <span class="note-menuitem" role="menuitem">작성 중…</span>
+              {% endif %}
+            </div>
+          </div>
       </div>
     </div>
 

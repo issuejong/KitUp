@@ -1007,6 +1007,11 @@ button.ref-btn{
   justify-content: flex-end;
 }
 
+/* ensure absolute dropdowns (note-menu) position relative to this actions container */
+.ref-detail-actions {
+  position: relative;
+}
+
 /* 메타 카드 */
 .ref-detail-meta-card {
   border: 1px solid #e5e7eb;
