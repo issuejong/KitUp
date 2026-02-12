@@ -164,13 +164,3 @@ class ProfileUpdateForm(forms.ModelForm):
             if "tech_stacks" in self.cleaned_data:
                 user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
         return user
-
-
-def save(self, commit=True):
-    user = super().save(commit=False)
-
-    if commit:
-        user.save()
-        if "tech_stacks" in self.cleaned_data:
-            user.tech_stacks.set(self.cleaned_data.get("tech_stacks", []))
-    return user

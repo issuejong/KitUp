@@ -76,19 +76,16 @@ def _get_project_context(project, user):
         # 메모리에서만 작업 (DB 쿼리 없음)
         for card in cards_with_tasks:
             for task in card.tasks.all():  # prefetch_related로 이미 로드됨
-            
-            for card in cards:
-                for task in card.tasks.all():
-                    total_tasks += 1
-                    # 이 태스크가 프로젝트에서 완료되었는지 확인
-                    is_completed = GuideTaskProgress.objects.filter(
-                        task=task,
-                        project=project,
-                        is_completed=True
-                    ).exists()
-                    
-                    if is_completed:
-                        completed_tasks += 1
+                total_tasks += 1
+                # 이 태스크가 프로젝트에서 완료되었는지 확인
+                is_completed = GuideTaskProgress.objects.filter(
+                    task=task,
+                    project=project,
+                    is_completed=True
+                ).exists()
+                
+                if is_completed:
+                    completed_tasks += 1
         
         progress_percent = int((completed_tasks / total_tasks * 100) if total_tasks > 0 else 0)
         
