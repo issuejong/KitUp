@@ -37,9 +37,10 @@ class TeamMatchingService:
         season = Season.objects.get(id=season_id)
         
         # 1️⃣ passion_level이 설정된 지원자만 필터링
+        # N+1 쿼리 최적화: UserRoleLevel을 미리 로드
         applicants = User.objects.filter(
             passion_level__isnull=False
-        ).select_related()
+        ).prefetch_related('role_levels')
         
         if not applicants.exists():
             raise ValidationError("팀매칭 지원자가 없습니다.")
@@ -77,7 +78,16 @@ class TeamMatchingService:
             각 역할별 지원자를 팀별로 라운드로빈으로 배정
             같은 팀 내에서 여러 직군의 사람이 들어가면서도,
             각 역할의 배정은 균등하게 이루어짐
+            N+1 쿼리 최적화: prefetch_related된 role_levels 사용
             """
+            # 헬퍼: 캐시된 user.role_levels에서 해당 role의 level을 빠르게 조회
+            def get_role_level(user, role_code):
+                """이미 prefetch된 role_levels에서 빠르게 조회 (DB 쿼리 없음)"""
+                for role_level in user.role_levels.all():
+                    if role_level.role.code == role_code:
+                        return role_level.level
+                return 0
+            
             # 열정별로 그룹화한 후 레벨순 정렬
             passion_groups = {}
             for user in candidates:
@@ -87,17 +97,10 @@ class TeamMatchingService:
                 passion_groups[passion].append(user)
             
             # 각 열정 그룹을 역할별 레벨로 정렬 (높은 순)
+            # 이제 DB 쿼리 없이 메모리에서만 정렬함
             for passion in passion_groups:
                 passion_groups[passion].sort(
-                    key=lambda u: (
-                        -(UserRoleLevel.objects.filter(
-                            user=u, 
-                            role__code=role_code
-                        ).first().level if UserRoleLevel.objects.filter(
-                            user=u, 
-                            role__code=role_code
-                        ).exists() else 0)
-                    )
+                    key=lambda u: (-get_role_level(u, role_code))
                 )
             
             # 열정별로 순회하면서 팀별로 라운드로빈 배정
@@ -210,22 +213,24 @@ class TeamMatchingService:
         1. 열정 레벨 내림차순 (높은 열정부터)
         2. 같은 열정이면 역할 레벨 내림차순 (스킬 좋은 사람)
         
+        N+1 쿼리 최적화: prefetch_related된 데이터만 사용
+        
         Args:
-            applicants: User QuerySet
+            applicants: User QuerySet (prefetch_related='role_levels' 필수)
             role_code: 'PM' | 'FRONTEND' | 'BACKEND'
             
         Returns:
             list: 정렬된 User 객체 리스트 (열정 우선, 그 다음 역할 레벨)
         """
-        role = Role.objects.get(code=role_code)
-        
         candidates = []
+        
         for user in applicants:
-            # 해당 역할의 레벨 조회
-            role_level = UserRoleLevel.objects.filter(
-                user=user,
-                role=role
-            ).first()
+            # prefetch_related된 role_levels에서 해당 역할 조회 (DB 쿼리 없음)
+            role_level = None
+            for rl in user.role_levels.all():
+                if rl.role.code == role_code:
+                    role_level = rl
+                    break
             
             if role_level:
                 candidates.append({
@@ -328,6 +333,8 @@ class EmailService:
         - 매칭된 팀의 멤버들에게만 발송
         - 발송 완료 후 email_notifications_enabled = False로 변경
         
+        N+1 쿼리 최적화: prefetch_related 사용
+        
         Args:
             season_id: Season ID
             
@@ -337,10 +344,11 @@ class EmailService:
         season = Season.objects.get(id=season_id)
         
         # 현재 시즌의 모든 팀 조회
+        # N+1 쿼리 최적화: members__user__role_levels를 미리 로드
         teams = Team.objects.filter(
             project__season=season
         ).prefetch_related(
-            'members__user',
+            'members__user__role_levels',
             'members__role',
             'project'
         ).distinct()
@@ -382,18 +390,23 @@ class EmailService:
         """
         개별 사용자에게 팀 매칭 결과 이메일 발송
         
+        N+1 쿼리 최적화: prefetch_related된 데이터 사용
+        
         Args:
             user: 수신자
             team: 할당된 팀
             season: 현재 시즌
         """
         # 팀원 정보 수집
+        # prefetch_related된 데이터만 사용 (DB 쿼리 없음)
         team_members = []
         for member in team.members.all():
-            role_level = UserRoleLevel.objects.filter(
-                user=member.user,
-                role=member.role
-            ).first()
+            # prefetch_related된 role_levels에서 빠르게 조회
+            role_level = None
+            for rl in member.user.role_levels.all():
+                if rl.role.code == member.role.code:
+                    role_level = rl
+                    break
             
             team_members.append({
                 'user': member.user,

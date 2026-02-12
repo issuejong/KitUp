@@ -53,33 +53,17 @@ def check_email(request):
 @require_GET
 def check_nickname(request):
     """닉네임 중복 확인 API"""
+    from .forms import NicknameValidator
+    
     nickname = request.GET.get("nickname", "").strip()
-    current_user_id = request.GET.get("user_id")  # 프로필 수정 시 자신의 닉네임 제외
+    user_id = request.GET.get("user_id")  # 프로필 수정 시 자신의 닉네임 제외
     
-    if not nickname:
-        return JsonResponse({"available": False, "message": "닉네임을 입력해주세요."})
+    valid, message = NicknameValidator.validate(nickname, exclude_user_pk=user_id)
     
-    # 길이 검증 (2-20자)
-    if len(nickname) < 2:
-        return JsonResponse({"available": False, "message": "닉네임은 최소 2자 이상이어야 합니다."})
-    
-    if len(nickname) > 20:
-        return JsonResponse({"available": False, "message": "닉네임은 최대 20자 이하여야 합니다."})
-    
-    # 특수문자 검증 (한글, 영문, 숫자, 밑줄, 하이픈만 허용)
-    import re
-    if not re.match(r'^[a-zA-Z0-9가-힣_-]+$', nickname):
-        return JsonResponse({"available": False, "message": "닉네임은 한글, 영문, 숫자, 밑줄(_), 하이픈(-)만 사용 가능합니다."})
-    
-    # 중복 확인 (현재 사용자는 제외)
-    query = User.objects.filter(nickname=nickname)
-    if current_user_id:
-        query = query.exclude(pk=current_user_id)
-    
-    if query.exists():
-        return JsonResponse({"available": False, "message": "이미 사용 중인 닉네임입니다."})
-    
-    return JsonResponse({"available": True, "message": "사용 가능한 닉네임입니다."})
+    return JsonResponse({
+        "available": valid,
+        "message": message,
+    })
 
 
 @login_required
@@ -110,14 +94,11 @@ def level_submit(request):
         role_code = data.get("track")
         level = data.get("level")
         
-        print(f"DEBUG: role_code={role_code}, level={level}")  # 디버그 로그
-        
         if not role_code or level is None:
             return JsonResponse({"success": False, "error": "필수 데이터가 없습니다."})
         
         try:
             role = Role.objects.get(code=role_code)
-            print(f"DEBUG: role found - {role}")  # 디버그 로그
         except Role.DoesNotExist:
             return JsonResponse({"success": False, "error": f"역할을 찾을 수 없습니다: {role_code}"})
         
@@ -130,15 +111,13 @@ def level_submit(request):
             },
         )
         
-        print(f"DEBUG: 저장 완료 - user={request.user}, role={role}, level={level}")  # 디버그 로그
         return JsonResponse({"success": True})
-    except json.JSONDecodeError as e:
-        print(f"DEBUG: JSON 에러 - {e}")  # 디버그 로그
+    except json.JSONDecodeError:
         return JsonResponse({"success": False, "error": "잘못된 JSON 형식입니다."})
     except Exception as e:
-        print(f"DEBUG: 기타 에러 - {e}")  # 디버그 로그
         import traceback
         traceback.print_exc()
+        return JsonResponse({"success": False, "error": "오류가 발생했습니다."})
         return JsonResponse({"success": False, "error": str(e)})
 
 @login_required

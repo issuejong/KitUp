@@ -132,12 +132,10 @@ def passion_submit_api(request):
         request.user.passion_level = int(passion_level)
         request.user.save(update_fields=["passion_level"])
         
-        print(f"DEBUG: 열정 테스트 저장 완료 - user={request.user}, passion_level={passion_level}")
         return JsonResponse({"success": True})
     except json.JSONDecodeError:
         return JsonResponse({"success": False, "error": "잘못된 JSON 형식입니다."})
     except Exception as e:
-        print(f"DEBUG: 열정 테스트 저장 에러 - {e}")
         import traceback
         traceback.print_exc()
         return JsonResponse({"success": False, "error": str(e)})
