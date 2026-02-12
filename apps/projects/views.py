@@ -18,17 +18,29 @@ from apps.teams.models import Team, TeamMember
 def _get_project_context(project, user):
     """
     프로젝트 상세 정보 context 생성 (dashboard_detail, project_detail에서 공유)
+    N+1 쿼리 최적화: prefetch_related 및 캐싱 활용
     """
     team = project.team
-    members = team.members.filter(is_active=True).select_related("user", "role")
+    # N+1 쿼리 최적화: user__role_levels를 미리 로드
+    members = team.members.filter(is_active=True).select_related(
+        "user", 
+        "role"
+    ).prefetch_related("user__role_levels")
     member_count_by_role = team.get_member_count_by_role()
     
-    # 각 멤버에 레벨 정보 추가
+    # 각 멤버에 레벨 정보 추가 (캐시된 role_levels 사용)
     members_with_level = []
     for member in members:
+        # prefetch_related된 role_levels에서 직접 조회 (DB 쿼리 없음)
+        role_level = None
+        for rl in member.user.role_levels.all():
+            if rl.role.code == member.role.code:
+                role_level = rl.level
+                break
+        
         member_data = {
             'member': member,
-            'level': member.user.get_role_level(member.role.code)
+            'level': role_level or 0
         }
         members_with_level.append(member_data)
     
@@ -47,19 +59,23 @@ def _get_project_context(project, user):
         from apps.accounts.models import Role
         
         # 프로젝트의 모든 팀원 역할 가져오기
-        team_members_data = team.members.filter(is_active=True).values('role').distinct()
-        team_role_ids = [member['role'] for member in team_members_data]
-        team_roles = Role.objects.filter(id__in=team_role_ids)
+        # N+1 쿼리 최적화: values_list + in 사용하여 role ID만 먼저 추출
+        team_role_ids = team.members.filter(is_active=True).values_list(
+            'role_id', flat=True
+        ).distinct()
+        
+        # 한 번에 모든 카드와 태스크 로드
+        cards_with_tasks = GuideCard.objects.filter(
+            role_id__in=team_role_ids,
+            is_active=True
+        ).prefetch_related('tasks')  # 카드와 태스크를 한 번에 로드
         
         total_tasks = 0
         completed_tasks = 0
         
-        # 각 역할별 모든 미션 카드의 태스크를 합산
-        for team_role in team_roles:
-            cards = GuideCard.objects.filter(
-                role=team_role,
-                is_active=True
-            ).prefetch_related('tasks')
+        # 메모리에서만 작업 (DB 쿼리 없음)
+        for card in cards_with_tasks:
+            for task in card.tasks.all():  # prefetch_related로 이미 로드됨
             
             for card in cards:
                 for task in card.tasks.all():

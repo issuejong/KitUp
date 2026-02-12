@@ -82,9 +82,15 @@ class TechStackAdmin(admin.ModelAdmin):
         ("기본 정보", {"fields": ["name", "category"]}),
     ]
     
+    def get_queryset(self, request):
+        """N+1 쿼리 최적화: annotate로 user_count 미리 계산"""
+        from django.db.models import Count
+        queryset = super().get_queryset(request)
+        return queryset.annotate(_user_count=Count('users', distinct=True))
+    
     def user_count(self, obj):
-        """이 기술을 보유한 사용자 수"""
-        return obj.users.count()
+        """annotate된 _user_count 사용 (DB 쿼리 없음)"""
+        return obj._user_count
     user_count.short_description = "사용자 수"
 
 
