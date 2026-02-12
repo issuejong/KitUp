@@ -17,6 +17,23 @@
     });
   };
 
+  const showToast = (message, type = "success") => {
+    const toast = document.createElement("div");
+    toast.className = `ref-toast ref-toast-${type}`;
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add("show");
+    });
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  };
+
   /** ---------------------------
    *  1) Kebab menu (수정/삭제)
    *     - 버튼 클릭: 해당 메뉴 토글
@@ -436,10 +453,10 @@
 
         try {
           await navigator.clipboard.writeText(ta.value);
-          alert("마크다운 복사됨");
+          showToast("마크다운 복사 완료", "success");
         } catch (e) {
           console.error(e);
-          alert("복사 실패");
+          showToast("마크다운 복사 실패", "error");
         }
       });
     });
