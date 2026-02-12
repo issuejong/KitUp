@@ -196,7 +196,6 @@ def dashboard_update(request, project_id):
             messages.success(request, "✅ 프로젝트 정보가 수정되었습니다.")
             return redirect("projects:dashboard_detail", project_id=project_id)
         else:
-            print("❌ Form 에러:", form.errors) 
             messages.error(request, "❌ 입력 오류가 있습니다. 다시 확인해주세요.")
     else:
         form = ProjectDashboardEditForm(instance=project)
