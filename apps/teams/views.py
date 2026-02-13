@@ -25,8 +25,6 @@ from .serializers import TeamSerializer, TeamCreateSerializer, TeamMemberSeriali
 # Template Views (HTML 렌더링)
 # ================================
 
-# apps/teams/views.py
-
 @login_required
 @require_POST
 def enable_email_notifications(request):
