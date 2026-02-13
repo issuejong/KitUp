@@ -36,11 +36,6 @@ class Season(models.Model):
     project_start = models.DateTimeField(help_text="프로젝트 시작")
     project_end = models.DateTimeField(help_text="프로젝트 종료")
     
-    is_active = models.BooleanField(
-        default=False,
-        help_text="현재 진행 중인 시즌",
-    )
-    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -48,7 +43,6 @@ class Season(models.Model):
         db_table = "seasons"
         ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=["is_active"]),
             models.Index(fields=["status"]),
         ]
     
@@ -67,8 +61,10 @@ class Season(models.Model):
     
     @classmethod
     def get_active_season(cls):
-        """현재 활성화된 시즌 반환"""
-        return cls.objects.filter(is_active=True).first()
+        """현재 활성화된 시즌 반환 (진행 중인 시즌)"""
+        return cls.objects.filter(
+            status__in=[cls.Status.MATCHING, cls.Status.IN_PROJECT]
+        ).order_by('-created_at').first()
 
 
 class Project(models.Model):
@@ -121,11 +117,6 @@ class Project(models.Model):
         help_text="프로젝트 기간 (주)",
     )
 
-    target_team_size = models.SmallIntegerField(
-        default=5,
-        help_text="목표 팀 인원 (PM1/FE2/BE2 = 5명)",
-    )
-
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
@@ -172,11 +163,6 @@ class Project(models.Model):
         help_text="관련 링크 (마크다운)",
     )
 
-    is_favorite = models.BooleanField(
-        default=False,
-        help_text="즐겨찾기 여부",
-    )
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -206,74 +192,6 @@ class Project(models.Model):
         if not created:
             like_obj.delete()
         return created  # True: 좋아요 추가, False: 좋아요 제거
-
-
-class ProjectApplication(models.Model):
-    """
-    프로젝트 지원
-    - 열정 레벨 (1~4) 저장
-    - 지원 역할 선택
-    """
-
-    class Status(models.TextChoices):
-        APPLIED = "APPLIED", "지원됨"
-        CANCELLED = "CANCELLED", "취소됨"
-        MATCHED = "MATCHED", "매칭됨"
-        REJECTED = "REJECTED", "거절됨"
-
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        related_name="applications",
-    )
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="applications",
-    )
-
-    role = models.ForeignKey(
-        "accounts.Role",
-        on_delete=models.PROTECT,
-        related_name="applications",
-        help_text="지원 역할 (PM/FRONTEND/BACKEND)",
-    )
-
-    passion_level = models.SmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(4)],
-        help_text="열정 레벨 (1~4, 설문 결과)",
-    )
-
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.APPLIED,
-    )
-
-    applied_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = "project_applications"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["project", "user"],
-                name="uq_project_application",
-            ),
-            models.CheckConstraint(
-                check=models.Q(passion_level__gte=1, passion_level__lte=4),
-                name="ck_passion_level_range",
-            ),
-        ]
-        indexes = [
-            models.Index(fields=["project", "role", "status"]),
-            models.Index(fields=["user", "status"]),
-            models.Index(fields=["passion_level"]),
-        ]
-
-    def __str__(self) -> str:
-        return f"{self.user} → {self.project} ({self.role.code})"
 
 
 class ProjectLike(models.Model):
