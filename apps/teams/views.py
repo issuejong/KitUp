@@ -210,10 +210,11 @@ def team_matching_cancel(request):
         messages.error(request, "❌ 팀 매칭 기간이 아닙니다. 취소할 수 없습니다.")
         return redirect("teams:team_status")
     
-    # 열정 레벨 초기화 및 이메일 알림 비활성화
+    # 열정 레벨, preferred_role 초기화 및 이메일 알림 비활성화
     request.user.passion_level = None
+    request.user.preferred_role = None
     request.user.email_notifications_enabled = False
-    request.user.save(update_fields=["passion_level", "email_notifications_enabled"])
+    request.user.save(update_fields=["passion_level", "preferred_role", "email_notifications_enabled"])
     
     messages.success(request, "✅ 팀 매칭 신청이 취소되었습니다.")
     return redirect("teams:team_apply")
