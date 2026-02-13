@@ -118,19 +118,30 @@ def passion_submit_api(request):
     """
     열정 테스트 결과 제출 처리 (API)
     
-    - POST 요청으로 passion_level을 JSON으로 받음
-    - User 모델에 열정 레벨 저장
+    - POST 요청으로 passion_level과 role(선호 직군)을 JSON으로 받음
+    - User 모델에 열정 레벨과 선호 역할 저장
     - JSON 응답으로 success 여부 반환
     """
     try:
         data = json.loads(request.body)
         passion_level = data.get("passion_level")
+        role_code = data.get("role")  # PM, FRONTEND, BACKEND
         
         if passion_level is None:
             return JsonResponse({"success": False, "error": "필수 데이터가 없습니다."})
         
         request.user.passion_level = int(passion_level)
-        request.user.save(update_fields=["passion_level"])
+        
+        # preferred_role 저장
+        if role_code:
+            try:
+                from apps.accounts.models import Role
+                role = Role.objects.get(code=role_code)
+                request.user.preferred_role = role
+            except Role.DoesNotExist:
+                pass  # 역할이 없으면 무시
+        
+        request.user.save(update_fields=["passion_level", "preferred_role"])
         
         return JsonResponse({"success": True})
     except json.JSONDecodeError:
@@ -146,17 +157,28 @@ def passion_submit(request):
     """
     열정 테스트 결과 제출 처리
     
-    - POST 요청으로 열정 레벨(passion_level)을 전달받음
-    - User 모델에 열정 레벨 저장
+    - POST 요청으로 열정 레벨(passion_level)과 역할(role)을 전달받음
+    - User 모델에 열정 레벨과 선호 역할 저장
     - 제출 후 팀 매칭 결과 페이지로 리다이렉트
     """
     if request.method != "POST":
         return HttpResponseBadRequest("잘못된 요청입니다.")
     
     passion_level = request.POST.get("passion_level")
+    role_code = request.POST.get("role")  # PM, FRONTEND, BACKEND
     
     request.user.passion_level = int(passion_level)
-    request.user.save(update_fields=["passion_level"])
+    
+    # preferred_role 저장
+    if role_code:
+        try:
+            from apps.accounts.models import Role
+            role = Role.objects.get(code=role_code)
+            request.user.preferred_role = role
+        except Role.DoesNotExist:
+            pass  # 역할이 없으면 무시
+    
+    request.user.save(update_fields=["passion_level", "preferred_role"])
     
     return redirect("teams:team_status")
 
