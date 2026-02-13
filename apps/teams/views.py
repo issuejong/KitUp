@@ -105,12 +105,20 @@ def passion_test(request):
     
     - 열정 레벨이 이미 있으면 team_status로 리다이렉트
     - 없으면 'teams/passion_test.html' 템플릿을 렌더링
+    - URL 파라미터 ?role=PM|FRONTEND|BACKEND에서 선택 역할 받음
     """
     if request.user.passion_level:
         # 이미 열정 테스트 완료
         return redirect("teams:team_status")
     
-    return render(request, "teams/passion_test.html")
+    # URL 파라미터에서 role 받기
+    role = request.GET.get("role", "")
+    
+    context = {
+        "role": role,
+    }
+    
+    return render(request, "teams/passion_test.html", context)
 
 @login_required
 @require_POST
