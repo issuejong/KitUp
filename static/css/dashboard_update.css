@@ -80,12 +80,16 @@
     text-align: center;
 }
 
-.d_service > img {
+.d_service > label {
+    display: block;
+}
+
+.d_service > label > img {
     max-width: 500px;
     width: 100%;
 }
 
-.project_image {
+label > .project_image {
     border-radius: 25px;
 }
 
