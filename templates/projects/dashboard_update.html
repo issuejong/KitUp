@@ -13,11 +13,14 @@
         {% csrf_token %}
         
         <div class="d_service">
+            <label for="project_image" style="cursor: pointer;">
             {% if project.project_image %}
-                <img src="{{ project.project_image.url }}" alt="서비스이미지" class="project_image">
+            <img src="{{ project.project_image.url }}" alt="서비스이미지" class="project_image" id="preview_image">
             {% else %}
-                <img src="{% static 'images/service_default.png' %}" alt="서비스이미지">
+            <img src="{% static 'images/service_default.png' %}" alt="서비스이미지" id="preview_image">
             {% endif %}
+            </label>
+            <input type="file" id="project_image" name="project_image" accept="image/*" style="display:none;">
             <input type="text" name="title" value="{{ project.title }}" class="title_input" required>
             <textarea name="description" class="description_input" required>{{ project.description }}</textarea>
         </div>
@@ -140,4 +143,5 @@
         <button type="submit">저장하기</button>
     </form>
 </div>
+<script defer src="{% static 'js/dashboard_update.js' %}"></script>
 {% endblock %}
